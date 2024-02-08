@@ -40,7 +40,6 @@ public class AuthApiController {
         } else {
             model.addAttribute("verificationSuccessMessage", null);
         }
-
         return "login";
     }
 

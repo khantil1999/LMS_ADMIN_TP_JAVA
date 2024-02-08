@@ -13,14 +13,12 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 
 @EnableWebSecurity
 @Configuration
-
-
 public class SecurityConfig  {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.userDetailsService(userDetailsService)
                 .authorizeHttpRequests((requests) -> requests
-                        .requestMatchers("/", "/about", "/service", "/css/**",
+                        .requestMatchers("/", "/about", "/service", "/css/**","/vendor/**",
                                 "/js/**", "/img/**", "/scss/**", "/lib/**", "/contact",
                                 "/register", "/register/save", "/verify", "/forgotPassword", "/resetPassword")
                         .permitAll()

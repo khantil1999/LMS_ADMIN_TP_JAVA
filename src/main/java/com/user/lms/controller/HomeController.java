@@ -17,15 +17,19 @@ public class HomeController {
 
     @Autowired
     private AuthService authService;
+
+    @GetMapping("/home")
+    public String loadHomePage(Model model) {
+        model.addAttribute("countUsers", authService.count((long) 1));
+        model.addAttribute("countTP", authService.count((long) 3));
+        model.addAttribute("countLaborers", authService.count((long) 4));
+        return "home";
+    }
     @GetMapping("/about")
     public String loadAboutPage() {
         return "about";
     }
 
-    /*@GetMapping("/index")
-    public String loadHomePage() {
-        return "index";
-    }*/
     @GetMapping("/service")
     public String loadServicePage() {
         return "service";
@@ -61,19 +65,11 @@ public class HomeController {
         return "history";
     }
 
-    @GetMapping("/home")
-    public String index(Model model) {
-        model.addAttribute("countUsers", authService.count((long) 1));
-        model.addAttribute("countTP", authService.count((long) 3));
-        model.addAttribute("countLaborers", authService.count((long) 4));
-        return "home";
-    }
     @GetMapping("/users")
     public String users(Model model){
         List<User> users = authService.findAllUsers((long)1);
         model.addAttribute("users", users);
         return "users";
     }
-
 
 }
