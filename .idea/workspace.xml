@@ -5,13 +5,19 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="c1938aab-ae32-4662-b13d-355b7fe1e039" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/.idea/LMS_ADMIN_TP_JAVA.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/dataSources.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/jsLibraryMappings.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/user/lms/models/LaborerModel.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/user/lms/config/SecurityConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/user/lms/config/SecurityConfig.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/user/lms/controller/AuthApiController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/user/lms/controller/AuthApiController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/user/lms/controller/HomeController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/user/lms/controller/HomeController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/user/lms/repository/UserRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/user/lms/repository/UserRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/user/lms/controller/LaborersController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/user/lms/controller/LaborersController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/user/lms/domain/LaborersService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/user/lms/domain/LaborersService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/user/lms/repository/UserRoleRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/user/lms/repository/UserRoleRepository.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/resources/templates/startbootstrap-sb-admin-2-gh-pages/history.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/templates/startbootstrap-sb-admin-2-gh-pages/history.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/templates/startbootstrap-sb-admin-2-gh-pages/login.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/templates/startbootstrap-sb-admin-2-gh-pages/login.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/templates/startbootstrap-sb-admin-2-gh-pages/laborerslist.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/templates/startbootstrap-sb-admin-2-gh-pages/laborerslist.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/templates/startbootstrap-sb-admin-2-gh-pages/truckproviderlist.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/templates/startbootstrap-sb-admin-2-gh-pages/truckproviderlist.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/templates/startbootstrap-sb-admin-2-gh-pages/users.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/templates/startbootstrap-sb-admin-2-gh-pages/users.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/templates/startbootstrap-sb-admin-2-gh-pages/vehiclelist.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/templates/startbootstrap-sb-admin-2-gh-pages/vehiclelist.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -55,7 +61,6 @@
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
     "ASKED_ADD_EXTERNAL_FILES": "true",
-    "JavaScript Debug.login.html.executor": "Run",
     "Maven.UserPanel [clean,install].executor": "Run",
     "RequestMappingsPanelOrder0": "0",
     "RequestMappingsPanelOrder1": "1",
@@ -63,12 +68,13 @@
     "RequestMappingsPanelWidth1": "75",
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
     "Spring Boot.UserPanelApplication.executor": "Run",
     "git-widget-placeholder": "main",
     "ignore.virus.scanning.warn.message": "true",
     "jdk.selected.JAVA_MODULE": "openjdk-21",
     "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "D:/LMS/LMS_USER_JAVA",
+    "last_opened_file_path": "C:/Users/DELL/Desktop/CLG_PROJECT/LMS_ADMIN_TP_JAVA",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -83,23 +89,7 @@
       <command value="mvn clean install" />
     </option>
   </component>
-  <component name="RunManager" selected="Spring Boot.UserPanelApplication">
-    <configuration name="login.html" type="JavascriptDebugType" temporary="true" nameIsGenerated="true" uri="http://localhost:63342/LMS_ADMIN_TP_JAVA/src/main/resources/templates/startbootstrap-sb-admin-2-gh-pages/login.html" useBuiltInWebServerPort="true">
-      <method v="2" />
-    </configuration>
-    <configuration default="true" type="JetRunConfigurationType">
-      <module name="LMS_ADMIN_TP_JAVA" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration default="true" type="KotlinStandaloneScriptRunConfigurationType">
-      <module name="LMS_ADMIN_TP_JAVA" />
-      <option name="filePath" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
+  <component name="RunManager">
     <configuration name="UserPanelApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
       <option name="FRAME_DEACTIVATION_UPDATE_POLICY" value="UpdateClassesAndResources" />
       <module name="UserPanel" />
@@ -108,11 +98,6 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <recent_temporary>
-      <list>
-        <item itemvalue="JavaScript Debug.login.html" />
-      </list>
-    </recent_temporary>
   </component>
   <component name="SharedIndexes">
     <attachedChunks>
@@ -143,7 +128,8 @@
       <workItem from="1707210112164" duration="21630000" />
       <workItem from="1707274819927" duration="39969000" />
       <workItem from="1707366333428" duration="2426000" />
-      <workItem from="1707368884279" duration="9290000" />
+      <workItem from="1707368884279" duration="403000" />
+      <workItem from="1707369830577" duration="9706000" />
     </task>
     <servers />
   </component>
@@ -163,5 +149,17 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/src/main/resources/templates/startbootstrap-sb-admin-2-gh-pages/laborerslist.html</url>
+          <line>484</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="3" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>
