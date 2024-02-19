@@ -24,8 +24,6 @@ public class AuthApiController {
     @Autowired
     private AuthService authService;
 
-
-
     @GetMapping("/login")
     public String loadLoginPage(Model model, @ModelAttribute("verificationErrorMessage") String verificationErrorMessage,
                                 @ModelAttribute("verificationSuccessMessage") String verificationSuccessMessage) {
@@ -39,6 +37,7 @@ public class AuthApiController {
             model.addAttribute("verificationSuccessMessage", verificationSuccessMessage);
         } else {
             model.addAttribute("verificationSuccessMessage", null);
+
         }
         return "login";
     }
@@ -96,6 +95,5 @@ public class AuthApiController {
                                 BindingResult bindingResult, Model model) {
         return this.authService.resetPassword(resetPasswordModel, bindingResult, model);
     }
-
 
 }

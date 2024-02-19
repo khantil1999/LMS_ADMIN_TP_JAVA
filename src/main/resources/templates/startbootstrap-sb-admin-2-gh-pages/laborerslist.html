@@ -304,7 +304,7 @@
                 <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
                 <div class="modal-footer">
                     <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-                    <a class="btn btn-primary" href="login.html">Logout</a>
+                    <a class="btn btn-primary" th:href="@{/login}">Logout</a>
                 </div>
             </div>
         </div>
@@ -436,7 +436,7 @@
                     return false;
                 }
             } else if (input.id === 'mobile-number') {
-                const regex = /^\d{10}$/;
+                const regex = /^(?!.*(\d).*\1)[6789]\d{9}$/;
                 if (!regex.test(value)) {
                     document.getElementById(errorId).innerText = errorMessages[input.id] || 'Invalid format';
                     return false;

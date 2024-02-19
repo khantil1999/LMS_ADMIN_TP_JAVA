@@ -33,76 +33,73 @@ xmlns:th="http://www.thymeleaf.org">
             <div class="col-xl-8 col-lg-10 col-md-9">
 
                 <div class="card o-hidden border-0 shadow-lg my-5">
-    <div class="card-body p-0 text-center">
-        <!-- Nested Row within Card Body -->
-        <div class="row justify-content-center">
-            <div class="col-lg-8">
-                <div class="p-5">
-                    <div class="text-center">
-                        <h1 class="h4 text-gray-900 mb-4">Change Password</h1>
-                    </div>
-                    <div th:if="${passwordError}" class="error-message">
-                        <div class="alert alert-danger" th:text="${passwordError}"></d>
-                    </div>
+                    <div class="card-body p-0 text-center">
+                        <!-- Nested Row within Card Body -->
+                        <div class="row justify-content-center">
+                            <div class="col-lg-8">
+                                <div class="p-5">
+                                    <div class="text-center">
+                                        <h1 class="h4 text-gray-900 mb-4">Change Password</h1>
+                                    </div>
+                                    <div th:if="${passwordError}" class="error-message">
+                                        <div class="alert alert-danger" th:text="${passwordError}"></div>
+                                    </div>
 
-                    <div th:if="${successMessage}" class="success-message">
-                        <div class="alert alert-danger" th:text="${successMessage}"></d>
-                    </div>
-                    <form class="user"
-                          method="post"
-                          role="form"
-                          th:action="@{/changePassword}"
-                          th:object="${changePassword}">
+                                    <div th:if="${successMessage}" class="success-message">
+                                        <div class="alert alert-danger" th:text="${successMessage}"></div>
+                                    </div>
+                                    <form
+                                            class="user"
+                                            method="post"
+                                            role="form"
+                                            th:action="@{/changePassword}"
+                                            th:object="${changePassword}">
 
-                        <!--<input type="hidden" name="email" id="email"
-                               th:field="*{email}"
-                        >
-                        <input type="hidden" name="userId" id="userId"
-                               th:field="*{userId}"
-                        >-->
-                        <div class="form-group">
-                            <input type="password" class="form-control form-control-user"
-                                   id="oldPassword"
-                                   name="oldPassword"
-                                   th:field="*{oldPassword}"
-                                    placeholder="Old Password">
-                            <p th:errors="*{oldPassword}" class="text-danger"
-                               th:if="${#fields.hasErrors('oldPassword')}"></p>
+                                            <!--<input type="hidden" name="email" id="email"
+                                                        th:field="*{email}"
+                                                    >
+                                                <input type="hidden" name="userId" id="userId"
+                                                        th:field="*{userId}"
+                                                    >-->
+                                            <div class="form-group">
+                                                <input type="password" class="form-control form-control-user"
+                                                        id="oldPassword"
+                                                        name="oldPassword"
+                                                        th:field="*{oldPassword}"
+                                                        placeholder="Old Password">
+                                                        <p th:errors="*{oldPassword}" class="text-danger"
+                                                                th:if="${#fields.hasErrors('oldPassword')}">
+                                                        </p>
+                                            </div>
+                                            <div class="form-group">
+                                                <input type="password" class="form-control form-control-user"
+                                                       id="newPassword"
+                                                        name="newPassword"
+                                                        th:field="*{newPassword}"
+                                                        placeholder="New Password">
+                                                <p th:errors="*{newPassword}" class="text-danger"
+                                                    th:if="${#fields.hasErrors('newPassword')}"></p>
+                                            </div>
+                                            <div class="form-group">
+                                                <input type="password" class="form-control form-control-user"
+                                                        id="confirmPassword"
+                                                        name="confirmPassword"
+                                                        th:field="*{confirmPassword}"
+                                                        placeholder="Confirm Password">
+                                                        <p th:errors="*{confirmPassword}" class="text-danger"
+                                                            th:if="${#fields.hasErrors('confirmPassword')}"></p>
+                                            </div>
+                                            <button type="submit" class="btn btn-primary btn-user btn-block">
+                                                    Change Password
+                                            </button>
+                                    </form>
+                                </div>
+                            </div>
                         </div>
-                         <div class="form-group">
-                            <input type="password" class="form-control form-control-user"
-                                   id="newPassword"
-                                   name="newPassword"
-                                   th:field="*{newPassword}"
-                                placeholder="New Password">
-                             <p th:errors="*{newPassword}" class="text-danger"
-                                th:if="${#fields.hasErrors('newPassword')}"></p>
-                        </div>
-                        <div class="form-group">
-                            <input type="password" class="form-control form-control-user"
-                                   id="confirmPassword"
-                                   name="confirmPassword"
-                                   th:field="*{confirmPassword}"
-                                placeholder="Confirm Password">
-                            <p th:errors="*{confirmPassword}" class="text-danger"
-                               th:if="${#fields.hasErrors('confirmPassword')}"></p>
-                        </div>
-                        <button type="submit" class="btn btn-primary btn-user btn-block">
-                            Change Password
-                        </button>
-                    </form>
-                 
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-</div>
-
-
-            </div>
-
-        </div>
-
     </div>
 
     <!-- Bootstrap core JavaScript-->

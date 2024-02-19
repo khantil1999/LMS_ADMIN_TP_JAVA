@@ -20,11 +20,15 @@ public class SecurityConfig  {
                 .authorizeHttpRequests((requests) -> requests
                         .requestMatchers("/", "/about", "/service", "/css/**","/vendor/**",
                                 "/js/**", "/img/**", "/scss/**", "/lib/**", "/contact",
-                                "/register", "/register/save", "/verify", "/forgotPassword", "/resetPassword")
+                                "/register", "/register/save", "/verify", "/forgotPassword",
+                                "/resetPassword","/truckDetails")
                         .permitAll()
                         .requestMatchers("/home",
-                                "/updateApprovalForTruckProvider",
-                                "/history","/laborerslist","/vehiclelist","/truckproviderlist","/users").authenticated() // Require authentication for the home page
+                                "/updateApprovalForTruckProvider","/changePassword","/dashboardTP",
+                                "vehiclelistTP","/laborerslistTP","/bookingTP","/addVehicle",
+                                "/getVehicle","/editVehicle","/editVehicle/{id}",
+                                "/history","/laborerslist","/vehiclelist","/truckproviderlist",
+                                "/users").authenticated() // Require authentication for the home page
                         .anyRequest().authenticated()
                 )
                 .formLogin((form) -> form

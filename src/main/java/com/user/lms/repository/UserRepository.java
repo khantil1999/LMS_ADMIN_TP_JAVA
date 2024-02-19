@@ -27,6 +27,4 @@ public interface UserRepository extends JpaRepository<User, Long>{
 	@Query(value="Update users set is_approved=? where id = ?",nativeQuery = true)
 	void approvedDisApprovedTruckProvider(Boolean approve, Long id);
 
-	@Query(value = "delete from users where id=?",nativeQuery = true)
-	void deleteLaborers(Long id);
 }

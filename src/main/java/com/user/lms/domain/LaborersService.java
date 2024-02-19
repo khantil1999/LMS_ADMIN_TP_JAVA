@@ -27,7 +27,7 @@ public class LaborersService {
     private UserRoleRepository userRoleRepository;
 
     @Transactional
-    public void deleteUser(Long userId){
+    public void deleteUser(Long userId) {
         this.userRoleRepository.deleteUserRolesByUserId(userId);
         this.userRepository.deleteById(userId);
     }

@@ -26,7 +26,7 @@ public class UserAuthenticationSuccessHandler extends SavedRequestAwareAuthentic
         Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
 
         for (GrantedAuthority authority : authorities) {
-            if (authority.getAuthority().equals("ADMIN") ||  authority.getAuthority().equals("TRUCK_PROVIDER")) {
+            if (authority.getAuthority().equals("ADMIN") &&  authority.getAuthority().equals("TRUCK_PROVIDER")) {
                 response.sendRedirect("/home");
                 return;
             }

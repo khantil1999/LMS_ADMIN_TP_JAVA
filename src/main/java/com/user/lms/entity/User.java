@@ -50,5 +50,4 @@ public class User {
 	@OneToMany(mappedBy = "user")
 	private List<UserRoles> userRoles = new ArrayList<>();
 
-	
 }
