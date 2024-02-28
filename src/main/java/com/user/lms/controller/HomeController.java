@@ -1,7 +1,11 @@
 package com.user.lms.controller;
 
 import com.user.lms.domain.AuthService;
+import com.user.lms.domain.VehicleListService;
 import com.user.lms.entity.User;
+import com.user.lms.entity.VehicleList;
+import com.user.lms.models.VehicleDetailsModel;
+import com.user.lms.models.VehicleListModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -14,6 +18,8 @@ import java.util.List;
 @Controller
 public class HomeController {
 
+    @Autowired
+    private VehicleListService vehicleListService;
 
     @Autowired
     private AuthService authService;
@@ -47,10 +53,10 @@ public class HomeController {
         return "truckproviderlist";
     }
     @GetMapping("/vehiclelist")
-    public String vehicleList(Model model){
-        List<User> users = authService.findAllUsers((long)1);
-        model.addAttribute("users", users);
-        return "vehiclelist";
+    public String getVehicleList(Model model) {
+        List<VehicleDetailsModel> vehicles = vehicleListService.getAllVehicles();
+        model.addAttribute("vehicles", vehicles);
+        return "vehicleList";
     }
     @GetMapping("/laborerslist")
     public String laborersList(Model model){

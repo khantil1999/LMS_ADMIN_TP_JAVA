@@ -18,7 +18,7 @@ public class SecurityConfig  {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.userDetailsService(userDetailsService)
                 .authorizeHttpRequests((requests) -> requests
-                        .requestMatchers("/", "/about", "/service", "/css/**","/vendor/**",
+                        .requestMatchers("/", "/about", "/service", "/css/**","/vendor/**","/uploaded-files/**",
                                 "/js/**", "/img/**", "/scss/**", "/lib/**", "/contact",
                                 "/register", "/register/save", "/verify", "/forgotPassword",
                                 "/resetPassword","/truckDetails")
@@ -26,7 +26,7 @@ public class SecurityConfig  {
                         .requestMatchers("/home",
                                 "/updateApprovalForTruckProvider","/changePassword","/dashboardTP",
                                 "vehiclelistTP","/laborerslistTP","/bookingTP","/addVehicle",
-                                "/getVehicle","/editVehicle","/editVehicle/{id}",
+                                "/getVehicle","/editVehicle",
                                 "/history","/laborerslist","/vehiclelist","/truckproviderlist",
                                 "/users").authenticated() // Require authentication for the home page
                         .anyRequest().authenticated()

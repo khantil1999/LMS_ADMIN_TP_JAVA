@@ -107,18 +107,7 @@
                     <!--                    <i class="fas fa-fw fa-folder"></i>
                     -->                    <span>Vehicle Lists</span>
                 </a>
-                <!--  <div id="collapsePages" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
-                      <div class="bg-white py-2 collapse-inner rounded">
-                          <h6 class="collapse-header">Login Screens:</h6>
-                          <a class="collapse-item" href="login.html">Login</a>
-                          <a class="collapse-item" href="register.html">Register</a>
-                          <a class="collapse-item" href="forgot-password.html">Forgot Password</a>
-                          <div class="collapse-divider"></div>
-                          <h6 class="collapse-header">Other Pages:</h6>
-                          <a class="collapse-item" href="404.html">404 Page</a>
-                          <a class="collapse-item" href="blank.html">Blank Page</a>
-                      </div>
-                  </div>-->
+
             </li>
 
             <!-- Nav Item - Charts -->
@@ -133,11 +122,6 @@
                 <a class="nav-link" th:href="@{/history}">
                     <!-- <i class="fas fa-fw fa-table"></i>-->
                     <span>History</span></a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" th:href="@{/changePassword}">
-                    <!-- <i class="fas fa-fw fa-table"></i>-->
-                    <span>change Password</span></a>
             </li>
 
             <!-- Divider -->
@@ -200,9 +184,9 @@
                                     <i class="fas fa-cogs fa-sm fa-fw mr-2 text-gray-400"></i>
                                     Settings
                                 </a>
-                                <a class="dropdown-item" href="#">
+                                <a class="dropdown-item" th:href="@{/changePassword}">
                                     <i class="fas fa-list fa-sm fa-fw mr-2 text-gray-400"></i>
-                                    Activity Log
+                                   Change Password
                                 </a>
                                 <div class="dropdown-divider"></div>
                                 <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal">
@@ -226,30 +210,32 @@
     </div><br>
     <table class="table table-bordered table-hover">
         <thead class="table-dark" style="background-color: #7784d6;">
-            <tr>
-                <th>Model</th>
-                <th>Body</th>
-                <th>Capacity</th>
-                <th>Wheel</th>
-                <th>price</th>
-                <th>Photos</th>
-            </tr>
+        <tr>
+            <th>Model</th>
+            <th>License Plate</th>
+            <th>Capacity</th>
+            <th>Manufacturer</th>
+            <th>Fuel Type</th>
+            <th>Current Mileage</th>
+            <th>Wheel</th>
+            <th>Photos</th>
+        </tr>
         </thead>
         <tbody>
-			<tr>
-				<td>xyz</td>
-				<td>xyz</td>
-				<td>xyz</td>
-				<td>xyz</td>
-				<td>xyz</td>
-				<td>xyz</td>
-			</tr>
-           <!-- <tr th:each = "user : ${users}">
-                <td th:text = "${user.firstName}"></td>
-                <td th:text = "${user.lastName}"></td>
-                <td th:text = "${user.mobileno}"></td>
-                <td th:text = "${user.email}"></td>
-            </tr>-->
+            <tr th:each = "vehicle  : ${vehicles}">
+                <td th:text = "${vehicle.model}"></td>
+                <td th:text = "${vehicle.licensePlate}"></td>
+                <td th:text = "${vehicle.capacity}"></td>
+                <td th:text = "${vehicle.manufacturer}"></td>
+                <td th:text = "${vehicle.fuelType}"></td>
+                <td th:text = "${vehicle.currentMileage}"></td>
+                <td th:text = "${vehicle.wheel}"></td>
+                <td>
+                    <div th:each="photo : ${vehicle.photos}" class="photo-thumbnail">
+                        <img th:src="@{'./uploaded-files/' + ${photo.path}}" alt="Vehicle Photo" class="img-thumbnail" style="max-width: 100px; max-height: 100px;">
+                    </div>
+                </td>
+            </tr>
         </tbody>
     </table>
 </div>

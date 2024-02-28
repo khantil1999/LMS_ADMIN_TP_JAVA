@@ -1,11 +1,6 @@
 package com.user.lms.models;
 
-import com.user.lms.entity.Photo;
-import com.user.lms.entity.User;
-import jakarta.persistence.Column;
-import jakarta.validation.constraints.*;
 import lombok.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -15,7 +10,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-public class VehicleListModel {
+public class VehicleDetailsModel {
 
     private Long id;
 
@@ -36,10 +31,7 @@ public class VehicleListModel {
 
     private String wheel;
 
-    private MultipartFile[] photo;
+     private List<PhotoModel> photo;
 
-  // private List<Photo> photo;
-//    private User driver;
-
-
+     private UserDetailsModel truckProvider;
 }

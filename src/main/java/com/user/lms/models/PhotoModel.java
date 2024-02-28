@@ -11,10 +11,5 @@ public class PhotoModel {
 
     private Long id;
 
-    private User driver;
-
-    private VehicleList vehicle;
-
-    //@Value("${upload.directory}")
     private String photoUrl;
 }

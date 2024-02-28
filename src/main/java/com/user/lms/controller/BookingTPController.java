@@ -9,4 +9,5 @@ public class BookingTPController {
     public String loadBookingPage(){
         return "bookingTP";
     }
+
 }

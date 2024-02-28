@@ -4,16 +4,17 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
+import org.hibernate.annotations.NotFound;
 
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
-@Data
+@ToString
 @Getter
 @Setter
 @Entity
 @Table(name = "Vehicle_Details")
+
 public class VehicleList {
 
     @Id
@@ -29,12 +30,12 @@ public class VehicleList {
     private String wheel;
 
 
-    @OneToMany(mappedBy = "vehicle", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Photo> photos;
 
     @ManyToOne
     @JoinColumn(name = "truck_provider_id")
     private User driver;
+
+
 
 
 }

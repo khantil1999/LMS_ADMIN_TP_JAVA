@@ -12,6 +12,7 @@ import lombok.*;
 @AllArgsConstructor
 public class UserModel {
 
+
     @NotEmpty(message = "First name cannot be blank!")
     @Pattern(regexp = "^[a-zA-Z ]+$", message = "First name should only contain alphabets and spaces")
     private String firstName;
