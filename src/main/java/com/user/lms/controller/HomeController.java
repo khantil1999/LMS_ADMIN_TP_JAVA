@@ -93,4 +93,9 @@ public class HomeController {
         return "users";
     }
 
+    @GetMapping("/profileTP")
+    public String loadTruckProviderTP(Model model){
+        return "manageProfileTp";
+    }
+
 }

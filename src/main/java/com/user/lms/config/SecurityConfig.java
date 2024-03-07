@@ -26,6 +26,8 @@ public class SecurityConfig  {
                         .requestMatchers("/home",
                                 "/updateApprovalForTruckProvider","/changePassword","/dashboardTP",
                                 "vehiclelistTP","/laborerslistTP","/bookingTP","/addVehicle",
+                                "/profileTP","/me","/states","/districts","/talukas",
+                                "/updateProviderArea", "/providerArea", "/updateProfile",
                                 "/getVehicle","/editVehicle",
                                 "/history","/laborerslist","/vehiclelist","/truckproviderlist",
                                 "/users","/pastbooking","/allDetails","/booking","/bookings","/export"
