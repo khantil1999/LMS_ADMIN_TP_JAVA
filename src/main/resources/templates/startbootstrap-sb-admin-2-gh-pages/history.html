@@ -77,54 +77,48 @@
                 }
 
             });
-          /*$('#submitBtn').click(function() {
-              // Get the start and end dates
-              var startDate = $('#startdate').val();
-              var endDate = $('#enddate').val();
+            $('#exportBtn').click(function() {
+                // Get the start and end dates
+                let startDate = $('#startDate').val();
+                let endDate = $('#endDate').val();
 
-              // Make an AJAX request to fetch data based on the date range
-              $.ajax({
-                  url: '/history',  // Replace with your actual endpoint
-                  method: 'GET',
-                  data: {
-                      startDate: startDate,
-                      endDate: endDate
-                  },
-                  success: function(data) {
-                      // Handle the success response and display the data
-                      console.log("Data fetched successfully:", data);
+                // Make an AJAX request to fetch data based on the date range
+                $.ajax({
+                    method: 'GET',
+                    url: '/export',
+                    data: {
+                        startDate: startDate,
+                        endDate: endDate
+                    },
+                    success: function(data) {
+                        // Handle the success response and display the data
+                        var blob = new Blob([data], { type: "application/pdf" });
 
-                      // Clear previous data
-                      $('#resultTableBody').empty();
+                        // Create a link element
+                        var link = document.createElement("a");
 
-                      // Display the fetched data in a table
-                      if (data.length > 0) {
-                          var tableBody = $('#resultTableBody');
-                          data.forEach(function() {
-                              var row = $('<tr>');
-                              row.append($('<td>').text('Ahmedabad'));
-                              row.append($('<td>').text('Nadiad'));
-                              row.append($('<td>').text('52'));
-                              row.append($('<td>').html('photo'));
-                              row.append($('<td>').text('31/01/2024'));
-                              row.append($('<td>').text('9000'));
-                              tableBody.append(row);
-                          });
+                        // Set the download attribute with the desired file name
+                        link.download = "booking_report.pdf";
 
-                          // Show the table
-                          $('#resultTable').show();
-                      } else {
-                          // Hide the table if no data available
-                          $('#resultTable').hide();
-                      }
-                  },
-                  error: function(error) {
-                      // Handle the error response
-                      console.error("Error fetching data:", error);
-                  }
-              });
-          });*/
+                        // Create a URL for the Blob and set it as the link's href
+                        link.href = window.URL.createObjectURL(blob);
 
+                        // Append the link to the document
+                        document.body.appendChild(link);
+
+                        // Trigger a click on the link to start the download
+                        link.click();
+
+                        // Remove the link from the document
+                        document.body.removeChild(link);
+
+                    },
+                    error: function(error) {
+                        // Handle the error response
+                        console.error("Error fetching data:", error);
+                    }
+                });
+            });
 
         if (!$('#left-side-nav').is(':visible')) {
             $('#content-fixed').css('margin-left', 0);
@@ -354,6 +348,10 @@
                               <div class="form-group" style="align-self: self-end;">
                                   <button type="submit" id="submitBtn" class="btn btn-outline-primary btn-xs" style="color:white;
 		     background-color: #7784d6;">Search</button>
+                              </div>
+                              <div class="form-group" style="align-self: self-end;">
+                                  <button type="Button" id="exportBtn" class="btn btn-outline-primary btn-xs" style="color:white;
+		                            background-color: #7784d6;">Export</button>
                               </div>
                           </div>
                       </form>

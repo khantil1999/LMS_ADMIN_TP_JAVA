@@ -208,6 +208,19 @@
     <div class="row col-md-20">
         <h2>List of Registered Vehicles</h2>
     </div><br>
+     <form
+           th:action="@{/vehiclelistTP}"
+            method="get">
+             <div style="
+                   display: flex;
+                   justify-content: flex-end;
+                   gap: 10px;">
+                 <div class="form-group" style="align-self: self-end;">
+                     <button type="Button" id="exportBtn" class="btn btn-outline-primary btn-xs" style="color:white;
+		                    background-color: #7784d6;">Export</button>
+                 </div>
+             </div>
+     </form><br>
     <table class="table table-bordered table-hover">
         <thead class="table-dark" style="background-color: #7784d6;">
         <tr>
@@ -297,8 +310,47 @@
 
     <!-- Custom scripts for all pages-->
     <script src="js/sb-admin-2.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script th:inline="javascript">
 
+        $('#exportBtn').click(function() {
+            console.log('export button is clicked--')
 
+            // Make an AJAX request to fetch data based on the date range
+            $.ajax({
+                method: 'GET',
+                url: '/exportVehicle',
+                success: function(data) {
+                    console.log('export vehicle api called in frontend side---')
+                    // Handle the success response and display the data
+                    var blob = new Blob([data], { type: "application/pdf" });
+
+                    // Create a link element
+                    var link = document.createElement("a");
+
+                    // Set the download attribute with the desired file name
+                    link.download = "vehicle_report.pdf";
+
+                    // Create a URL for the Blob and set it as the link's href
+                    link.href = window.URL.createObjectURL(blob);
+
+                    // Append the link to the document
+                    document.body.appendChild(link);
+
+                    // Trigger a click on the link to start the download
+                    link.click();
+
+                    // Remove the link from the document
+                    document.body.removeChild(link);
+
+                },
+                error: function(error) {
+                    // Handle the error response
+                    console.error("Error fetching data:", error);
+                }
+            });
+        });
+    </script>
 </body>
 
 </html>
