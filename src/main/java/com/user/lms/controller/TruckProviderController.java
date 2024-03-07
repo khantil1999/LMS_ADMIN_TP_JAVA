@@ -67,22 +67,19 @@ public class TruckProviderController {
 
         Context context = new Context();
         context.setVariable("users", users);
-        System.out.println("labourers: " + users);
 
 
         // Create the HTML string with Thymeleaf template for table rendering
         String htmlContent = templateEngine.process("startbootstrap-sb-admin-2-gh-pages/driver_template", context);
-        System.out.println("HTML Content: " + htmlContent);
 
-        System.out.println("HTML Content for PDF: " + htmlContent);
 
         // Generate PDF content
         byte[] pdfContent = generatePdfContent(htmlContent);
-
         // Set the response headers
         response.setContentType("application/pdf");
         response.setHeader("Content-Disposition", "attachment; filename=labourer_report.pdf");
 
+        System.out.println("Response--"+response);
         try (ServletOutputStream outputStream = response.getOutputStream()) {
             // Write the PDF content to the response output stream
             outputStream.write(pdfContent);
