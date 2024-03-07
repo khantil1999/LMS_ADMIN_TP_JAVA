@@ -1,9 +1,11 @@
 package com.user.lms.controller;
 
 import com.user.lms.domain.AuthService;
+import com.user.lms.domain.BookingService;
 import com.user.lms.domain.VehicleListService;
 import com.user.lms.entity.User;
 import com.user.lms.entity.VehicleList;
+import com.user.lms.models.BookingModel;
 import com.user.lms.models.VehicleDetailsModel;
 import com.user.lms.models.VehicleListModel;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,11 +15,14 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Controller
 public class HomeController {
 
+    @Autowired
+    BookingService bookingService;
     @Autowired
     private VehicleListService vehicleListService;
 
@@ -29,6 +34,7 @@ public class HomeController {
         model.addAttribute("countUsers", authService.count((long) 1));
         model.addAttribute("countTP", authService.count((long) 3));
         model.addAttribute("countLaborers", authService.count((long) 4));
+        model.addAttribute("countBookings",bookingService.countBooking());
         return "home";
     }
     @GetMapping("/about")
@@ -56,7 +62,7 @@ public class HomeController {
     public String getVehicleList(Model model) {
         List<VehicleDetailsModel> vehicles = vehicleListService.getAllVehicles();
         model.addAttribute("vehicles", vehicles);
-        return "vehicleList";
+        return "vehiclelist";
     }
     @GetMapping("/laborerslist")
     public String laborersList(Model model){
@@ -65,10 +71,19 @@ public class HomeController {
         return "laborerslist";
     }
     @GetMapping("/history")
-    public String history(Model model){
-        List<User> users = authService.findAllUsers((long)1);
-        model.addAttribute("users", users);
+    public String loadHistoryPage(Model model, @RequestParam(name = "startDate",required = false)String startDate, @RequestParam(name = "endDate",required = false)String endDate)
+    {
+        System.out.println("ssss" + startDate + endDate);
+        List<BookingModel> bookings = new ArrayList<>();
+        if(startDate != null && !startDate.isEmpty() && endDate != null && !endDate.isEmpty()){
+            bookings=bookingService.getAllBookings(startDate, endDate);
+        }else{
+            bookings=bookingService.getAllBookings();
+        }
+
+        model.addAttribute("bookings",bookings);
         return "history";
+
     }
 
     @GetMapping("/users")

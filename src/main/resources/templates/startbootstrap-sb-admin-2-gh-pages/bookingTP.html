@@ -79,6 +79,12 @@
                 <span>Booking</span></a>
         </li>
 
+        <li class="nav-item">
+            <a class="nav-link" th:href="@{/pastbooking}">
+                <!-- <i class="fas fa-fw fa-table"></i>-->
+                <span>Past Booking</span></a>
+        </li>
+
         <!-- Divider -->
         <hr class="sidebar-divider d-none d-md-block">
 
@@ -151,14 +157,45 @@
                 <div class="container">
                     <div class="row col-md-20">
                         <h2>Booking list</h2>
+                    </div><br>
+                    <form
+                    th:action="@{/bookingTP}"
+                    method="get"
+                    >
+                    <div style="
+                            display: flex;
+                            justify-content: flex-end;
+                            gap: 10px;">
+                        <div class="form-group">
+                            <label  for="startDate">Start Date:
+                            </label>
+                            <input type="date" id="startDate" name="startDate" class="form-control"
+                                   style="width: 100%; box-align: end;"/> <!--th:field="*{birthDate}"-->
+                        </div>
+                        <div class="form-group">
+                            <label for="endDate">End Date:
+                            </label>
+                            <input type="date" placeholder="" id="endDate" name="endDate" class="form-control"
+                                   style="width: 100%; box-align: end;"/> <!--th:field="*{birthDate}" -->
+                        </div>
+                        <div class="form-group" style="align-self: self-end;">
+                            <button type="submit" id="submitBtn" class="btn btn-outline-primary btn-xs" style="color:white;
+		     background-color: #7784d6;">Search</button>
+                        </div>
+                        <div class="form-group" style="align-self: self-end;">
+                            <button type="Button" id="exportBtn" class="btn btn-outline-primary btn-xs" style="color:white;
+		                    background-color: #7784d6;">Export</button>
+                        </div>
                     </div>
-
+                    </form>
 
                     <table class="table table-bordered table-hover">
                         <thead class="table-dark" style="background-color: #7784d6;">
                         <tr>
+
                             <th>Start Destination</th>
                             <th>End Destination</th>
+                            <th>Date</th>
                             <th>User Name</th>
                             <th>KM</th>
                             <th>No of Laborers</th>
@@ -166,58 +203,33 @@
                             <th>DECLINE</th>
                         </tr>
                         </thead>
-                        <tbody>
-                        <tr>
-                            <td>ahmedabad</td>
-                            <td>nadiad</td>
-                            <td>xyz</td>
-                            <td>50</td>
-                            <td>4</td>
-                            <td class="text-center">
-                                <button class="btn btn-outline-primary btn-xs edit-button"
-                                        id="add"
-
-                                        onclick="addCharge()"
-                                        style="color:white; background-color: #7784d6;">ACCEPT</button>
-                                <!--  th:attr="data-user-id=${user.id}"-->
-                            </td>
-                            <td class="text-center">
-                                <a
-                                        href="#"
-                                        class="btn btn-outline-primary btn-xs"
-                                        data-toggle="modal"
-                                        data-target="#deleteModal"
-
-                                        style="color:white;
-                         background-color: #7784d6;">DECLINE</a>
-                                <!--  th:attr="data-user-id=${user.id}"-->
-                            </td>
-                        </tr>
-                       <!-- <tr th:each = "booking : ${bookings}">
+                        <tbody id="resultTableBody">
+                        <tr th:each = "booking : ${bookings}">
+                            <input type="hidden" id="bookingId" th:value="${booking.id}">
                             <td th:text = "${booking.startDestination}"></td>
                             <td th:text = "${booking.endDestination}"></td>
-                            <td th:text = "${booking.userName}"></td>
+                            <td th:text="${booking.bookingDate}"></td>
+                            <td th:text="${booking.truckProvider.firstName} + ${booking.truckProvider.lastName}" ></td>
                             <td th:text = "${booking.km}"></td>
                             <td th:text = "${booking.noOfLabourers}"></td>
                             <td class="text-center">
                                 <button class="btn btn-outline-primary btn-xs edit-button"
                                         id="add"
-                                        th:attr="data-user-id=${user.id}"
+                                        th:attr="data-booking-id=${booking.id}"
                                         onclick="addCharge()"
                                         style="color:white; background-color: #7784d6;">ACCEPT</button>
                             </td>
                             <td class="text-center">
-                                <a
-                                        href="#"
+                                <Button
                                         class="btn btn-outline-primary btn-xs"
-                                        data-toggle="modal"
-                                        data-target="#deleteModal"
-                                        th:attr="data-user-id=${user.id}"
-                                        onclick="deleteLaborers()"
+                                        th:attr="data-booking-id=${booking.id}"
+                                        onclick="declineReq()"
                                         style="color:white;
-                         background-color: #7784d6;">DECLINE</a>
+                                               background-color: #7784d6;">
+                                        DECLINE
+                                </Button>
                             </td>
-                        </tr>-->
+                        </tr>
                         </tbody>
                     </table>
                         <!--<button class="btn btn-outline-primary btn-xs"
@@ -229,9 +241,8 @@
         </div>
         <!-- /.container-fluid -->
 
-    </div>
     <!-- End of Main Content -->
-</div>
+
 <!-- Footer -->
 <footer class="sticky-footer bg-white">
     <div class="container my-auto">
@@ -282,32 +293,59 @@
             </div>
             <div class="modal-body">
                 <form id="addChargesForm">
-                    <input type="hidden" id="user-id" value="">
+                    <input type="hidden" id="booking-id" value="">
                     <div class="mb-3">
                         <label for="fuelCharge" class="col-form-label">Fuel Charges:</label>
-                        <input type="text" class="form-control" id="fuelCharge">
+                        <input type="text" class="form-control" id="fuelCharge" onkeypress="return addCharges(event)">
                         <div id="fuelChargeError" class="text-danger"></div>
                     </div>
                     <div class="mb-3">
                         <label for="tollCharge" class="col-form-label">Toll Charges:</label>
-                        <input type="text" class="form-control" id="tollCharge">
-                        <div id="totalChargesError" class="text-danger"></div>
+                        <input type="text" class="form-control" id="tollCharge" onkeypress="return addCharges(event)">
+                        <div id="tollChargesError" class="text-danger"></div>
                     </div>
                     <div class="mb-3">
                         <label for="labourerCharge" class="col-form-label">Labourers Charges:</label>
-                        <input type="text" class="form-control" id="labourerCharge">
+                        <input type="text" class="form-control" id="labourerCharge" onkeypress="return addCharges(event)">
                         <div id="labourerChargeError" class="text-danger"></div>
                     </div>
                     <div class="mb-3">
                         <label for="totalAmount" class="col-form-label">Total Amount:</label>
                         <input type="text" class="form-control" id="totalAmount">
-                        <div id="mobile-numberError" class="text-danger"></div>
+                        <div id="totalAmountError" class="text-danger"></div>
                     </div>
                 </form>
             </div>
             <div class="modal-footer">
-                <button onclick="closeLabourForm()" class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-                <button type="button" id="addBtn" class="btn btn-primary" onclick="addCharges()">Send</button>
+                <button onclick="closeChargesForm()" class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+                <button type="button" id="addBtn" class="btn btn-primary" onclick="sendEmail()">Send</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="declineReqModel" tabindex="-1" aria-labelledby="declineReqsModel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="declineReqsModel">Add Reason</h5>
+                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="declineReqForm">
+                    <input type="hidden" id="booking_id" value="">
+                    <div class="mb-3">
+                        <label for="reason" class="col-form-label">Reason:</label>
+                        <textarea class="form-control" id="reason" name="reason"></textarea>
+                        <div id="reasonError" class="text-danger"></div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button onclick="closeReasonForm()" class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+                <button type="button" id="subBtn" class="btn btn-primary" onclick="sendReasonEmail()">Submit</button>
             </div>
         </div>
     </div>
@@ -322,45 +360,223 @@
 <!-- Custom scripts for all pages-->
 <script src="/js/sb-admin-2.min.js"></script>
 
-<!-- Page level plugins -->
-<script src="/vendor/chart.js/Chart.min.js"></script>
-
-<!-- Page level custom scripts -->
-<script src="/js/demo/chart-area-demo.js"></script>
-<script src="/js/demo/chart-pie-demo.js"></script>
-
 
 <!-- Bootstrap Modal -->
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 <script th:inline="javascript">
-    document.addEventListener('DOMContentLoaded', function() {
-        const inputFields = document.querySelectorAll('#addChargesForm input');
-        inputFields.forEach(input => {
-            input.addEventListener('input', () => {
-                const errorId = input.id + 'Error';
-                document.getElementById(errorId).innerText = '';
-            });
+    $(function() {
 
-            input.addEventListener('blur', () => {
-                validateInput(input);
+        $('#left-side-nav-toggle').click(function() {
+            if ($('#left-side-nav').hasClass('minimized')) {
+
+                $('#left-side-nav').removeClass('minimized');
+                $('#left-side-nav-toggle').removeClass('minimized').html('<i class="fa fa-chevron-left"></i>');
+                $('#content-fixed').removeClass('minimized');
+                $('#sub-nav').removeClass('minimized');
+
+                var date = new Date();
+                date.setDate(date.getDate() + 365);
+                document.cookie = 'minimized=0; expires=' + date.toUTCString() + '; path=/';
+
+            } else {
+
+                $('#left-side-nav').addClass('minimized');
+                $('#left-side-nav-toggle').addClass('minimized').html('<i class="fa fa-chevron-right"></i>');
+                $('#content-fixed').addClass('minimized');
+                $('#sub-nav').addClass('minimized');
+
+                var date = new Date();
+                date.setDate(date.getDate() + 365);
+                document.cookie = 'minimized=1; expires=' + date.toUTCString() + '; path=/';
+
+            }
+
+        });
+        $('#exportBtn').click(function() {
+            // Get the start and end dates
+            let startDate = $('#startDate').val();
+            let endDate = $('#endDate').val();
+
+            // Make an AJAX request to fetch data based on the date range
+            $.ajax({
+                method: 'GET',
+                url: '/export',
+                data: {
+                    startDate: startDate,
+                    endDate: endDate
+                },
+                success: function(data) {
+                    // Handle the success response and display the data
+                    var blob = new Blob([data], { type: "application/pdf" });
+
+                    // Create a link element
+                    var link = document.createElement("a");
+
+                    // Set the download attribute with the desired file name
+                    link.download = "booking_report.pdf";
+
+                    // Create a URL for the Blob and set it as the link's href
+                    link.href = window.URL.createObjectURL(blob);
+
+                    // Append the link to the document
+                    document.body.appendChild(link);
+
+                    // Trigger a click on the link to start the download
+                    link.click();
+
+                    // Remove the link from the document
+                    document.body.removeChild(link);
+
+                },
+                error: function(error) {
+                    // Handle the error response
+                    console.error("Error fetching data:", error);
+                }
             });
         });
-    });
 
-    function addCharges() {
-        var fuelCharges = document.getElementById('fuelCharge').value;
-        var tollCharges = document.getElementById('tollCharge').value;
-        var labourerCharges = document.getElementById('labourerCharge').value;
-        var total = 0;
-        total = (parseInt(fuelCharges)) + (parseInt(tollCharges)) + (parseInt(labourerCharges));
-        document.getElementById('totalAmount').value = total;
+
+        if (!$('#left-side-nav').is(':visible')) {
+            $('#content-fixed').css('margin-left', 0);
+            $('#sub-nav').css('left', 0);
+        }
+
+    });
+    function addCharges(e) {
+        if (isNumberKey(e)) {
+            setTimeout(() => {
+                var fuel_charge = document.getElementById("fuelCharge").value !== "" ? parseInt(document.getElementById("fuelCharge").value) : 0;
+                var toll_charge = document.getElementById("tollCharge").value !== "" ? parseInt(document.getElementById("tollCharge").value) : 0;
+                var labourer_charge = document.getElementById("labourerCharge").value !== "" ? parseInt(document.getElementById("labourerCharge").value) : 0;
+                var result = fuel_charge + toll_charge + labourer_charge;
+                document.getElementById("totalAmount").value = result;
+            }, 50)
+            return true;
+        } else {
+            return false;
+        }
+    }
+    function sendEmail() {
+
+        let bookingId = getBookingId();
+
+        // Collect charges data from form
+        // Get other charges data
+        let fuelCharge = document.getElementById("fuelCharge").value;
+        console.log('Fuel charge is---',fuelCharge)
+        let tollCharge = document.getElementById("tollCharge").value;
+        console.log('toll charge is---',tollCharge)
+        let labourerCharge = document.getElementById("labourerCharge").value;
+        console.log('labourer charge is---',labourerCharge)
+        let totalAmount = document.getElementById("totalAmount").value;
+        console.log('total amount is---',totalAmount)
+        let payload = {
+            bookingId: bookingId,
+            fuelCharge: fuelCharge,
+            tollCharge: tollCharge,
+            labourerCharge: labourerCharge,
+            totalAmount: totalAmount,
+            isTPApproved: true
+        }
+        console.log(payload)
+        // Make an Ajax request to the server
+
+        if (bookingId) {
+            console.log('booking id is---', bookingId)
+            $.ajax({
+                type: "PUT",
+                url: "/send-email/" + bookingId,
+                contentType: 'application/json',
+                data: JSON.stringify(payload),
+                success: function (response) {
+                    // Handle success
+                    console.log(response);
+                    window.location.href="/bookingTP";
+                },
+                error: function (error) {
+                    // Handle error
+                    console.error(error);
+                }
+            });
+        } else {
+            console.error("BookingId is null or undefined");
+        }
+    }
+    function sendReasonEmail(){
+        let bookingId = getBookingId();
+        let reason = document.getElementById("reason").value;
+        console.log('Reason is---',reason)
+        let payload = {
+            bookingId: bookingId,
+            reason: reason,
+            isTPApproved: false
+        }
+        console.log(payload)
+        if(bookingId){
+            console.log('booking id is---',bookingId)
+            $.ajax({
+                type: "PUT",
+                url: "/sendEmail/"+bookingId,
+                contentType: 'application/json',
+                data: JSON.stringify(payload),
+                success: function (response) {
+                    // Handle success
+                    console.log(response);
+                },
+                error: function (error) {
+                    // Handle error
+                    console.error(error);
+                }
+            });
+        } else {
+            console.error("BookingId is null or undefined");
+        }
+
+    }
+    function getBookingId() {
+
+        console.log("Booking id function call---------")
+        let bookingId = document.getElementById('bookingId').value;
+        console.log('booking id is---',bookingId)
+        return bookingId;
+    }
+
+    function isNumberKey(evt) {
+        var charCode = (evt.which) ? evt.which : event.keyCode
+        if (charCode > 31 && (charCode < 48 || charCode > 57)) {
+            return false;
+        }
+        return true;
     }
     function addCharge() {
 
         const alertModal = new bootstrap.Modal(document.getElementById('addChargeModel'));
         alertModal.show();
+    }
+
+    function declineReq(){
+
+        const alertModal = new bootstrap.Modal(document.getElementById('declineReqModel'))
+        alertModal.show();
+    }
+
+    function closeChargesForm(){
+        $('#booking-id').val(""); // Set the user ID in the hidden field
+        clearFormData();
+    }
+
+    function closeReasonForm(){
+        $('#booking_id').val("");
+        $('#reason').val("");
+    }
+    function   clearFormData(){
+        document.getElementById('fuelCharge').value = ""
+        document.getElementById('tollCharge').value = ""
+        document.getElementById('labourerCharge').value = ""
+        document.getElementById('totalAmount').value  = ""
+        document.getElementById('booking-id').value = ""
     }
 </script>
 </body>

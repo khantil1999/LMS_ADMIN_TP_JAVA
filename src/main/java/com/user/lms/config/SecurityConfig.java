@@ -28,7 +28,8 @@ public class SecurityConfig  {
                                 "vehiclelistTP","/laborerslistTP","/bookingTP","/addVehicle",
                                 "/getVehicle","/editVehicle",
                                 "/history","/laborerslist","/vehiclelist","/truckproviderlist",
-                                "/users").authenticated() // Require authentication for the home page
+                                "/users","/pastbooking","/allDetails","/booking","/bookings","/export"
+                                      ).authenticated() // Require authentication for the home page
                         .anyRequest().authenticated()
                 )
                 .formLogin((form) -> form

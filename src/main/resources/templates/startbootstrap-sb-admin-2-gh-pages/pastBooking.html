@@ -1,16 +1,13 @@
 <!DOCTYPE html>
 <html lang="en"
       xmlns:th="http://www.thymeleaf.org">
-
 <head>
-
-    <meta charset="utf-8">
+    <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="">
     <meta name="author" content="">
-
-    <title>SB Admin 2 - Dashboard</title>
+    <title>Past booking Page</title>
 
     <!-- Custom fonts for this template-->
     <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
@@ -20,11 +17,8 @@
 
     <!-- Custom styles for this template-->
     <link href="css/sb-admin-2.min.css" rel="stylesheet">
-
 </head>
-
 <body id="page-top">
-
 <!-- Page Wrapper -->
 <div id="wrapper">
 
@@ -101,14 +95,10 @@
                     <i class="fa fa-bars"></i>
                 </button>
 
-
-
                 <!-- Topbar Navbar -->
                 <ul class="navbar-nav ml-auto">
 
-
-
-                    <div class="topbar-divider d-none d-sm-block"></div>
+                   <div class="topbar-divider d-none d-sm-block"></div>
 
                     <!-- Nav Item - User Information -->
                     <li class="nav-item dropdown no-arrow">
@@ -145,85 +135,43 @@
 
             </nav>
             <!-- End of Topbar -->
-
-            <!-- Begin Page Content -->
             <div class="container-fluid">
 
-                <!-- Content Row -->
-                <div class="row">
-
-                    <!-- Earnings (Monthly) Card Example -->
-
-                    <div class="col-xl-3 col-md-6 mb-4">
-                        <div class="card border-left-primary shadow h-100 py-2">
-                            <a class="nav-link collapsed" th:href="@{/vehiclelistTP}" >
-                                <div class="card-body">
-                                    <div class="row no-gutters align-items-center">
-                                        <div class="col mr-2">
-                                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                                                No of Vehicles</div>
-                                            <div class="h5 mb-0 font-weight-bold text-gray-800" th:text="${countVehicles}">
-
-                                            </div>
-                                        </div>
-                                        <div class="col-auto">
-                                            <i class="fas fa-users fa-2x text-gray-300"></i>
-                                        </div>
-                                    </div>
-                                </div>
-                            </a>
-                        </div>
-                    </div>
-
-
-                    <!-- Earnings (Monthly) Card Example -->
-
-                    <div class="col-xl-3 col-md-6 mb-4">
-                        <div class="card border-left-success shadow h-100 py-2">
-                            <a class="nav-link collapsed" th:href="@{/laborerslistTP}" >
-                                <div class="card-body">
-                                    <div class="row no-gutters align-items-center">
-                                        <div class="col mr-2">
-                                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
-                                                No of Labourers</div>
-                                            <div class="h5 mb-0 font-weight-bold text-gray-800" th:text="${countLaborers}"></div>
-                                        </div>
-                                        <div class="col-auto">
-                                            <i class="fas fa-users fa-2x text-gray-300"></i>
-                                        </div>
-                                    </div>
-                                </div>
-                            </a>
-                        </div>
-                    </div>
-
-                    <!-- Earnings (Monthly) Card Example -->
-                    <div class="col-xl-3 col-md-6 mb-4">
-                        <div class="card border-left-info shadow h-100 py-2">
-                            <a class="nav-link" th:href="@{/bookingTP}">
-                                <div class="card-body">
-                                    <div class="row no-gutters align-items-center">
-                                        <div class="col mr-2">
-                                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Bookings
-                                            </div>
-                                            <div class="row no-gutters align-items-center">
-                                                <div class="col-auto">
-                                                    <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800" th:text="${countBookings}"></div>
-                                                </div>
-
-                                            </div>
-                                        </div>
-                                        <div class="col-auto">
-                                            <i class="fas fa-users fa-2x text-gray-300"></i>
-                                        </div>
-                                    </div>
-                                </div>
-                            </a>
-                        </div>
-                    </div>
-
+                <div class="container">
+                    <div class="row col-md-20">
+                        <h2>Past Bookings</h2>
+                    </div><br>
+                    <table class="table table-bordered table-hover">
+                        <thead class="table-dark" style="background-color: #7784d6;">
+                        <tr>
+                            <th>Start Destination</th>
+                            <th>End Destination</th>
+                            <th>User Name</th>
+                            <th>KM</th>
+                            <th>No Of Labourers</th>
+                            <th>View</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each = "booking  : ${bookings}">
+                            <td th:text = "${booking.startDestination}"></td>
+                            <td th:text = "${booking.endDestination}"></td>
+                            <td th:text = "${booking.truckProvider.firstName} + ${booking.truckProvider.lastName}"></td>
+                            <td th:text = "${booking.km}"></td>
+                            <td th:text = "${booking.noOfLabourers}"></td>
+                            <td class="text-center">
+                                <button class="btn btn-outline-primary btn-xs"
+                                        style="color:white; background-color: #7784d6;"
+                                        th:attr="data-booking-id=${booking.id}"
+                                        onclick="getBookings(this.getAttribute('data-booking-id'))">
+                                        View Details
+                                    <i class="fa fa-eye"></i>
+                                </button>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
                 </div>
-
                 <!-- Content Row -->
 
             </div>
@@ -231,7 +179,6 @@
 
         </div>
         <!-- End of Main Content -->
-
         <!-- Footer -->
         <footer class="sticky-footer bg-white">
             <div class="container my-auto">
@@ -274,16 +221,37 @@
 </div>
 
 <!-- Bootstrap core JavaScript-->
-<script src="vendor/jquery/jquery.min.js"></script>
-<script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="/vendor/jquery/jquery.min.js"></script>
+<script src="/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 
 <!-- Core plugin JavaScript-->
-<script src="vendor/jquery-easing/jquery.easing.min.js"></script>
+<script src="/vendor/jquery-easing/jquery.easing.min.js"></script>
 
 <!-- Custom scripts for all pages-->
-<script src="js/sb-admin-2.min.js"></script>
+<script src="/js/sb-admin-2.min.js"></script>
 
 
+<script th:inline="javascript">
+
+   /* $(document).ready(function() {
+        console.log(getBookings(id));
+    });*/
+    function getBookings(id){
+        console.log(id)
+
+        $.ajax({
+            url: '/bookings', // Replace 'your-api-endpoint' with your actual API endpoint
+            type: 'GET',
+            success: function(response) {
+                // Handle successful response
+                window.location.href='/allDetails?id='+id
+            },
+            error: function(xhr, status, error) {
+                // Handle errors
+                console.error('Error:', error);
+            }
+        });
+    }
+</script>
 </body>
-
 </html>

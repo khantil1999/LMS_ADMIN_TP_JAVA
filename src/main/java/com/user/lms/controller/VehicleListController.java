@@ -24,18 +24,13 @@ public class VehicleListController {
         return "vehicleListTP";
     }
 
-
-
     @GetMapping("/addVehicle")
     public String showAddVehicleForm() {
-        System.out.println("this is controller for display the model for adding vehicle details");
         return "addVehicles";
     }
 
-
     @GetMapping("/editVehicle")
     public String showEditVehicleForm(){
-        System.out.println("Edit page display......");
         return "editVehicle";
     }
 

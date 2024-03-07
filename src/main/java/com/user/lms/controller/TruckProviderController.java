@@ -19,9 +19,6 @@ public class TruckProviderController {
     @Autowired
     private TruckProviderService truckProviderService;
 
-    @Autowired
-    private AuthService authService;
-
     @PostMapping("/updateApprovalStatus")
     public String updateApprovalStatus(@RequestParam Long userId, @RequestParam boolean isChecked) {
         try {

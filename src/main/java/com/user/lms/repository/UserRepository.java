@@ -1,6 +1,7 @@
 package com.user.lms.repository;
 
 import com.user.lms.entity.User;
+import com.user.lms.entity.VehicleList;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -27,4 +28,6 @@ public interface UserRepository extends JpaRepository<User, Long>{
 	@Query(value="Update users set is_approved=? where id = ?",nativeQuery = true)
 	void approvedDisApprovedTruckProvider(Boolean approve, Long id);
 
+	@Query(value = "Select * from users where booking_id=?",nativeQuery = true)
+	List<User> getUserByBooking(String bookingId);
 }

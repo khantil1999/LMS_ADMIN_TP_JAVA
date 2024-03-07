@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Booking Report</title>
+</head>
+<body>
+<table border="1">
+    <tr>
+        <th>Booking ID</th>
+        <th>Start Destination</th>
+        <th>End Destination</th>
+    </tr>
+    <tr th:each="booking : ${bookings}">
+        <td th:text="${booking.id}"></td>
+        <td th:text="${booking.startDestination}"></td>
+        <td th:text="${booking.endDestination}"></td>
+    </tr>
+</table>
+</body>
+</html>

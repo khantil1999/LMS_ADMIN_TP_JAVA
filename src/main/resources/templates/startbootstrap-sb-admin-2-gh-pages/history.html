@@ -40,13 +40,6 @@
     };
     </script>
 
-        <link href="/css/app.min.css?v=20190514" rel="stylesheet">
-    <script src="/js/app.min.js?v=20230102"></script>
-
-    <link rel="stylesheet" href="/css/font-awesome.min.css">
-
-    <script>hljs.initHighlightingOnLoad();</script>
-
 
 
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
@@ -56,35 +49,35 @@
     <![endif]-->
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     <script>
-      $(function() {
+        $(function() {
 
-        $('#left-side-nav-toggle').click(function() {
-          if ($('#left-side-nav').hasClass('minimized')) {
+            $('#left-side-nav-toggle').click(function() {
+                if ($('#left-side-nav').hasClass('minimized')) {
 
-            $('#left-side-nav').removeClass('minimized');
-            $('#left-side-nav-toggle').removeClass('minimized').html('<i class="fa fa-chevron-left"></i>');
-            $('#content-fixed').removeClass('minimized');
-            $('#sub-nav').removeClass('minimized');
+                    $('#left-side-nav').removeClass('minimized');
+                    $('#left-side-nav-toggle').removeClass('minimized').html('<i class="fa fa-chevron-left"></i>');
+                    $('#content-fixed').removeClass('minimized');
+                    $('#sub-nav').removeClass('minimized');
 
-            var date = new Date();
-            date.setDate(date.getDate() + 365);
-            document.cookie = 'minimized=0; expires=' + date.toUTCString() + '; path=/';
+                    var date = new Date();
+                    date.setDate(date.getDate() + 365);
+                    document.cookie = 'minimized=0; expires=' + date.toUTCString() + '; path=/';
 
-          } else {
+                } else {
 
-            $('#left-side-nav').addClass('minimized');
-            $('#left-side-nav-toggle').addClass('minimized').html('<i class="fa fa-chevron-right"></i>');
-            $('#content-fixed').addClass('minimized');
-            $('#sub-nav').addClass('minimized');
+                    $('#left-side-nav').addClass('minimized');
+                    $('#left-side-nav-toggle').addClass('minimized').html('<i class="fa fa-chevron-right"></i>');
+                    $('#content-fixed').addClass('minimized');
+                    $('#sub-nav').addClass('minimized');
 
-            var date = new Date();
-            date.setDate(date.getDate() + 365);
-            document.cookie = 'minimized=1; expires=' + date.toUTCString() + '; path=/';
+                    var date = new Date();
+                    date.setDate(date.getDate() + 365);
+                    document.cookie = 'minimized=1; expires=' + date.toUTCString() + '; path=/';
 
-          }
+                }
 
-        });
-          $('#submitBtn').click(function() {
+            });
+          /*$('#submitBtn').click(function() {
               // Get the start and end dates
               var startDate = $('#startdate').val();
               var endDate = $('#enddate').val();
@@ -130,7 +123,7 @@
                       console.error("Error fetching data:", error);
                   }
               });
-          });
+          });*/
 
 
         if (!$('#left-side-nav').is(':visible')) {
@@ -138,7 +131,7 @@
             $('#sub-nav').css('left', 0);
         }
 
-      });
+        });
     </script>
 </head>
 
@@ -338,65 +331,55 @@
     <div class="row col-md-20">
         <h2>History of the Trip</h2>
     </div><br>
-
-		<div style="
-    display: flex;
-    justify-content: flex-end;
-    gap: 10px;">
-				<div class="form-group">
-				<label  for="startdate">Start Date:
-				</label>
-		        <input type="date" id="startdate" name="startdate" class="form-control"
-                       style="width: 100%; box-align: end;"/> <!--th:field="*{birthDate}"-->
-			</div>
-		    <div class="form-group">
-		      <label for="enddate">End Date:
-				</label>
-		        <input type="date" placeholder="" id="enddate" name="enddate" class="form-control"
-                       style="width: 100%; box-align: end;"/> <!--th:field="*{birthDate}" -->
-		    </div>
-		    <div class="form-group" style="align-self: self-end;">
-		     <button id="submitBtn" class="btn btn-outline-primary btn-xs" style="color:white;
-		     background-color: #7784d6;">Submit</button>
-			</div>
-		</div>
+                      <form
+                              th:action="@{/history}"
+                              method="get"
+                      >
+                          <div style="
+                            display: flex;
+                            justify-content: flex-end;
+                            gap: 10px;">
+                              <div class="form-group">
+                                  <label  for="startDate">Start Date:
+                                  </label>
+                                  <input type="date" id="startDate" name="startDate" class="form-control"
+                                         style="width: 100%; box-align: end;"/> <!--th:field="*{birthDate}"-->
+                              </div>
+                              <div class="form-group">
+                                  <label for="endDate">End Date:
+                                  </label>
+                                  <input type="date" placeholder="" id="endDate" name="endDate" class="form-control"
+                                         style="width: 100%; box-align: end;"/> <!--th:field="*{birthDate}" -->
+                              </div>
+                              <div class="form-group" style="align-self: self-end;">
+                                  <button type="submit" id="submitBtn" class="btn btn-outline-primary btn-xs" style="color:white;
+		     background-color: #7784d6;">Search</button>
+                              </div>
+                          </div>
+                      </form>
 		   
     <table class="table table-bordered table-hover">
         <thead class="table-dark" style="background-color: #7784d6;">
             <tr>
                 <th>Start Destination</th>
-                <th>End Destionation</th>
-                <th>Total Km</th>
-                <th>Vehicle Photo</th>
-                <th>Trip Date</th>
-                <th>Total amount</th>
+                <th>End Destination</th>
+                <th>Date</th>
+                <th>User Name</th>
+                <th>KM</th>
+                <th>No of Laborers</th>
+                <th>Total Amount</th>
             </tr>
         </thead>
         <tbody id="resultTableBody">
-			<tr>
-                <td>Ahmedabad</td>
-                <td>Nadiad</td>
-                <td>52</td>
-                <td>Photo</td>
-                <td>31/01/2024</td>
-                <td>9000</td>
-            </tr>
-            
-            <tr>
-                <td>Nadiad</td>
-                <td>Ahmedabad</td>
-                <td>52</td>
-                <td>Photo</td>
-                <td>31/01/2024</td>
-                <td>10000</td>
-            </tr>
-            
-            <!--<tr th:each = "user : ${users}">
-                <td th:text = "${user.firstName}"></td>
-                <td th:text = "${user.lastName}"></td>
-                <td th:text = "${user.mobileno}"></td>
-                <td th:text = "${user.email}"></td>
-            </tr>-->
+        <tr th:each = "booking : ${bookings}">
+            <input type="hidden" id="bookingId" th:value="${booking.id}">
+            <td th:text = "${booking.startDestination}"></td>
+            <td th:text = "${booking.endDestination}"></td>
+            <td th:text="${booking.bookingDate}"></td>
+            <td th:text="${booking.truckProvider.firstName} + ${booking.truckProvider.lastName}" ></td>
+            <td th:text = "${booking.km}"></td>
+            <td th:text = "${booking.noOfLabourers}"></td>
+            <td th:text="${booking.totalAmount}"></td>
         </tbody>
     </table>
 </div>
@@ -448,7 +431,7 @@
                 <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
                 <div class="modal-footer">
                     <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-                    <a class="btn btn-primary" href="login.html">Logout</a>
+                    <a class="btn btn-primary" th:href="@{/login}">Logout</a>
                 </div>
             </div>
         </div>
@@ -463,14 +446,6 @@
 
     <!-- Custom scripts for all pages-->
     <script src="js/sb-admin-2.min.js"></script>
-
-    <!-- Page level plugins -->
-    <script src="vendor/chart.js/Chart.min.js"></script>
-
-    <!-- Page level custom scripts -->
-    <script src="js/demo/chart-area-demo.js"></script>
-    <script src="js/demo/chart-pie-demo.js"></script>
-
 
 
 </body>

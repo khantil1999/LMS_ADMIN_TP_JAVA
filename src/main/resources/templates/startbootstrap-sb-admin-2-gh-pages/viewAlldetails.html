@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>View All details</title>
+    <!-- Custom fonts for this template -->
+    <link href="/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
+
+    <!-- Bootstrap core CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="/css/sb-admin-2.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Nunito', sans-serif;
+            background-color: #f8f9fc;
+        }
+
+        #wrapper {
+            overflow-x: hidden;
+        }
+
+        .custom-card {
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            margin-top: 20px;
+        }
+
+        .custom-card-body {
+            padding: 30px;
+        }
+
+        .card-title {
+            color: #4e73df;
+        }
+
+        .section {
+            margin-bottom: 30px;
+        }
+
+        .detail {
+            margin-bottom: 10px;
+        }
+
+        .btn-outline-primary {
+            color: #4e73df;
+            border-color: #4e73df;
+        }
+
+        .btn-outline-primary:hover {
+            background-color: #4e73df;
+            color: #ffffff;
+        }
+
+        .sticky-footer {
+            background-color: #ffffff;
+            padding: 15px 0;
+            border-top: 1px solid #ddd;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+        }
+
+        .scroll-to-top {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            display: none;
+            background-color: #4e73df;
+            color: #ffffff;
+            padding: 10px;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        /* Additional styling for specific sections */
+
+        .booking-details,
+        .vehicle-details,
+        .truck-provider-details,
+        .user-details,
+        .charges-details,
+        .tc-acceptance {
+            background-color: #f4f4f4;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .tc-checkbox {
+            margin-top: 10px;
+        }
+    </style>
+</head>
+
+<body id="page-top">
+<!-- Page Wrapper -->
+<div id="wrapper">
+
+    <!-- Sidebar -->
+    <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+
+        <!-- Sidebar - Brand -->
+        <a class="sidebar-brand d-flex align-items-center justify-content-center" th:href="@{/dashboardTP}">
+            <div class="sidebar-brand-text mx-3"> Admin </div>
+        </a>
+
+        <!-- Divider -->
+        <hr class="sidebar-divider my-0">
+
+        <!-- Nav Item - Dashboard -->
+        <li class="nav-item active">
+            <a class="nav-link" th:href="@{/dashboardTP}">
+                <i class="fas fa-fw fa-tachometer-alt"></i>
+                <span>Dashboard</span></a>
+        </li>
+
+        <!-- Divider -->
+        <hr class="sidebar-divider">
+        <li class="nav-item">
+            <a class="nav-link collapsed" th:href="@{/vehiclelistTP}">
+                <span>Vehicle Lists</span>
+            </a>
+        </li>
+
+        <!-- Nav Item - Charts -->
+        <li class="nav-item">
+            <a class="nav-link" th:href="@{/laborerslistTP}">
+                <span>Laborers List</span></a>
+        </li>
+
+        <!-- Nav Item - Tables -->
+        <li class="nav-item">
+            <a class="nav-link" th:href="@{/bookingTP}">
+                <span>Bookings</span></a>
+        </li>
+
+        <li class="nav-item">
+            <a class="nav-link" th:href="@{/pastbooking}">
+                <span>Past Booking</span></a>
+        </li>
+
+        <!-- Divider -->
+        <hr class="sidebar-divider d-none d-md-block">
+
+        <!-- Sidebar Toggler (Sidebar) -->
+        <div class="text-center d-none d-md-inline">
+            <button class="rounded-circle border-0" id="sidebarToggle"></button>
+        </div>
+    </ul>
+    <!-- End of Sidebar -->
+
+    <!-- Content Wrapper -->
+    <div id="content-wrapper" class="d-flex flex-column">
+
+        <!-- Main Content -->
+        <div id="content">
+            <!-- Topbar -->
+            <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
+                <!-- Sidebar Toggle (Topbar) -->
+                <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
+                    <i class="fa fa-bars"></i>
+                </button>
+
+                <!-- Topbar Navbar -->
+                <ul class="navbar-nav ml-auto">
+                    <div class="topbar-divider d-none d-sm-block"></div>
+
+                    <!-- Nav Item - User Information -->
+                    <li class="nav-item dropdown no-arrow">
+                        <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
+                           data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <span class="mr-2 d-none d-lg-inline text-gray-600 small">Admin</span>
+                            <img class="img-profile rounded-circle" src="img/undraw_profile.svg">
+                        </a>
+                        <!-- Dropdown - User Information -->
+                        <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
+                             aria-labelledby="userDropdown">
+                            <a class="dropdown-item" th:href="@{/dashboardTP}">
+                                <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
+                                Profile
+                            </a>
+                            <a class="dropdown-item" href="#">
+                                <i class="fas fa-cogs fa-sm fa-fw mr-2 text-gray-400"></i>
+                                Settings
+                            </a>
+                            <a class="dropdown-item" th:href="@{/changePassword}">
+                                <i class="fas fa-list fa-sm fa-fw mr-2 text-gray-400"></i>
+                                Change Password
+                            </a>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal">
+                                <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
+                                Logout
+                            </a>
+                        </div>
+                    </li>
+                </ul>
+            </nav>
+            <!-- End of Topbar -->
+
+            <div class="container-fluid">
+                <div class="container mt-5">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="card custom-card">
+                                <div class="custom-card-body" id="bookingDetails">
+
+                                    <!-- Booking Details Section -->
+                                    <div class="section booking-details">
+                                        <h5 class="card-title text-center mb-4">Booking Details</h5>
+                                        <div class="detail" id="startDestination"></div>
+                                        <div class="detail" id="endDestination"></div>
+                                        <div class="detail" id="km"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Vehicle Details Section -->
+                        <div class="col-md-12 mt-4">
+                            <div class="card custom-card">
+                                <div class="custom-card-body" id="vehicleDetails">
+                                    <div class="section vehicle-details">
+                                        <h5 class="card-title text-center mb-4">Vehicle Details</h5>
+                                        <div class="detail" id="model"></div>
+                                        <div class="detail" id="licensePlate"></div>
+                                        <div class="detail" id="manufacturer"></div>
+                                        <div class="detail" id="capacity"></div>
+                                        <div class="detail" id="wheel"></div>
+                                        <div class="detail" id="fuelType"></div>
+                                        <div class="detail" id="currentMileage"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Truck Provider Details Section -->
+                        <div class="col-md-12 mt-4">
+                            <div class="card custom-card">
+                                <div class="custom-card-body" id="truckDetails">
+                                    <div class="section truck-provider-details">
+                                        <h5 class="card-title text-center mb-4">Truck Provider Details</h5>
+                                        <div class="detail" id="driver"></div>
+                                        <div class="detail" id="email"></div>
+                                        <div class="detail" id="mobileNo"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- User Details Section -->
+                        <div class="col-md-12 mt-4">
+                            <div class="card custom-card">
+                                <div class="custom-card-body" id="userDetails">
+                                    <div class="section user-details">
+                                        <h5 class="card-title text-center mb-4">User Details</h5>
+                                        <div class="detail" id="user"></div>
+                                        <div class="detail" id="useremail"></div>
+                                        <div class="detail" id="usermobileNo"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Total Charges Details Section -->
+                        <div class="col-md-12 mt-4">
+                            <div class="card custom-card">
+                                <div class="custom-card-body" id="chargesDetails">
+                                    <div class="section charges-details">
+                                        <h5 class="card-title text-center mb-4">Total Charges Details</h5>
+                                        <div class="detail" id="fuelCharge"></div>
+                                        <div class="detail" id="tollCharge"></div>
+                                        <div class="detail" id="labourerCharge"></div>
+                                        <div class="detail" id="totalAmount"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Terms and Conditions Acceptance Section -->
+                        <div class="col-md-12 mt-4">
+                            <div class="card custom-card">
+                                <div class="custom-card-body" id="termsAndConditions">
+                                    <div class="section tc-acceptance">
+                                        <h5 class="card-title text-center mb-4">Terms and Conditions</h5>
+                                        <div class="form-check">
+                                            <input type="checkbox" class="form-check-input" id="tcCheckbox" checked>
+                                            <label class="form-check-label" for="tcCheckbox">I accept the Terms and Conditions</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Back Button -->
+                        <div class="col-md-12 text-center mt-4">
+                            <a th:href="@{/pastbooking}" class="btn btn-outline-primary btn-xs">Back</a>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+
+
+        </div>
+        <!-- End of Main Content -->
+
+        <!-- Footer -->
+        <footer class="sticky-footer bg-white">
+            <div class="container my-auto">
+                <div class="copyright text-center my-auto">
+                    <span>Copyright &copy; Logistic Management System 2024</span>
+                </div>
+            </div>
+        </footer>
+        <!-- End of Footer -->
+    </div>
+    <!-- End of Content Wrapper -->
+</div>
+<!-- End of Page Wrapper -->
+
+<!-- Scroll to Top Button-->
+<a class="scroll-to-top rounded" href="#page-top">
+    <i class="fas fa-angle-up"></i>
+</a>
+
+<!-- Logout Modal-->
+<div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
+                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+                <a class="btn btn-primary" th:href="@{/login}">Logout</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Bootstrap core JavaScript-->
+<script src="vendor/jquery/jquery.min.js"></script>
+<script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+<!-- Core plugin JavaScript-->
+<script src="vendor/jquery-easing/jquery.easing.min.js"></script>
+
+<!-- Custom scripts for all pages-->
+<script src="js/sb-admin-2.min.js"></script>
+
+<script th:inline="javascript">
+    $(document).ready(function () {
+        let id = getParameterByName("id", window.location.href);
+        console.log('in viewAllDetails page at ready state id:', id);
+        getBookingsById(id);
+    });
+
+    function getParameterByName(name, url) {
+        if (!url) url = window.location.href;
+        name = name.replace(/[\[\]]/g, "\\$&");
+        var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+            results = regex.exec(url);
+        if (!results) return null;
+        if (!results[2]) return '';
+        return decodeURIComponent(results[2].replace(/\+/g, " "));
+    }
+
+    function getBookingsById(id) {
+        console.log('booking id is....', id);
+        $.ajax({
+            url: '/booking?id=' + id, // Replace 'your-api-endpoint' with your actual API endpoint
+            type: 'GET',
+            success: function (response) {
+                // Handle successful response
+                bindBookingDetails(response);
+            },
+            error: function (xhr, status, error) {
+                // Handle errors
+                console.error('Error:', error);
+            }
+        });
+    }
+
+    function bindBookingDetails(booking) {
+        console.log('function is called for binding the data ');
+        console.log('booking id in binding booking details..', booking.id);
+        // Bind details to HTML elements
+        $('#startDestination').html(`<strong>Start Destination:</strong> ${booking.startDestination}`);
+        $('#endDestination').html(`<strong>End Destination:</strong> ${booking.endDestination}`);
+        $('#km').html(`<strong>KM:</strong> ${booking.km}`);
+        $('#isLabourer').html(`<strong>isLabourer Required:</strong> ${booking.isLabourer}`);
+        $('#noOfLabourers').html(`<strong>No of Labourers:</strong> ${booking.noOfLabourers}`);
+        $('#fuelCharge').html(`<strong>Fuel Charge:</strong> ${booking.fuelCharge}`);
+        $('#tollCharge').html(`<strong>Toll Charge:</strong> ${booking.tollCharge}`);
+        $('#labourerCharge').html(`<strong>Labourer Charge:</strong> ${booking.labourerCharge}`);
+        $('#totalAmount').html(`<strong>Total Amount:</strong> ${booking.totalAmount}`);
+        $('#model').html(`<strong>Model:</strong> ${booking.vehicles.model}`)
+        $('#licensePlate').html(`<strong>License Plate:</strong> ${booking.vehicles.licensePlate}`)
+        $('#manufacturer').html(`<strong>Manufacturer:</strong> ${booking.vehicles.manufacturer}`)
+        $('#capacity').html(`<strong>Capacity:</strong> ${booking.vehicles.capacity}`)
+        $('#wheel').html(`<strong>Wheel:</strong> ${booking.vehicles.wheel}`)
+        $('#fuelType').html(`<strong>Fuel Type:</strong> ${booking.vehicles.fuelType}`)
+        $('#currentMileage').html(`<strong>Current Mileage:</strong> ${booking.vehicles.currentMileage}`)
+        $('#driver').html(`<strong>Name:</strong> ${booking.truckProvider.firstName} ${booking.truckProvider.lastName}`)
+        $('#email').html(`<strong>Email:</strong> ${booking.truckProvider.email}`)
+        $('#mobileNo').html(`<strong>Mobile No:</strong> ${booking.truckProvider.mobileNo}`)
+        $('#user').html(`<strong>Name:</strong> ${booking.user.firstName} ${booking.user.lastName}`)
+        $('#useremail').html(`<strong>Email:</strong> ${booking.user.email}`)
+        $('#usermobileNo').html(`<strong>Mobile No:</strong> ${booking.user.mobileNo}`)
+        // Add more details as needed
+    }
+</script>
+</body>
+
+</html>

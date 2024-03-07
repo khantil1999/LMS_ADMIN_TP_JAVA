@@ -88,7 +88,7 @@ public class VehicleListService {
         this.photoRepository.deleteById(photoId);
 
     }
-    public long count() {
+    public long countVehicle() {
         // TODO Auto-generated method stub
         return vehicleListRepository.countVehicles();
     }
@@ -99,8 +99,14 @@ public class VehicleListService {
         System.out.println("This is service class for adding vehicle details in db");
 
         try {
-            if (vehicleListModel == null || photoFiles == null || photoFiles.isEmpty()) {
-                throw new IllegalArgumentException("Invalid input parameters");
+            if(!isUpdate) {
+                if (vehicleListModel == null || photoFiles == null || photoFiles.isEmpty()) {
+                    throw new IllegalArgumentException("Invalid input parameters");
+                }
+            }else{
+                if (vehicleListModel == null) {
+                    throw new IllegalArgumentException("Invalid input parameters");
+                }
             }
             // Validate files
 

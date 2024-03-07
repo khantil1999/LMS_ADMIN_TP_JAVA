@@ -1,6 +1,7 @@
 package com.user.lms.controller;
 
 import com.user.lms.domain.AuthService;
+import com.user.lms.domain.BookingService;
 import com.user.lms.domain.VehicleListService;
 import com.user.lms.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,11 +19,16 @@ public class DashboardTPController {
 
     @Autowired
     private VehicleListService vehicleListService;
+
+    @Autowired
+    private BookingService bookingService;
+
     @GetMapping("/dashboardTP")
     public String loadDashboardPage(Model model){
 
-        model.addAttribute("countVehicles", vehicleListService.count());
+        model.addAttribute("countVehicles", vehicleListService.countVehicle());
         model.addAttribute("countLaborers", authService.count((long) 4));
+        model.addAttribute("countBookings",bookingService.countBooking());
         return "dashboardTP";
     }
 

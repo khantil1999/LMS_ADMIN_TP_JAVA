@@ -23,8 +23,6 @@ public class LaborersController {
     @Autowired
     private LaborersService laborersService;
 
-    @Autowired
-    private VehicleListService vehicleListService;
     @DeleteMapping("/labour")
     private String deleteLaborer(@RequestParam("userId") String userId){
         try{
@@ -52,7 +50,5 @@ public class LaborersController {
 
         return this.laborersService.editLabour(laborer);
     }
-
-
 
 }

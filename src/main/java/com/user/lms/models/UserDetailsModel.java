@@ -9,6 +9,8 @@ import lombok.*;
 @AllArgsConstructor
 public class UserDetailsModel {
 
+    private Long id;
+
     private String firstName;
 
     private String lastName;

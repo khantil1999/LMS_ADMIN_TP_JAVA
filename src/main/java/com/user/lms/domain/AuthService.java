@@ -183,13 +183,11 @@ public class AuthService {
     }
 
     public List<User> findAllUsers(Long id) {
-        // TODO Auto-generated method stub
         List<User> users = userRepository.findAllByRoleId(id);
         return users;
     }
 
     public long count(Long id) {
-        // TODO Auto-generated method stub
         return userRepository.countUsers(id);
     }
 

@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Booking Confirmation</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f5f5f5;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+
+        section {
+            background-color: #fff;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        h2, h3 {
+            color: #3498db;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        table, th, td {
+            border: 1px solid #3498db;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #3498db;
+            color: #fff;
+        }
+    </style>
+</head>
+<body>
+
+<h2 style="text-align: center; color: #3498db;">Booking Confirmation</h2>
+
+<!-- Customer Details -->
+<section >
+    <h3>Customer Details:</h3>
+    <p>Driver: <span th:text="${booking.getUser().getFirstName()} + ${booking.getUser().getLastName()}"></span></p>
+    <p>Email: <span th:text="${booking.getUser().getEmail()}"></span></p>
+    <p>Phone: <span th:text="${booking.getUser().getMobileNo()}"></span></p>
+</section>
+
+<!-- Booking Details -->
+<section>
+    <h3>Booking Details:</h3>
+    <table>
+        <tr>
+            <th>Booking ID</th>
+            <th>Start Destination</th>
+            <th>End Destination</th>
+            <th>Booking Date</th>
+            <th>Distance</th>
+            <th>No of Labourers</th>
+        </tr>
+        <tr>
+            <td th:text="${booking.getId()}"></td>
+            <td th:text="${booking.getStartDestination()}"></td>
+            <td th:text="${booking.getEndDestination()}"></td>
+            <td th:text="${booking.getBookingDate()}"></td>
+            <td th:text="${booking.getKm()}"></td>
+            <td th:text="${booking.getNoOfLabourers()}"></td>
+        </tr>
+    </table>
+</section>
+<!-- Vehicle Details -->
+<section>
+    <h3>Vehicle Details:</h3>
+    <table>
+        <tr>
+            <th>Model</th>
+            <th>licensePlate</th>
+            <th>capacity</th>
+            <th>manufacturer</th>
+            <th>fuelType</th>
+            <th>currentMileage</th>
+            <th>wheel</th>
+        </tr>
+        <tr>
+            <td th:text="${booking.getVehicleList().getModel()}"></td>
+            <td th:text="${booking.getVehicleList().getLicensePlate()}"></td>
+            <td th:text="${booking.getVehicleList().getCapacity()}"></td>
+            <td th:text="${booking.getVehicleList().getManufacturer()}"></td>
+            <td th:text="${booking.getVehicleList().getFuelType()}"></td>
+            <td th:text="${booking.getVehicleList().getCurrentMileage()}"></td>
+            <td th:text="${booking.getVehicleList().getWheel()}"></td>
+        </tr>
+    </table>
+</section>
+
+<!-- Booking Provider Details -->
+<section>
+    <h3>Booking Provider Details:</h3>
+    <p>Name: <span th:text="${booking.getDriver().getFirstName()} + ${booking.getDriver().getLastName()}"></span></p>
+    <p>Email: <span th:text="${booking.getDriver().getEmail()}"></span></p>
+    <p>Phone: <span th:text="${booking.getDriver().getMobileNo()}"></span></p>
+</section>
+
+<!-- Charges Details -->
+<section>
+    <h3>Charges Details:</h3>
+    <table>
+        <tr>
+            <th>Charge Type</th>
+            <th>Amount</th>
+        </tr>
+        <tr>
+            <td>Fuel Charge</td>
+            <td th:text="${booking.getFuelCharge()}"></td>
+        </tr>
+        <tr>
+            <td>Toll Charge</td>
+            <td th:text="${booking.getTollCharge()}"></td>
+        </tr>
+        <tr>
+            <td>Labourer Charge</td>
+            <td th:text="${booking.getLabourerCharge()}"></td>
+        </tr>
+        <tr>
+            <td>Total Amount</td>
+            <td th:text="${booking.getTotalAmount()}"></td>
+        </tr>
+    </table>
+</section>
+
+<!-- Terms and Conditions -->
+<section>
+    <h3>Terms and Conditions:</h3>
+    <p>Thank you for choosing our services. Please find below the terms and conditions of your booking:</p>
+    <ul>
+        <li>Payment must be made in advance.</li>
+        <li>Cancellation Policy: [Your Cancellation Policy]</li>
+        <!-- Add more terms and conditions as needed -->
+    </ul>
+</section>
+
+<p>If you have any questions or concerns, please contact our customer support.</p>
+
+</body>
+</html>

@@ -29,13 +29,9 @@ public class VehicleList {
     private int currentMileage;
     private String wheel;
 
-
-
     @ManyToOne
     @JoinColumn(name = "truck_provider_id")
     private User driver;
-
-
 
 
 }

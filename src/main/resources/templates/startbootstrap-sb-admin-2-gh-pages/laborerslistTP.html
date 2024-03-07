@@ -10,7 +10,7 @@
   <meta name="description" content="">
   <meta name="author" content="">
 
-  <title>SB Admin 2 - Dashboard</title>
+  <title>SB Admin 2 - Labourers List</title>
 
   <!-- Custom fonts for this template-->
   <link href="/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
@@ -66,6 +66,11 @@
     <li class="nav-item">
       <a class="nav-link" th:href="@{/bookingTP}">
         <span>Booking</span></a>
+    </li>
+
+    <li class="nav-item">
+      <a class="nav-link" th:href="@{/pastbooking}">
+        <span>Past Booking</span></a>
     </li>
 
     <!-- Divider -->
@@ -193,9 +198,8 @@
     </div>
     <!-- /.container-fluid -->
 
-  </div>
   <!-- End of Main Content -->
-</div>
+
 <!-- Footer -->
 <footer class="sticky-footer bg-white">
   <div class="container my-auto">
@@ -311,12 +315,6 @@
 <!-- Custom scripts for all pages-->
 <script src="/js/sb-admin-2.min.js"></script>
 
-<!-- Page level plugins -->
-<!--<script src="/vendor/chart.js/Chart.min.js"></script>-->
-
-<!-- Page level custom scripts -->
-<!--<script src="/js/demo/chart-area-demo.js"></script>
-<script src="/js/demo/chart-pie-demo.js"></script>-->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 

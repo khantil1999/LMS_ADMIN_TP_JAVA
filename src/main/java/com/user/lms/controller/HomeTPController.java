@@ -17,9 +17,6 @@ public class HomeTPController {
     @Autowired
     private AuthService authService;
 
-    @Autowired
-    private VehicleListService vehicleListService;
-
     @GetMapping("/laborerslistTP")
     public String loadLaborersPage(Model model){
         List<User> users = authService.findAllUsers((long)4);
@@ -27,12 +24,4 @@ public class HomeTPController {
         return "laborerslistTP";
     }
 
-
-    /*@GetMapping("/vehiclelistTP")
-    public String loadVehicleListPage(Model model){
-
-        List<VehicleList> vehicles=vehicleListService.findAllVehicles();
-        model.addAttribute("vehicles", vehicles);
-        return "vehiclelistTP";
-    }*/
 }
