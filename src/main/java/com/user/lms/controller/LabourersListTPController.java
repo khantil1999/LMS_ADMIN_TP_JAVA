@@ -104,7 +104,7 @@ public class LabourersListTPController {
 
         // Set the response headers
         response.setContentType("application/pdf");
-        response.setHeader("Content-Disposition", "attachment; filename=labourer_report.pdf");
+        response.setHeader("Content-Disposition", "attachment; filename=user_report.pdf");
 
         try (ServletOutputStream outputStream = response.getOutputStream()) {
             // Write the PDF content to the response output stream

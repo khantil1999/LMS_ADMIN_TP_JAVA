@@ -1,16 +1,12 @@
 package com.user.lms.controller;
 
 import com.user.lms.domain.AuthService;
-import com.user.lms.domain.TruckProviderService;
 import com.user.lms.entity.User;
 import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
@@ -22,14 +18,9 @@ import java.io.IOException;
 import java.util.List;
 
 @RestController
-public class TruckProviderController {
-
-    @Autowired
-    private TruckProviderService truckProviderService;
-
+public class UserRestApiController {
     @Autowired
     private AuthService authService;
-
     private static ClassLoaderTemplateResolver templateResolver = new ClassLoaderTemplateResolver();
 
     // Initialize and configure the template resolver
@@ -48,22 +39,12 @@ public class TruckProviderController {
         templateEngine.setTemplateResolver(templateResolver);
     }
 
-
-    @PostMapping("/updateApprovalStatus")
-    public String updateApprovalStatus(@RequestParam Long userId, @RequestParam boolean isChecked) {
-        try {
-            this.truckProviderService.updateApprovalStatus(userId, isChecked);
-            return "Update successful";
-        } catch (Exception e) {
-            return "Update failed: " + e.getMessage();
-        }
-    }
-    @GetMapping("/exportDriver")
+    @GetMapping("/exportUser")
     public void loadUserPage(Model model,
-                             HttpServletResponse response) throws IOException
+                                 HttpServletResponse response) throws IOException
     {
         // Get data from the service based on startDate and endDate
-        List<User> users= authService.findAllUsers(Long.valueOf(3));
+        List<User> users= authService.findAllUsers(Long.valueOf(1));
 
         Context context = new Context();
         context.setVariable("users", users);
@@ -71,7 +52,7 @@ public class TruckProviderController {
 
 
         // Create the HTML string with Thymeleaf template for table rendering
-        String htmlContent = templateEngine.process("startbootstrap-sb-admin-2-gh-pages/driver_template", context);
+        String htmlContent = templateEngine.process("startbootstrap-sb-admin-2-gh-pages/user_template", context);
         System.out.println("HTML Content: " + htmlContent);
 
         System.out.println("HTML Content for PDF: " + htmlContent);
