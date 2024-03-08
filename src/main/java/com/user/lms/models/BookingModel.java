@@ -14,6 +14,7 @@ import java.util.List;
 public class BookingModel {
 
     private Long id;
+
     private String startDestination;
 
     private String endDestination;
@@ -33,6 +34,7 @@ public class BookingModel {
     private int totalAmount;
 
     private UserDetailsModel user;
+
     private UserDetailsModel truckProvider;
 
     private VehicleListModel vehicles;

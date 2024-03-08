@@ -191,7 +191,6 @@ public class BookingService {
         booking.forEach(bookings -> {
             BookingModel bookingModel = this.mapVehicle(bookings);
             detailsModels.add(bookingModel);
-
         });
         return detailsModels;
     }
@@ -203,7 +202,6 @@ public class BookingService {
         booking.forEach(bookings -> {
             BookingModel bookingModel = this.mapVehicle(bookings);
             detailsModels.add(bookingModel);
-
         });
         return detailsModels;
     }
