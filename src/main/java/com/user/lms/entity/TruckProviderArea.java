@@ -7,7 +7,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@Table(name = "truck_provider_area") // Specify the table name if it's different from the default
+@Table(name = "truck_provider_area")
 public class TruckProviderArea {
     @Id()
     @GeneratedValue(strategy = GenerationType.IDENTITY)

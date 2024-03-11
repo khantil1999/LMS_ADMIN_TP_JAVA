@@ -1,12 +1,9 @@
 package com.user.lms.entity;
 
-import com.user.lms.models.UserDetailsModel;
-import com.user.lms.models.UserModel;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.Date;
-import java.util.List;
 
 @Getter
 @Setter
@@ -70,4 +67,7 @@ public class Booking {
 
     @Column(name = "booking_date")
     private Date bookingDate;
+
+    @Column(name = "goods_type")
+    private String goodsType;
 }
