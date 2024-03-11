@@ -121,7 +121,7 @@
             <!-- Dropdown - User Information -->
             <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
                  aria-labelledby="userDropdown">
-              <a class="dropdown-item" href="#">
+              <a class="dropdown-item" th:href="@{/profileTP}">
                 <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
                 Profile
               </a>
@@ -162,7 +162,7 @@
                             gap: 10px;">
               <div class="form-group" style="align-self: self-end;">
 
-                <button type="submit" class="btn btn-outline-primary btn-xs" id="add" onclick="showAddVehicleForm()"
+                <button type="Button" class="btn btn-outline-primary btn-xs" id="add" onclick="showAddVehicleForm()"
                     style="color:white; background-color: #7784d6;">Add</button>
 
               </div>
@@ -340,6 +340,8 @@
 
         // Remove the link from the document
         document.body.removeChild(link);
+
+        console.log('Download initiated');
 
       },
       error: function(error) {

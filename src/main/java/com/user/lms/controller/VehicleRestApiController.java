@@ -120,6 +120,8 @@ public class VehicleRestApiController {
         // Generate PDF content
         byte[] pdfContent = generatePdfContent(htmlContent);
 
+        System.out.println("PDF Content Length: " + pdfContent.length);
+
         // Set the response headers
         response.setContentType("application/pdf");
         response.setHeader("Content-Disposition", "attachment; filename=vehicle_report.pdf");

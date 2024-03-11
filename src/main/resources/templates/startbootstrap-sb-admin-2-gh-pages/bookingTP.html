@@ -126,7 +126,7 @@
                         <!-- Dropdown - User Information -->
                         <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
                              aria-labelledby="userDropdown">
-                            <a class="dropdown-item" href="#">
+                            <a class="dropdown-item" th:href="@{/profileTP}">
                                 <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
                                 Profile
                             </a>
@@ -431,13 +431,13 @@
                     var blob = new Blob([data], { type: "application/pdf" });
 
                     // Create a link element
-                    var link = document.createElement("a");
-
-                    // Set the download attribute with the desired file name
-                    link.download = "booking_report.pdf";
+                    var link = document.createElement('a');
 
                     // Create a URL for the Blob and set it as the link's href
                     link.href = window.URL.createObjectURL(blob);
+
+                    // Set the download attribute with the desired file name
+                    link.download = "booking_report.pdf";
 
                     // Append the link to the document
                     document.body.appendChild(link);
