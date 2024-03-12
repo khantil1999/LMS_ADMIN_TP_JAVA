@@ -1,9 +1,7 @@
 package com.user.lms.controller;
 
 import com.user.lms.domain.VehicleListService;
-import com.user.lms.entity.VehicleList;
 import com.user.lms.models.VehicleDetailsModel;
-import com.user.lms.models.VehicleListModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;

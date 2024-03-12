@@ -19,87 +19,21 @@
     <!-- Custom styles for this template -->
     <link href="/css/sb-admin-2.min.css" rel="stylesheet">
     <style>
-        body {
-            font-family: 'Nunito', sans-serif;
-            background-color: #f8f9fc;
+        .card-container {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
         }
 
-        #wrapper {
-            overflow-x: hidden;
+        .card-body {
+            flex: 1;
+            overflow-y: auto;
         }
-
-        .custom-card {
-            background-color: #ffffff;
-            border-radius: 10px;
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
-            margin-top: 20px;
-        }
-
-        .custom-card-body {
-            padding: 30px;
-        }
-
-        .card-title {
-            color: #4e73df;
-        }
-
-        .section {
-            margin-bottom: 30px;
-        }
-
-        .detail {
-            margin-bottom: 10px;
-        }
-
-        .btn-outline-primary {
-            color: #4e73df;
-            border-color: #4e73df;
-        }
-
-        .btn-outline-primary:hover {
-            background-color: #4e73df;
-            color: #ffffff;
-        }
-
-        .sticky-footer {
-            background-color: #ffffff;
-            padding: 15px 0;
-            border-top: 1px solid #ddd;
-            position: fixed;
-            bottom: 0;
-            width: 100%;
-        }
-
-        .scroll-to-top {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            display: none;
-            background-color: #4e73df;
-            color: #ffffff;
-            padding: 10px;
-            border-radius: 50%;
-            cursor: pointer;
-        }
-
-        /* Additional styling for specific sections */
-
-        .booking-details,
-        .vehicle-details,
-        .truck-provider-details,
-        .user-details,
-        .charges-details,
-        .tc-acceptance {
-            background-color: #f4f4f4;
-            padding: 20px;
-            border-radius: 10px;
-            margin-bottom: 20px;
-        }
-
-        .tc-checkbox {
-            margin-top: 10px;
+        .row > .col-md-6:nth-child(n+3) {
+            margin-top: 15px;
         }
     </style>
+
 </head>
 
 <body id="page-top">
@@ -207,108 +141,90 @@
                 </ul>
             </nav>
             <!-- End of Topbar -->
-
             <div class="container-fluid">
+                <div class="col-md-12 text-start mt-4">
+                    <a th:href="@{/pastbooking}" class="btn btn-outline-primary btn-xs">Back</a>
+                </div>
                 <div class="container mt-5">
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="card custom-card">
-                                <div class="custom-card-body" id="bookingDetails">
 
-                                    <!-- Booking Details Section -->
-                                    <div class="section booking-details">
-                                        <h5 class="card-title text-center mb-4">Booking Details</h5>
-                                        <div class="detail" id="startDestination"></div>
-                                        <div class="detail" id="endDestination"></div>
-                                        <div class="detail" id="km"></div>
-                                        <div class="detail" id="noOfLabourer"></div>
+                    <div class="row">
+
+                        <!-- Booking Details Section -->
+                        <div class="col-md-6">
+                            <div class="card-container">
+                                <div class="card border-left-info shadow h-100">
+                                    <div class="card-body">
+                                        <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Booking Details</div>
+                                        <hr class="mt-2 mb-3">
+                                        <div class="detail"><span id="startDestination"></span></div>
+                                        <div class="detail"> <span id="endDestination"></span></div>
+                                        <div class="detail"><span id="km"></span></div>
+                                        <div class="detail"><span id="noOfLabourer"></span></div>
+                                        <div class="detail"><span id="bookingDate"></span></div>
+                                        <div class="detail"><span id="goodsType"></span></div>
+                                        <div class="detail"><span id="status"></span></div>
                                     </div>
                                 </div>
                             </div>
                         </div>
 
                         <!-- Vehicle Details Section -->
-                        <div class="col-md-12 mt-4">
-                            <div class="card custom-card">
-                                <div class="custom-card-body" id="vehicleDetails">
-                                    <div class="section vehicle-details">
-                                        <h5 class="card-title text-center mb-4">Vehicle Details</h5>
-                                        <div class="detail" id="model"></div>
-                                        <div class="detail" id="licensePlate"></div>
-                                        <div class="detail" id="manufacturer"></div>
-                                        <div class="detail" id="capacity"></div>
-                                        <div class="detail" id="wheel"></div>
-                                        <div class="detail" id="fuelType"></div>
-                                        <div class="detail" id="currentMileage"></div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Truck Provider Details Section -->
-                        <div class="col-md-12 mt-4">
-                            <div class="card custom-card">
-                                <div class="custom-card-body" id="truckDetails">
-                                    <div class="section truck-provider-details">
-                                        <h5 class="card-title text-center mb-4">Truck Provider Details</h5>
-                                        <div class="detail" id="driver"></div>
-                                        <div class="detail" id="email"></div>
-                                        <div class="detail" id="mobileNo"></div>
+                        <div class="col-md-6">
+                            <div class="card-container">
+                                <div class="card border-left-info shadow h-100">
+                                    <div class="card-body">
+                                        <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Vehicle Details</div>
+                                        <hr class="mt-2 mb-3">
+                                        <div class="detail"><span id="model"></span></div>
+                                        <div class="detail"> <span id="licensePlate"></span></div>
+                                        <div class="detail"><span id="manufacturer"></span></div>
+                                        <div class="detail"><span id="capacity"></span></div>
+                                        <div class="detail"><span id="wheel"></span></div>
+                                        <div class="detail"><span id="fuelType"></span></div>
+                                        <div class="detail"><span id="currentMileage"></span></div>
                                     </div>
                                 </div>
                             </div>
                         </div>
 
                         <!-- User Details Section -->
-                        <div class="col-md-12 mt-4">
-                            <div class="card custom-card">
-                                <div class="custom-card-body" id="userDetails">
-                                    <div class="section user-details">
-                                        <h5 class="card-title text-center mb-4">User Details</h5>
-                                        <div class="detail" id="user"></div>
-                                        <div class="detail" id="useremail"></div>
-                                        <div class="detail" id="usermobileNo"></div>
+                        <div class="col-md-6">
+                            <div class="card-container">
+                                <div class="card border-left-info shadow h-100">
+                                    <div class="card-body">
+                                        <div class="text-xs font-weight-bold text-info text-uppercase mb-1">User Details</div>
+                                        <hr class="mt-2 mb-3">
+                                        <div class="detail"> <span id="user"></span></div>
+                                        <div class="detail"><span id="userEmail"></span></div>
+                                        <div class="detail"><span id="userMobile"></span></div>
                                     </div>
                                 </div>
                             </div>
                         </div>
 
                         <!-- Total Charges Details Section -->
-                        <div class="col-md-12 mt-4">
-                            <div class="card custom-card">
-                                <div class="custom-card-body" id="chargesDetails">
-                                    <div class="section charges-details">
-                                        <h5 class="card-title text-center mb-4">Total Charges Details</h5>
-                                        <div class="detail" id="fuelCharge"></div>
-                                        <div class="detail" id="tollCharge"></div>
-                                        <div class="detail" id="labourerCharge"></div>
-                                        <div class="detail" id="totalAmount"></div>
+                        <div class="col-md-6">
+                            <div class="card-container">
+                                <div class="card border-left-info shadow h-100">
+                                    <div class="card-body">
+                                        <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Total Charges Details</div>
+                                        <hr class="mt-2 mb-3">
+                                        <div class="detail"> <span id="fuelCharge"></span></div>
+                                        <div class="detail"><span id="tollCharge"></span></div>
+                                        <div class="detail"><span id="labourerCharge"></span></div>
+                                        <div class="detail"> <span id="totalAmount"></span></div>
                                     </div>
                                 </div>
                             </div>
                         </div>
 
-                        <!-- Terms and Conditions Acceptance Section -->
-                        <div class="col-md-12 mt-4">
-                            <div class="card custom-card">
-                                <div class="custom-card-body" id="termsAndConditions">
-                                    <div class="section tc-acceptance">
-                                        <h5 class="card-title text-center mb-4">Terms and Conditions</h5>
-                                        <div class="form-check">
-                                            <input type="checkbox" class="form-check-input" id="tcCheckbox" checked>
-                                            <label class="form-check-label" for="tcCheckbox">I accept the Terms and Conditions</label>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- Back Button -->
-                        <div class="col-md-12 text-center mt-4">
-                            <a th:href="@{/pastbooking}" class="btn btn-outline-primary btn-xs">Back</a>
-                        </div>
+
                     </div>
                 </div>
             </div>
+
+
+
         </div>
         <!-- End of Main Content -->
 
@@ -395,32 +311,56 @@
     }
 
     function bindBookingDetails(booking) {
-        console.log('function is called for binding the data ');
-        console.log('booking id in binding booking details..', booking.id);
+
+        // Parse startDestination and endDestination
+        const startDestination = JSON.parse(booking.startDestination);
+        const endDestination = JSON.parse(booking.endDestination);
+
         // Bind details to HTML elements
-        $('#startDestination').html(`<strong>Start Destination:</strong> ${booking.startDestination}`);
-        $('#endDestination').html(`<strong>End Destination:</strong> ${booking.endDestination}`);
+        $('#startDestination').html(`<strong>Start Destination:</strong> ${startDestination.label}`);
+        $('#endDestination').html(`<strong>End Destination:</strong> ${endDestination.label}`);
         $('#km').html(`<strong>KM:</strong> ${booking.km}`);
-        $('#isLabourer').html(`<strong>isLabourer Required:</strong> ${booking.isLabourer}`);
-        $('#noOfLabourer').html(`<strong>No of Labourers:</strong> ${booking.noOfLabourers}`);
+        $('#bookingDate').html(`<strong>Booking Date:</strong> ${new Date(booking.bookingDate).toLocaleString()}`);
+        $('#goodsType').html(`<strong>Goods Type:</strong> ${booking.goodsType}`);
+        $('#noOfLabourer').html(`<strong>No of Labourers:</strong> ${booking.noOfLabourers || 0}`);
         $('#fuelCharge').html(`<strong>Fuel Charge:</strong> ${booking.fuelCharge}`);
         $('#tollCharge').html(`<strong>Toll Charge:</strong> ${booking.tollCharge}`);
         $('#labourerCharge').html(`<strong>Labourer Charge:</strong> ${booking.labourerCharge}`);
         $('#totalAmount').html(`<strong>Total Amount:</strong> ${booking.totalAmount}`);
-        $('#model').html(`<strong>Model:</strong> ${booking.vehicles.model}`)
-        $('#licensePlate').html(`<strong>License Plate:</strong> ${booking.vehicles.licensePlate}`)
-        $('#manufacturer').html(`<strong>Manufacturer:</strong> ${booking.vehicles.manufacturer}`)
-        $('#capacity').html(`<strong>Capacity:</strong> ${booking.vehicles.capacity}`)
-        $('#wheel').html(`<strong>Wheel:</strong> ${booking.vehicles.wheel}`)
-        $('#fuelType').html(`<strong>Fuel Type:</strong> ${booking.vehicles.fuelType}`)
-        $('#currentMileage').html(`<strong>Current Mileage:</strong> ${booking.vehicles.currentMileage}`)
-        $('#driver').html(`<strong>Name:</strong> ${booking.truckProvider.firstName} ${booking.truckProvider.lastName}`)
-        $('#email').html(`<strong>Email:</strong> ${booking.truckProvider.email}`)
-        $('#mobileNo').html(`<strong>Mobile No:</strong> ${booking.truckProvider.mobileNo}`)
-        $('#user').html(`<strong>Name:</strong> ${booking.user.firstName} ${booking.user.lastName}`)
-        $('#useremail').html(`<strong>Email:</strong> ${booking.user.email}`)
-        $('#usermobileNo').html(`<strong>Mobile No:</strong> ${booking.user.mobileNo}`)
-        // Add more details as needed
+        $('#model').html(`<strong>Model:</strong> ${booking.vehicles ? booking.vehicles.model : ''}`);
+        $('#licensePlate').html(`<strong>License Plate:</strong> ${booking.vehicles ? booking.vehicles.licensePlate : ''}`);
+        $('#manufacturer').html(`<strong>Manufacturer:</strong> ${booking.vehicles ? booking.vehicles.manufacturer : ''}`);
+        $('#capacity').html(`<strong>Capacity:</strong> ${booking.vehicles ? booking.vehicles.capacity : ''}`);
+        $('#wheel').html(`<strong>Wheel:</strong> ${booking.vehicles ? booking.vehicles.wheel : ''}`);
+        $('#fuelType').html(`<strong>Fuel Type:</strong> ${booking.vehicles ? booking.vehicles.fuelType : ''}`);
+        $('#currentMileage').html(`<strong>Current Mileage:</strong> ${booking.vehicles ? booking.vehicles.currentMileage : ''}`);
+
+
+        $('#user').html(`<strong>Name:</strong> ${booking.user.firstName} ${booking.user.lastName}`);
+        $('#userEmail').html(`<strong>Email:</strong> ${booking.user.email}`);
+        $('#userMobile').html(`<strong>Mobile No:</strong> ${booking.user.mobileNo}`);
+
+        let status = '';
+        let statusClass = '';
+        if (!booking.isTPApproved) {
+            status = 'Not Approved By Provider';
+            statusClass = 'badge-warning';
+        } else if (booking.isTPApproved && !booking.isCustApproved) {
+            status = 'Not Approved By Customer';
+            statusClass = 'badge-warning';
+        } else {
+            const bookingDate = new Date(booking.bookingDate);
+            const currentDate = new Date();
+            if (bookingDate < currentDate) {
+                status = 'Completed';
+                statusClass = 'badge-success';
+            } else {
+                status = 'Pending';
+                statusClass = 'badge-primary';
+            }
+        }
+        //
+        $('#status').html(`<strong>Status</strong>: <span class="badge ${statusClass}">${status}</span>`);
     }
 </script>
 </body>

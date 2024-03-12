@@ -50,6 +50,7 @@ public class User {
 	@OneToMany(mappedBy = "user")
 	private List<UserRoles> userRoles = new ArrayList<>();
 
-
+	@OneToOne(mappedBy = "truckProvider",fetch=FetchType.EAGER)
+	private QrCode qrCode;
 
 }

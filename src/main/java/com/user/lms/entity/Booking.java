@@ -10,7 +10,8 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-@Entity(name = "booking")
+@Entity()
+@Table(name = "booking")
 public class Booking {
 
     @Id
@@ -70,4 +71,14 @@ public class Booking {
 
     @Column(name = "goods_type")
     private String goodsType;
+
+    @Column(name = "booking_confirm_payment_image_path")
+    private String bookingConfirmPaymentImagePath;
+
+    @Column(name = "is_partial_payment_received")
+    private Boolean isPartialPaymentReceived = false;
+
+    @Column(name = "is_full_payment_received")
+    private Boolean isFullPaymentReceived = false;
+
 }

@@ -20,7 +20,14 @@
 
     <!-- Custom styles for this template-->
     <link href="/css/sb-admin-2.min.css" rel="stylesheet">
-
+    <style>
+        .fixed-size-cell {
+            width: 150px; /* Set the width of the cell */
+            white-space: nowrap; /* Prevent line breaks */
+            overflow: hidden; /* Hide overflowing content */
+            text-overflow: ellipsis; /* Display ellipsis (...) for truncated content */
+        }
+    </style>
 </head>
 
 <body id="page-top">
@@ -140,7 +147,7 @@
                             </a>
                             <div class="dropdown-divider"></div>
                             <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal">
-                                <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
+                                <i class="fas fa-sign-out-alt fa-sm fa-f-w mr-2 text-gray-400"></i>
                                 Logout
                             </a>
                         </div>
@@ -153,15 +160,12 @@
 
             <!-- Begin Page Content -->
             <div class="container-fluid">
-
+                <input type="hidden" value="" id="bookingId">
                 <div class="container">
-                    <div class="row col-md-20">
+                    <div class="row col-md-12">
                         <h2>Booking list</h2>
                     </div><br>
-                    <form
-                    th:action="@{/bookingTP}"
-                    method="get"
-                    >
+
                     <div style="
                             display: flex;
                             justify-content: flex-end;
@@ -179,7 +183,7 @@
                                    style="width: 100%; box-align: end;"/> <!--th:field="*{birthDate}" -->
                         </div>
                         <div class="form-group" style="align-self: self-end;">
-                            <button type="submit" id="submitBtn" class="btn btn-outline-primary btn-xs" style="color:white;
+                            <button type="button" onclick="loadMyBookings()" id="submitBtn" class="btn btn-outline-primary btn-xs" style="color:white;
 		     background-color: #7784d6;">Search</button>
                         </div>
                         <div class="form-group" style="align-self: self-end;">
@@ -187,49 +191,21 @@
 		                    background-color: #7784d6;">Export</button>
                         </div>
                     </div>
-                    </form>
 
-                    <table class="table table-bordered table-hover">
+                    <table class="table table-striped table-bordered">
                         <thead class="table-dark" style="background-color: #7784d6;">
                         <tr>
-
-                            <th>Start Destination</th>
-                            <th>End Destination</th>
-                            <th>Date</th>
-                            <th>User Name</th>
-                            <th>KM</th>
-                            <th>No of Laborers</th>
-                            <th>ACCEPT</th>
-                            <th>DECLINE</th>
+                            <th scope="col">Sr. No</th>
+                            <th scope="col">Booking Date</th>
+                            <th scope="col" class="fixed-size-cell">Start Destination</th>
+                            <th scope="col" class="fixed-size-cell">End Destination</th>
+                            <th scope="col">Customer Name</th>
+                            <th scope="col">Status</th>
+                            <th scope="col">Actions</th>
                         </tr>
                         </thead>
-                        <tbody id="resultTableBody">
-                        <tr th:each = "booking : ${bookings}">
-                            <input type="hidden" id="bookingId" th:value="${booking.id}">
-                            <td th:text = "${booking.startDestination}"></td>
-                            <td th:text = "${booking.endDestination}"></td>
-                            <td th:text="${booking.bookingDate}"></td>
-                            <td th:text="${booking.truckProvider.firstName} + ${booking.truckProvider.lastName}" ></td>
-                            <td th:text = "${booking.km}"></td>
-                            <td th:text = "${booking.noOfLabourers}"></td>
-                            <td class="text-center">
-                                <button class="btn btn-outline-primary btn-xs edit-button"
-                                        id="add"
-                                        th:attr="data-booking-id=${booking.id}"
-                                        onclick="addCharge()"
-                                        style="color:white; background-color: #7784d6;">ACCEPT</button>
-                            </td>
-                            <td class="text-center">
-                                <Button
-                                        class="btn btn-outline-primary btn-xs"
-                                        th:attr="data-booking-id=${booking.id}"
-                                        onclick="declineReq()"
-                                        style="color:white;
-                                               background-color: #7784d6;">
-                                        DECLINE
-                                </Button>
-                            </td>
-                        </tr>
+                        <tbody id="bookingTableBody">
+                        <!-- Table rows will be dynamically added here -->
                         </tbody>
                     </table>
                         <!--<button class="btn btn-outline-primary btn-xs"
@@ -382,9 +358,15 @@
 
 <!-- Bootstrap Modal -->
 
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
 
 <script th:inline="javascript">
+
+    $(document).ready(function (){
+        loadMyBookings();
+    })
     $(function() {
 
         $('#left-side-nav-toggle').click(function() {
@@ -463,6 +445,7 @@
         }
 
     });
+
     function addCharges(e) {
         if (isNumberKey(e)) {
             setTimeout(() => {
@@ -477,6 +460,9 @@
             return false;
         }
     }
+    function closeModel(id){
+        $('#'+id).modal('hide');
+    }
     function sendEmail() {
 
         let bookingId = getBookingId();
@@ -484,13 +470,9 @@
         // Collect charges data from form
         // Get other charges data
         let fuelCharge = document.getElementById("fuelCharge").value;
-        console.log('Fuel charge is---',fuelCharge)
         let tollCharge = document.getElementById("tollCharge").value;
-        console.log('toll charge is---',tollCharge)
         let labourerCharge = document.getElementById("labourerCharge").value;
-        console.log('labourer charge is---',labourerCharge)
         let totalAmount = document.getElementById("totalAmount").value;
-        console.log('total amount is---',totalAmount)
         let payload = {
             bookingId: bookingId,
             fuelCharge: fuelCharge,
@@ -512,6 +494,7 @@
                 success: function (response) {
                     // Handle success
                     console.log(response);
+                    closeModel("addChargeModel")
                    // window.location.href="/bookingTP";
                     const alertModal = new bootstrap.Modal(document.getElementById('emailModel'));
                     alertModal.show();
@@ -544,7 +527,7 @@
                 data: JSON.stringify(payload),
                 success: function (response) {
                     // Handle success
-                    console.log(response);
+                    closeModel("declineReqModel")
                     const alertModal = new bootstrap.Modal(document.getElementById('emailModel'));
                     alertModal.show();
                 },
@@ -573,14 +556,14 @@
         }
         return true;
     }
-    function addCharge() {
-
+    function addCharge(id) {
+        $("#bookingId").val(id)
         const alertModal = new bootstrap.Modal(document.getElementById('addChargeModel'));
         alertModal.show();
     }
 
-    function declineReq(){
-
+    function declineReq(id){
+        $("#bookingId").val(id)
         const alertModal = new bootstrap.Modal(document.getElementById('declineReqModel'))
         alertModal.show();
     }
@@ -601,7 +584,81 @@
         document.getElementById('totalAmount').value  = ""
         document.getElementById('booking-id').value = ""
     }
+
+    function loadMyBookings() {
+        let endDate = $("#endDate")?.val() || null;
+        let startDate = $("#startDate")?.val() || null;
+        console.log(endDate,startDate)
+        $.ajax({
+            url: "/bookings",
+            method: "GET",
+            data:{
+              startDate,endDate,isPast:false
+            },
+            success: function (response) {
+                populateBookingTable(response);
+            },
+            error: function (xhr, status, error) {
+                console.error("Error:", error);
+            }
+        });
+    }
+
+    function populateBookingTable(bookings) {
+        let tableBody = $('#bookingTableBody');
+
+        tableBody.empty(); // Clear existing table rows
+        if (bookings.length === 0) {
+
+            let noBookingRow = '<tr><td colspan="8" class="text-center">No bookings found</td></tr>';
+            tableBody.append(noBookingRow);
+            return; // Exit the function early
+        }
+
+        bookings.forEach(function(booking, index) {
+            let startAddress =  JSON.parse(booking.startDestination).label;
+            let endAddress = JSON.parse(booking.endDestination).label;
+            let status = booking.isTPApproved ? "Approved by Truck Provider" : "Pending";
+
+            // Format booking date in local timezone
+            let bookingDate = new Date(booking.bookingDate);
+            let formattedDate = bookingDate.toLocaleDateString('en-US', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric'
+            });
+            let formattedTime = bookingDate.toLocaleTimeString('en-US', {
+                hour: '2-digit',
+                minute: '2-digit',
+                timeZone: 'Asia/Kolkata'
+            });
+            let formattedDateTime = formattedDate + ' ' + formattedTime;
+
+            let row = '<tr>' +
+                '<td>' + (index + 1) + '</td>' +
+                '<td>' + formattedDateTime + '</td>' +
+                '<td data-toggle="tooltip" title="' + startAddress + '" class="fixed-size-cell">' + truncateDestination(startAddress)+ '</td>' +
+                '<td data-toggle="tooltip" title="' + endAddress + '" class="fixed-size-cell">' +truncateDestination(endAddress) + '</td>' +
+                '<td>' + booking.user.firstName + ' ' + booking.user.lastName + '</td>' +
+                '<td>' + status + '</td>' +
+                '<td><button type="button" class="btn btn-success" onclick="addCharge(' + booking.id + ')">Add Charges</button>' +
+                '<button type="button" onclick="declineReq(' + booking.id + ')" class="m-lg-1 btn btn-danger">Cancel</button></td>' +
+                '</td>' +
+                '</tr>';
+            tableBody.append(row);
+        });
+
+    }
+
+
+
+    // Helper function to truncate destination with ellipsis
+    function truncateDestination(destination) {
+        var maxLength = 20; // Maximum length for display
+        return destination.length > maxLength ? destination.substring(0, maxLength - 3) + '...' : destination;
+    }
 </script>
+
 </body>
 
 </html>

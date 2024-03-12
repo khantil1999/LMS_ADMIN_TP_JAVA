@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.Date;
 import java.util.List;
 
 @Repository
@@ -29,5 +30,11 @@ public interface BookingRepository extends JpaRepository<Booking,Long> {
 
     @Query(value = "SELECT * FROM booking WHERE booking_date BETWEEN :startDate AND :endDate", nativeQuery = true)
     List<Booking> getBookingsByDate(String startDate, String endDate);
+
+    @Query("SELECT b from Booking b where b.driver.id =:id and b.isTPApproved =:isTpApproved and b.bookingDate BETWEEN :startDate AND :endDate  ")
+    List<Booking> getAllBookingByTpWithDate(Long id, Boolean isTpApproved, Date startDate, Date endDate);
+
+    @Query("SELECT b from Booking b where b.driver.id =:id and b.isTPApproved =:isTpApproved")
+    List<Booking> getAllBookingByTp(Long id, Boolean isTpApproved);
 }
 

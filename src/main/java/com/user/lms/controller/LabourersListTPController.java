@@ -2,23 +2,13 @@ package com.user.lms.controller;
 
 import com.user.lms.domain.AuthService;
 import com.user.lms.domain.LaborersService;
-import com.user.lms.domain.VehicleListService;
 import com.user.lms.entity.User;
-import com.user.lms.models.BookingModel;
 import com.user.lms.models.LaborerModel;
-import com.user.lms.models.VehicleDetailsModel;
-import com.user.lms.models.VehicleListModel;
 import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver;
@@ -26,7 +16,6 @@ import org.xhtmlrenderer.pdf.ITextRenderer;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.security.Principal;
 import java.util.List;
 
 @RestController

@@ -55,6 +55,9 @@ public class TruckProviderController {
     @Autowired
     private AuthService authService;
 
+    @Autowired
+    private QrCodeRepository qrCodeRepository;
+
     private static ClassLoaderTemplateResolver templateResolver = new ClassLoaderTemplateResolver();
 
     // Initialize and configure the template resolver
@@ -132,13 +135,8 @@ public class TruckProviderController {
     @GetMapping("me")
     public UserDetailsModel getProfile(Principal principal){
         User user = this.userRepository.findByEmail(principal.getName(),true);
-        UserDetailsModel userModel = new UserDetailsModel();
-        userModel.setEmail(user.getEmail());
-        userModel.setFirstName(user.getFirstName());
-        userModel.setLastName(user.getLastName());
-        userModel.setId(user.getId());
-        userModel.setMobileNo(user.getMobileNo());
-        return userModel;
+       return UserDetailsModel.fromEntity(user);
+
     }
 
     @PutMapping("/updateProfile")
@@ -231,4 +229,17 @@ public class TruckProviderController {
         return null;
     }
 
+    @PostMapping("upload/qrCode")
+    @Transactional
+    String uploadQrCode(@RequestBody String path, Principal principal){
+        User user = this.userRepository.findByEmail(principal.getName(),true);
+        if(user != null){
+            this.qrCodeRepository.deleteQrCodeByTruckProvider(user.getId());
+            QrCode qrCode = new QrCode();
+            qrCode.setTruckProvider(user);
+            qrCode.setQrCodePath(path);
+            this.qrCodeRepository.saveAndFlush(qrCode);
+        }
+        return "Done";
+    }
 }

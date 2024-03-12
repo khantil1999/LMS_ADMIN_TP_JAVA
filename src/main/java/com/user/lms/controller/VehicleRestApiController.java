@@ -1,8 +1,6 @@
 package com.user.lms.controller;
 
 import com.user.lms.domain.VehicleListService;
-import com.user.lms.entity.User;
-import com.user.lms.entity.VehicleList;
 import com.user.lms.models.VehicleDetailsModel;
 import com.user.lms.models.VehicleListModel;
 import jakarta.servlet.ServletOutputStream;

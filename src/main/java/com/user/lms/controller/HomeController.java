@@ -4,15 +4,12 @@ import com.user.lms.domain.AuthService;
 import com.user.lms.domain.BookingService;
 import com.user.lms.domain.VehicleListService;
 import com.user.lms.entity.User;
-import com.user.lms.entity.VehicleList;
 import com.user.lms.models.BookingModel;
 import com.user.lms.models.VehicleDetailsModel;
-import com.user.lms.models.VehicleListModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.ArrayList;

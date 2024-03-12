@@ -1,6 +1,8 @@
 package com.user.lms.domain;
 
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lowagie.text.DocumentException;
 import com.user.lms.entity.Booking;
 import com.user.lms.entity.User;
@@ -8,6 +10,7 @@ import com.user.lms.entity.VehicleList;
 import com.user.lms.expections.BookingNotFoundException;
 import com.user.lms.models.*;
 import com.user.lms.repository.BookingRepository;
+import com.user.lms.repository.UserRepository;
 import com.user.lms.repository.VehicleListRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +22,12 @@ import org.xhtmlrenderer.pdf.ITextRenderer;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.security.Principal;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -35,6 +43,9 @@ public class BookingService {
 
     @Autowired
     private VehicleListRepository vehicleRepository;
+
+    @Autowired
+    private UserRepository userRepository;
 
     private static ClassLoaderTemplateResolver templateResolver = new ClassLoaderTemplateResolver();
 
@@ -53,23 +64,27 @@ public class BookingService {
         // Set the template resolver for the template engine
         templateEngine.setTemplateResolver(templateResolver);
     }
+
     @Transactional
-    public void approveBooking(Long bookingId, int fuelCharge, int tollCharge, int labourerCharge, int totalAmount,Boolean isTPApproved) {
-        bookingRepository.addCharges(bookingId,fuelCharge,tollCharge,labourerCharge,totalAmount,isTPApproved);
+    public void approveBooking(Long bookingId, int fuelCharge, int tollCharge, int labourerCharge, int totalAmount, Boolean isTPApproved) {
+        bookingRepository.addCharges(bookingId, fuelCharge, tollCharge, labourerCharge, totalAmount, isTPApproved);
         // Logic to approve the booking and generate PDF content
         try {
             // Fetch the booking information, including the user who made the booking
             Booking booking = bookingRepository.findById(bookingId)
                     .orElseThrow(() -> new BookingNotFoundException("Booking not found with id: " + bookingId));
-            User user = booking.getDriver();
+            User user = booking.getUser();
             Context context = new Context();
-            context.setVariable("booking", booking);
+            BookingModel bookingModel = BookingModel.fromEntity(booking);
+            bookingModel.setStartDestination(this.getLabelFromDestination(bookingModel.getStartDestination()));
+            bookingModel.setEndDestination(this.getLabelFromDestination(bookingModel.getEndDestination()));
+            context.setVariable("booking", bookingModel);
 
             // Process the Thymeleaf template
             String htmlContent = templateEngine.process("startbootstrap-sb-admin-2-gh-pages/booking-confirmation", context);
 
             byte[] pdfContent = generatePdfContent(htmlContent); // Replace with your actual PDF generation logic
-            emailService.sendBookingConfirmationEmail(user.getEmail(), "Booking Approval", booking,pdfContent,"BookingDetails.pdf");
+            emailService.sendBookingConfirmationEmail(user.getEmail(), "Booking Approval", booking, pdfContent, "BookingDetails.pdf");
         } catch (BookingNotFoundException e) {
             e.printStackTrace();
         } catch (Exception e) {
@@ -78,9 +93,9 @@ public class BookingService {
     }
 
     @Transactional
-    public void disApproveBooking(Long bookingId,String reason,Boolean isTPApproved){
+    public void disApproveBooking(Long bookingId, String reason, Boolean isTPApproved) {
 
-            bookingRepository.declineReq(bookingId,reason,isTPApproved);
+        bookingRepository.declineReq(bookingId, reason, isTPApproved);
         try {
             // Fetch the booking information, including the user who made the booking
             Booking booking = bookingRepository.findById(bookingId)
@@ -95,7 +110,7 @@ public class BookingService {
 
             byte[] pdfContent = generatePdfContent(htmlContent);
 
-            emailService.sendBookingDeclineEmail(user.getEmail(), "Booking Decline", booking,pdfContent,"BookingDetails.pdf");
+            emailService.sendBookingDeclineEmail(user.getEmail(), "Booking Decline", booking, pdfContent, "BookingDetails.pdf");
         } catch (BookingNotFoundException e) {
             // Handle the exception (e.g., log or throw a custom exception)
             e.printStackTrace();
@@ -105,6 +120,7 @@ public class BookingService {
         }
 
     }
+
     private byte[] generatePdfContent(String htmlContent) {
         try {
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
@@ -126,63 +142,15 @@ public class BookingService {
         return bookingRepository.countBookings();
     }
 
-    public BookingModel getBookingById(Long id){
+    public BookingModel getBookingById(Long id) {
         System.out.println("get Booking by id in service----");
-        System.out.println("booking id is---"+id);
+        System.out.println("booking id is---" + id);
         Booking booking = this.bookingRepository.getReferenceById(id);
         return this.mapVehicle(booking);
     }
 
-    private BookingModel mapVehicle(Booking booking){
-        BookingModel bookingModel = new BookingModel();
-        System.out.println("Ss:"+booking);
-
-        System.out.println("booking id for mapping the data---"+booking.getId());
-        VehicleListModel vehicle= new VehicleListModel();
-        vehicle.setId(booking.getVehicleList().getId());
-        vehicle.setWheel(booking.getVehicleList().getWheel());
-        vehicle.setManufacturer(booking.getVehicleList().getManufacturer());
-        vehicle.setModel(booking.getVehicleList().getModel());
-        vehicle.setCurrentMileage(booking.getVehicleList().getCurrentMileage());
-        vehicle.setFuelType(booking.getVehicleList().getFuelType());
-        vehicle.setCapacity(booking.getVehicleList().getCapacity());
-        vehicle.setLicensePlate(booking.getVehicleList().getLicensePlate());
-
-        bookingModel.setVehicles(vehicle);
-
-        bookingModel.setId(booking.getId());
-
-        UserDetailsModel userDetailsModel = new UserDetailsModel();
-        userDetailsModel.setId(booking.getDriver().getId());
-        userDetailsModel.setEmail(booking.getDriver().getEmail());
-        userDetailsModel.setFirstName(booking.getDriver().getFirstName());
-        userDetailsModel.setLastName(booking.getDriver().getLastName());
-        userDetailsModel.setMobileNo(booking.getDriver().getMobileNo());
-
-        bookingModel.setTruckProvider(userDetailsModel);
-
-        UserDetailsModel userDetailsModel1 = new UserDetailsModel();
-        userDetailsModel1.setId(booking.getUser().getId());
-        userDetailsModel1.setEmail(booking.getUser().getEmail());
-        userDetailsModel1.setFirstName(booking.getUser().getFirstName());
-        userDetailsModel1.setLastName(booking.getUser().getLastName());
-        userDetailsModel1.setMobileNo(booking.getUser().getMobileNo());
-
-        bookingModel.setUser(userDetailsModel1);
-
-        bookingModel.setKm(booking.getKm());
-        bookingModel.setEndDestination(booking.getEndDestination());
-        bookingModel.setFuelCharge(booking.getFuelCharge());
-        bookingModel.setIsLabourer(booking.getIsLabourer());
-        bookingModel.setLabourerCharge(booking.getLabourerCharge());
-        bookingModel.setStartDestination(booking.getStartDestination());
-        bookingModel.setTollCharge(booking.getTollCharge());
-        bookingModel.setNoOfLabourers(booking.getNoOfLabourers());
-        bookingModel.setTotalAmount(booking.getTotalAmount());
-        bookingModel.setIsTPApproved(booking.getIsTPApproved());
-        bookingModel.setBookingDate(booking.getBookingDate());
-
-        return bookingModel;
+    private BookingModel mapVehicle(Booking booking) {
+        return BookingModel.fromEntity(booking);
     }
 
     public List<BookingModel> getAllBookings() {
@@ -195,9 +163,9 @@ public class BookingService {
         return detailsModels;
     }
 
-    public List<BookingModel> getAllBookings(String startDate,String endDate) {
+    public List<BookingModel> getAllBookings(String startDate, String endDate) {
 
-        List<Booking> booking = this.bookingRepository.getBookingsByDate(startDate,endDate);
+        List<Booking> booking = this.bookingRepository.getBookingsByDate(startDate, endDate);
         List<BookingModel> detailsModels = new ArrayList<>();
         booking.forEach(bookings -> {
             BookingModel bookingModel = this.mapVehicle(bookings);
@@ -206,5 +174,43 @@ public class BookingService {
         return detailsModels;
     }
 
+    public List<BookingModel> getAllBookingsByTpWithDate(Principal principal, String startDate, String endDate,Boolean isPast) throws ParseException {
+        boolean isTpApproved = false;
+        if(isPast){
+            isTpApproved = true;
+        }
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        User user = this.userRepository.findByEmail(principal.getName(), true);
+        if (user != null) {
+            return this.bookingRepository.getAllBookingByTpWithDate(user.getId(),isTpApproved,  dateFormat.parse(startDate),dateFormat.parse(endDate))
+                    .stream().map(BookingModel::fromEntity).collect(Collectors.toList());
+        }
+        return Collections.emptyList();
+    }
+
+    public List<BookingModel> getAllBookingsByTp(Principal principal,Boolean isPast) {
+        boolean isTpApproved = false;
+        if(isPast){
+            isTpApproved = true;
+        }
+        User user = this.userRepository.findByEmail(principal.getName(), true);
+        if (user != null) {
+            return this.bookingRepository.getAllBookingByTp(user.getId(),isTpApproved)
+                    .stream().map(BookingModel::fromEntity).collect(Collectors.toList());
+        }
+        return Collections.emptyList();
+    }
+    private String getLabelFromDestination(String destination) {
+
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        try {
+
+            JsonNode jsonNode = objectMapper.readTree(destination);
+            return jsonNode.get("label").asText();
+        } catch (Exception e) {
+            return "";
+        }
+    }
 }
 

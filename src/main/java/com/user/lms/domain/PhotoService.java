@@ -1,13 +1,8 @@
 package com.user.lms.domain;
 
-import com.user.lms.entity.Photo;
-import com.user.lms.models.PhotoModel;
 import com.user.lms.repository.PhotoRepository;
-import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.Optional;
 
 @Service
 public class PhotoService {

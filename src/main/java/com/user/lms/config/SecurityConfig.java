@@ -28,7 +28,7 @@ public class SecurityConfig  {
                                 "vehiclelistTP","/laborerslistTP","/bookingTP","/addVehicle",
                                 "/profileTP","/me","/states","/districts","/talukas",
                                 "/updateProviderArea", "/providerArea", "/updateProfile",
-                                "/getVehicle","/editVehicle",
+                                "/getVehicle","/editVehicle","/bookings",
                                 "/history","/laborerslist","/vehiclelist","/truckproviderlist",
                                 "/users","/pastbooking","/allDetails","/booking","/bookings","/export"
                                       ).authenticated() // Require authentication for the home page

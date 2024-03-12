@@ -1,7 +1,10 @@
 package com.user.lms.domain;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lowagie.text.DocumentException;
 import com.user.lms.entity.Booking;
+import com.user.lms.models.BookingModel;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,7 +36,8 @@ public class EmailService {
 
         javaMailSender.send(message);
     }
-  /*  *//*public void sendBookingConfirmationEmailWithPdfAttachment(String to, String subject, Booking bookingData) {
+
+    /*  *//*public void sendBookingConfirmationEmailWithPdfAttachment(String to, String subject, Booking bookingData) {
         MimeMessage message = javaMailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message, "utf-8");
 
@@ -81,7 +85,7 @@ public class EmailService {
         }
     }
 
-    public void sendBookingDeclineEmail(String to,String subject,Booking bookingData,byte[] attachment, String attachmentName) throws MessagingException {
+    public void sendBookingDeclineEmail(String to, String subject, Booking bookingData, byte[] attachment, String attachmentName) throws MessagingException {
         MimeMessage message = javaMailSender.createMimeMessage();
 
 
@@ -115,15 +119,19 @@ public class EmailService {
 //            throw new RuntimeException(e);
 //        }
 
-        }
-    public void sendBookingConfirmationEmail(String to, String subject, Booking bookingData,byte[] attachment, String attachmentName ) {
+    }
+
+    public void sendBookingConfirmationEmail(String to, String subject, Booking bookingData, byte[] attachment, String attachmentName) {
         MimeMessage mimeMessage = javaMailSender.createMimeMessage();
 
         try {
             MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true);
             // Set the attributes for the Thymeleaf template
             Context context = new Context();
-            context.setVariable("booking", bookingData);
+            BookingModel bookingModel = BookingModel.fromEntity(bookingData);
+            bookingModel.setStartDestination(this.getLabelFromDestination(bookingModel.getStartDestination()));
+            bookingModel.setEndDestination(this.getLabelFromDestination(bookingModel.getEndDestination()));
+            context.setVariable("booking", bookingModel);
 
 
             // Process the HTML template (assuming 'booking-confirmation.html' is in src/main/resources/templates)
@@ -136,7 +144,7 @@ public class EmailService {
             helper.setTo(to);
             helper.setSubject(subject);
             helper.setText(htmlContent, true);
-            helper.addAttachment(attachmentName, new ByteArrayResource(attachment));
+//            helper.addAttachment(attachmentName, new ByteArrayResource(attachment));
             // Attach the PDF
             javaMailSender.send(mimeMessage);
 
@@ -144,12 +152,7 @@ public class EmailService {
         } catch (MessagingException e) {
             // ... (handle the exception)
         }
-//        catch (DocumentException e) {
-//            throw new RuntimeException(e);
-//        }
-//        catch (IOException e) {
-//            throw new RuntimeException(e);
-//        }
+
     }
 
     private byte[] generatePdfContent(String htmlContent) throws DocumentException, IOException {
@@ -167,4 +170,16 @@ public class EmailService {
         }
     }
 
+    private String getLabelFromDestination(String destination) {
+
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        try {
+
+            JsonNode jsonNode = objectMapper.readTree(destination);
+            return jsonNode.get("label").asText();
+        } catch (Exception e) {
+            return "";
+        }
+    }
 }

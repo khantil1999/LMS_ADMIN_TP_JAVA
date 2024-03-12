@@ -2,28 +2,23 @@ package com.user.lms.controller;
 
 import com.lowagie.text.DocumentException;
 import com.user.lms.domain.BookingService;
-import com.user.lms.entity.Booking;
 import com.user.lms.models.BookingAcceptModel;
 import com.user.lms.models.BookingDeclineModel;
 import com.user.lms.models.BookingModel;
-import com.user.lms.models.VehicleDetailsModel;
-import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.thymeleaf.TemplateEngine;
-import org.thymeleaf.context.Context;
 import org.thymeleaf.spring6.SpringTemplateEngine;
 import org.thymeleaf.spring6.view.ThymeleafViewResolver;
-import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver;
 import org.xhtmlrenderer.pdf.ITextRenderer;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.ArrayList;
+import java.security.Principal;
+import java.text.ParseException;
 import java.util.List;
 
 @RestController
@@ -39,58 +34,38 @@ public class BookingRestApiController {
         this.thymeleafViewResolver = thymeleafViewResolver;
         this.templateEngine = templateEngine;
     }
-   // private static ClassLoaderTemplateResolver templateResolver = new ClassLoaderTemplateResolver();
 
-    // Initialize and configure the template resolver
-//    static {
-//        templateResolver.setPrefix("templates/");  // Set the path to your Thymeleaf templates
-//        templateResolver.setSuffix(".html");       // Set the file extension of your templates
-//        templateResolver.setTemplateMode("HTML");
-//        templateResolver.setCharacterEncoding("UTF-8");
-//    }
-
-    // Create a Thymeleaf template engine
-//    private static TemplateEngine templateEngine = new TemplateEngine();
-//
-//    static {
-//        // Set the template resolver for the template engine
-//        templateEngine.setTemplateResolver(templateResolver);
-//    }
 
     @PutMapping("/send-email/{bookingId}")
     public ResponseEntity<String> approveBooking(
             @PathVariable(name = "bookingId") Long bookingId,
             @RequestBody BookingAcceptModel bookingAcceptModel) {
         bookingService.approveBooking(bookingId, bookingAcceptModel.getFuelCharge(), bookingAcceptModel.getTollCharge(),
-                bookingAcceptModel.getLabourerCharge(), bookingAcceptModel.getTotalAmount(),bookingAcceptModel.getIsTPApproved());
+                bookingAcceptModel.getLabourerCharge(), bookingAcceptModel.getTotalAmount(), bookingAcceptModel.getIsTPApproved());
 
         return ResponseEntity.ok("Booking approved successfully!");
     }
 
     @PutMapping("/sendEmail/{bookingId}")
-    public ResponseEntity<String> declineBooking( @PathVariable(name = "bookingId") Long bookingId,@RequestBody BookingDeclineModel bookingDeclineModel){
-        bookingService.disApproveBooking(bookingId,bookingDeclineModel.getReason(),bookingDeclineModel.getIsTPApproved());
+    public ResponseEntity<String> declineBooking(@PathVariable(name = "bookingId") Long bookingId, @RequestBody BookingDeclineModel bookingDeclineModel) {
+        bookingService.disApproveBooking(bookingId, bookingDeclineModel.getReason(), bookingDeclineModel.getIsTPApproved());
 
         return ResponseEntity.ok("Booking disapproved successfully!");
     }
-    @GetMapping("/bookings")
-    List<BookingModel> loadAllBookings() {
 
-        return this.bookingService.getAllBookings();
-    }
 
     @GetMapping("/booking")
     BookingModel getBookingById(@RequestParam("id") String id) {
         System.out.println("Get Booking id in controller---");
-        System.out.println("id is--"+id);
+        System.out.println("id is--" + id);
         return this.bookingService.getBookingById(Long.parseLong(id));
     }
 
     @GetMapping("/export")
     public void loadBookingPage(Model model,
-                                              @RequestParam(name = "startDate",required = false)String startDate,
-                                              @RequestParam(name = "endDate",required = false)String endDate,
-                                              HttpServletResponse response) throws IOException, DocumentException {
+                                @RequestParam(name = "startDate", required = false) String startDate,
+                                @RequestParam(name = "endDate", required = false) String endDate,
+                                HttpServletResponse response) throws IOException, DocumentException {
         // Get data from the service based on startDate and endDate
         List<BookingModel> bookings;
         if (startDate != null && !startDate.isEmpty() && endDate != null && !endDate.isEmpty()) {
@@ -99,7 +74,7 @@ public class BookingRestApiController {
             bookings = bookingService.getAllBookings();
         }
 
-       // Context context = new Context();
+        // Context context = new Context();
         var context = new org.thymeleaf.context.Context();
         context.setVariable("bookings", bookings);
         System.out.println("Bookings: " + bookings);
@@ -124,7 +99,7 @@ public class BookingRestApiController {
         out.flush();
 
         // Generate PDF content
-      //  byte[] pdfContent = generatePdfContent(htmlContent);
+        //  byte[] pdfContent = generatePdfContent(htmlContent);
 
         // Set the response headers
 //        response.setContentType("application/pdf");
@@ -150,7 +125,7 @@ public class BookingRestApiController {
             ITextRenderer renderer = new ITextRenderer();
             renderer.setDocumentFromString(htmlContent);
             renderer.layout();
-           // renderer.getSharedContext().setBaseURL("classpath:/templates/startbootstrap-sb-admin-2-gh-pages/");
+            // renderer.getSharedContext().setBaseURL("classpath:/templates/startbootstrap-sb-admin-2-gh-pages/");
             renderer.createPDF(outputStream);
             renderer.finishPDF();
             return outputStream.toByteArray();
@@ -160,14 +135,15 @@ public class BookingRestApiController {
         }
     }
 
-    // Method to generate Thymeleaf HTML template
-//    private String generateHtmlTemplate(Model model) {
-//        // Use Thymeleaf template engine to generate HTML
-//        Context thymeleafContext = new Context();
-//        thymeleafContext.setVariables(model.asMap());
-//        return templateEngine.process("startbootstrap-sb-admin-2-gh-pages/booking_template", thymeleafContext);
-//    }
 
-
-
+    @GetMapping("/bookings")
+    public List<BookingModel> getAllBookingByTp(@RequestParam(name = "startDate", required = false) String startDate, @RequestParam(name = "endDate", required = false) String endDate,
+                                                @RequestParam(name = "isPast", required = false,defaultValue = "false") Boolean isPast,
+                                                Principal principal) throws ParseException {
+        if (startDate != null && !startDate.isEmpty() && endDate != null && !endDate.isEmpty()) {
+            return this.bookingService.getAllBookingsByTpWithDate(principal, startDate, endDate,isPast);
+        } else {
+            return this.bookingService.getAllBookingsByTp(principal,isPast);
+        }
+    }
 }

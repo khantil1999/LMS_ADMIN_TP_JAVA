@@ -49,11 +49,9 @@
 <body>
 
 <h2 style="text-align: center; color: #3498db;">Booking Confirmation</h2>
-
-<!-- Customer Details -->
-<section >
+<section>
     <h3>Customer Details:</h3>
-    <p>Driver: <span th:text="${booking.getUser().getFirstName()} + ${booking.getUser().getLastName()}"></span></p>
+    <p>Customer Name: <span th:text="${booking.getUser().getFirstName()} + ' ' + ${booking.getUser().getLastName()}"></span></p>
     <p>Email: <span th:text="${booking.getUser().getEmail()}"></span></p>
     <p>Phone: <span th:text="${booking.getUser().getMobileNo()}"></span></p>
 </section>
@@ -71,12 +69,12 @@
             <th>No of Labourers</th>
         </tr>
         <tr>
-            <td th:text="${booking.getId()}"></td>
-            <td th:text="${booking.getStartDestination()}"></td>
-            <td th:text="${booking.getEndDestination()}"></td>
-            <td th:text="${booking.getBookingDate()}"></td>
-            <td th:text="${booking.getKm()}"></td>
-            <td th:text="${booking.getNoOfLabourers()}"></td>
+            <td th:text="${booking.id}"></td>
+            <td th:text="${booking.startDestination}"></td>
+            <td th:text="${booking.endDestination}"></td>
+            <td th:text="${booking.bookingDate}"></td>
+            <td th:text="${booking.km}"></td>
+            <td th:text="${booking.noOfLabourers}"></td>
         </tr>
     </table>
 </section>
@@ -86,21 +84,21 @@
     <table>
         <tr>
             <th>Model</th>
-            <th>licensePlate</th>
-            <th>capacity</th>
-            <th>manufacturer</th>
-            <th>fuelType</th>
-            <th>currentMileage</th>
-            <th>wheel</th>
+            <th>License Plate</th>
+            <th>Capacity</th>
+            <th>Manufacturer</th>
+            <th>Fuel Type</th>
+            <th>Current Mileage</th>
+            <th>Wheel</th>
         </tr>
         <tr>
-            <td th:text="${booking.getVehicleList().getModel()}"></td>
-            <td th:text="${booking.getVehicleList().getLicensePlate()}"></td>
-            <td th:text="${booking.getVehicleList().getCapacity()}"></td>
-            <td th:text="${booking.getVehicleList().getManufacturer()}"></td>
-            <td th:text="${booking.getVehicleList().getFuelType()}"></td>
-            <td th:text="${booking.getVehicleList().getCurrentMileage()}"></td>
-            <td th:text="${booking.getVehicleList().getWheel()}"></td>
+            <td th:text="${booking.vehicles.model}"></td>
+            <td th:text="${booking.vehicles.licensePlate}"></td>
+            <td th:text="${booking.vehicles.capacity}"></td>
+            <td th:text="${booking.vehicles.manufacturer}"></td>
+            <td th:text="${booking.vehicles.fuelType}"></td>
+            <td th:text="${booking.vehicles.currentMileage}"></td>
+            <td th:text="${booking.vehicles.wheel}"></td>
         </tr>
     </table>
 </section>
@@ -108,10 +106,11 @@
 <!-- Booking Provider Details -->
 <section>
     <h3>Booking Provider Details:</h3>
-    <p>Name: <span th:text="${booking.getDriver().getFirstName()} + ${booking.getDriver().getLastName()}"></span></p>
-    <p>Email: <span th:text="${booking.getDriver().getEmail()}"></span></p>
-    <p>Phone: <span th:text="${booking.getDriver().getMobileNo()}"></span></p>
+    <p>Name: <span th:text="${booking.getTruckProvider().getFirstName()} + ' ' + ${booking.getTruckProvider().getLastName()}"></span></p>
+    <p>Email: <span th:text="${booking.getTruckProvider().getEmail()}"></span></p>
+    <p>Phone: <span th:text="${booking.getTruckProvider().getMobileNo()}"></span></p>
 </section>
+
 
 <!-- Charges Details -->
 <section>
@@ -142,13 +141,67 @@
 
 <!-- Terms and Conditions -->
 <section>
-    <h3>Terms and Conditions:</h3>
-    <p>Thank you for choosing our services. Please find below the terms and conditions of your booking:</p>
-    <ul>
-        <li>Payment must be made in advance.</li>
-        <li>Cancellation Policy: [Your Cancellation Policy]</li>
-        <!-- Add more terms and conditions as needed -->
-    </ul>
+    <div class="container">
+
+        <div class="terms-content">
+            <h2>Terms and Conditions</h2>
+            <ol>
+                <li><strong>Booking Process:</strong>
+                    <ul>
+                        <li>You must provide accurate and complete information when making a booking through the Service, including pickup and delivery addresses, goods type, quantity, and any other relevant details.</li>
+                        <li>Bookings made through the Service are subject to availability and confirmation by us.</li>
+                    </ul>
+                </li>
+                <li><strong>Responsibilities:</strong>
+                    <ul>
+                        <li>You are responsible for ensuring that the goods are properly packaged and ready for pickup at the specified location and time.</li>
+                        <li>We will use commercially reasonable efforts to transport the goods to the specified delivery location within the agreed-upon timeframe.</li>
+                    </ul>
+                </li>
+                <li><strong>Cancellation Policy:</strong>
+                    <ul>
+                        <li>You may cancel a booking through the Service subject to our cancellation policy, which may include applicable fees or penalties.</li>
+                        <li>We reserve the right to cancel or modify bookings in the event of unforeseen circumstances or for any reason at our sole discretion.</li>
+                        <li>
+                            <ul>
+                                <li>If you cancel the booking 7 days or more before the booking date, no charges will be applied.</li>
+                                <li>If you cancel the booking between 2 and 6 days before the booking date, a 10% charge will be applied.</li>
+                                <li>If you cancel the booking 1 day before the booking date, a 12% charge will be applied.</li>
+                                <li>If you cancel on the booking date, a 20% charge will be applied.</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+                <li><strong>Payment Terms:</strong>
+                    <ul>
+                        <li>Payment for bookings made through the Service is due upon confirmation of the booking.</li>
+                        <li>At the time of booking, a 20% advance payment is required for confirmation.</li>
+                    </ul>
+                </li>
+                <li><strong>Liability and Insurance:</strong>
+                    <ul>
+                        <li>We are not liable for any loss, damage, or delay of goods during transportation, except to the extent caused by our gross negligence or willful misconduct.</li>
+                    </ul>
+                </li>
+                <li><strong>Changes During Transportation:</strong>
+                    <ul>
+                        <li>Any changes requested by the customer during transportation, including but not limited to changes in delivery address, pickup time, or quantity of goods, may incur additional charges.</li>
+                        <li>We reserve the right to assess and apply additional charges for changes requested after confirmation of the booking.</li>
+                        <li>In the event of unforeseen circumstances during transportation, such as increased toll charges or additional expenses incurred due to route deviations, the customer will be responsible for covering the additional costs.</li>
+                    </ul>
+                </li>
+                <li><strong>Legality of Goods:</strong>
+                    <ul>
+                        <li>The customer warrants that all goods transported through the Service are legal and compliant with applicable laws and regulations.</li>
+                        <li>We reserve the right to refuse to transport any goods that are deemed illegal or prohibited by law.</li>
+                        <li>The customer is solely responsible for any legal consequences or liabilities arising from the transportation of illegal goods.</li>
+                    </ul>
+                </li>
+            </ol>
+        </div>
+
+
+    </div>
 </section>
 
 <p>If you have any questions or concerns, please contact our customer support.</p>

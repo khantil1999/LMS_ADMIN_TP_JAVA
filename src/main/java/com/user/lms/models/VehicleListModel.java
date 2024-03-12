@@ -38,8 +38,6 @@ public class VehicleListModel {
 
     private MultipartFile[] photo;
 
-  // private List<Photo> photo;
-//    private User driver;
 
 
 }

@@ -1,49 +1,56 @@
 package com.user.lms.models;
 
-import com.user.lms.entity.VehicleList;
-import lombok.*;
+import com.user.lms.entity.Booking;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.Date;
-import java.util.List;
 
-@Getter
-@Setter
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString
 public class BookingModel {
 
     private Long id;
-
     private String startDestination;
-
     private String endDestination;
-
     private int km;
-
     private Boolean isLabourer;
-
     private int noOfLabourers;
-
     private int fuelCharge;
-
     private int tollCharge;
-
     private int labourerCharge;
-
     private int totalAmount;
-
     private UserDetailsModel user;
-
     private UserDetailsModel truckProvider;
-
-    private VehicleListModel vehicles;
-
+    private VehicleDetailsModel vehicles;
     private String declineReason;
-
     private Boolean isTPApproved;
-
     private Boolean isCustApproved;
-
     private Date bookingDate;
+    private String goodsType;
+
+    public static BookingModel fromEntity(Booking booking) {
+        BookingModel bookingModel = new BookingModel();
+        bookingModel.setId(booking.getId());
+        bookingModel.setStartDestination(booking.getStartDestination());
+        bookingModel.setEndDestination(booking.getEndDestination());
+        bookingModel.setKm(booking.getKm());
+        bookingModel.setIsLabourer(booking.getIsLabourer());
+        bookingModel.setNoOfLabourers(booking.getNoOfLabourers());
+        bookingModel.setFuelCharge(booking.getFuelCharge());
+        bookingModel.setTollCharge(booking.getTollCharge());
+        bookingModel.setLabourerCharge(booking.getLabourerCharge());
+        bookingModel.setTotalAmount(booking.getTotalAmount());
+        bookingModel.setUser(UserDetailsModel.fromEntity(booking.getUser()));
+        bookingModel.setTruckProvider(UserDetailsModel.fromEntity(booking.getDriver()));
+        bookingModel.setVehicles(VehicleDetailsModel.fromEntity(booking.getVehicleList()));
+        bookingModel.setDeclineReason(booking.getDeclineReason());
+        bookingModel.setIsTPApproved(booking.getIsTPApproved());
+        bookingModel.setIsCustApproved(booking.getIsCustApproved());
+        bookingModel.setBookingDate(booking.getBookingDate());
+        bookingModel.setGoodsType(booking.getGoodsType());
+        return bookingModel;
+    }
 }
