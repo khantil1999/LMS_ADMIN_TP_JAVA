@@ -447,10 +447,10 @@
         let startDate = $("#startDate")?.val() || null;
         console.log(endDate,startDate)
         $.ajax({
-            url: "/bookings",
+            url: "/past/booking",
             method: "GET",
             data:{
-                startDate,endDate,isPast:true
+                startDate,endDate
             },
             success: function (response) {
                 populateBookingTable(response);

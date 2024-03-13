@@ -182,4 +182,26 @@ public class EmailService {
             return "";
         }
     }
+    public void sendPaymentReceivedSuccessfullyMail(Booking booking){
+        MimeMessage mimeMessage = javaMailSender.createMimeMessage();
+
+        try {
+            MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true);
+
+            Context context = new Context();
+            BookingModel bookingModel = BookingModel.fromEntity(booking);
+            context.setVariable("booking", bookingModel);
+
+
+            String htmlContent = templateEngine.process("payment-confirmation", context);
+
+            helper.setTo(booking.getUser().getEmail());
+            helper.setSubject("Partial Payment Received Successfully");
+            helper.setText(htmlContent, true);
+
+            javaMailSender.send(mimeMessage);
+
+        } catch (MessagingException e) {
+        }
+    }
 }

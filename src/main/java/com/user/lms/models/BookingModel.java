@@ -30,6 +30,10 @@ public class BookingModel {
     private Boolean isCustApproved;
     private Date bookingDate;
     private String goodsType;
+    private Boolean isPartialPaymentReceived;
+    private Boolean isFullPaymentReceived;
+    private String bookingConfirmPaymentImagePath;
+    private String status;
 
     public static BookingModel fromEntity(Booking booking) {
         BookingModel bookingModel = new BookingModel();
@@ -51,6 +55,10 @@ public class BookingModel {
         bookingModel.setIsCustApproved(booking.getIsCustApproved());
         bookingModel.setBookingDate(booking.getBookingDate());
         bookingModel.setGoodsType(booking.getGoodsType());
+        bookingModel.setIsFullPaymentReceived(booking.getIsFullPaymentReceived());
+        bookingModel.setIsPartialPaymentReceived(booking.getIsPartialPaymentReceived());
+        bookingModel.setBookingConfirmPaymentImagePath(booking.getBookingConfirmPaymentImagePath());
+        bookingModel.setStatus(booking.getStatus().getStatus());
         return bookingModel;
     }
 }

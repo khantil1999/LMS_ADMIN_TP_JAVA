@@ -1,6 +1,7 @@
 package com.user.lms.repository;
 
 import com.user.lms.entity.Booking;
+import com.user.lms.entity.BookingStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -36,5 +37,18 @@ public interface BookingRepository extends JpaRepository<Booking,Long> {
 
     @Query("SELECT b from Booking b where b.driver.id =:id and b.isTPApproved =:isTpApproved")
     List<Booking> getAllBookingByTp(Long id, Boolean isTpApproved);
+
+
+    @Query("SELECT b FROM Booking b WHERE b.driver.id = :id " +
+            "AND (:status IS NULL OR (b.status IS NOT NULL AND b.status <> :completedStatus)) " +
+            "AND (:status IS NULL OR b.status = :status) " +
+            "AND (:startDate IS NULL OR :endDate IS NULL OR b.bookingDate BETWEEN :startDate AND :endDate)")
+    List<Booking> findByDriverAndStatusAndBookingDateBetween(@Param("id") Long driverId,
+                                                             @Param("status") BookingStatus status,
+                                                             @Param("completedStatus") BookingStatus completedStatus,
+                                                             @Param("startDate") Date startDate,
+                                                             @Param("endDate") Date endDate);
+
+
 }
 

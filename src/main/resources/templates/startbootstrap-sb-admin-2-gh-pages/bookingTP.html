@@ -27,11 +27,18 @@
             overflow: hidden; /* Hide overflowing content */
             text-overflow: ellipsis; /* Display ellipsis (...) for truncated content */
         }
+        #imagePreview img {
+            max-width: 300px;
+            max-height: 300px;
+        }
     </style>
 </head>
 
 <body id="page-top">
-
+<script src="https://www.gstatic.com/firebasejs/8.2.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.1.2/firebase-firestore.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.1.2/firebase-storage.js"></script>
+<script src="/js/firebase-config.js"></script>
 <!-- Page Wrapper -->
 <div id="wrapper">
 
@@ -200,6 +207,9 @@
                             <th scope="col" class="fixed-size-cell">Start Destination</th>
                             <th scope="col" class="fixed-size-cell">End Destination</th>
                             <th scope="col">Customer Name</th>
+                            <th scope="col">Km</th>
+                            <th scope="col">Goods Type</th>
+                            <th scope="col">No Labour</th>
                             <th scope="col">Status</th>
                             <th scope="col">Actions</th>
                         </tr>
@@ -282,7 +292,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="addChargesModel">Add Charges</h5>
-                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                <button onclick="closeModel('addChargeModel')" class="close" type="button" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">×</span>
                 </button>
             </div>
@@ -345,6 +355,28 @@
         </div>
     </div>
 </div>
+
+<div class="modal fade" id="partialPaymentModel" tabindex="-1" aria-labelledby="partialPaymentModelLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="partialPaymentModelLabel">Partial Payment Confimation</h5>
+                <button onclick="closeModel('partialPaymentModel')" class="close" type="button" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="partialPaymentBookingId">
+                <div id="imagePreview" class="text-center mt-3"></div>
+            </div>
+            <div class="modal-footer">
+                <button onclick="closeModel('partialPaymentModel')" class="btn btn-secondary" type="button" data-dismiss="modal">Close</button>
+                <button onclick="confirmPayment()" class="btn btn-primary" type="button" data-dismiss="modal">Confirm</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <!-- Bootstrap core JavaScript-->
 <script src="/vendor/jquery/jquery.min.js"></script>
 <script src="/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
@@ -363,7 +395,7 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
 
 <script th:inline="javascript">
-
+    const storage = firebase.storage();
     $(document).ready(function (){
         loadMyBookings();
     })
@@ -568,9 +600,17 @@
         alertModal.show();
     }
 
+    function displayPartialPaymentModal(id,path){
+        $("#partialPaymentBookingId").val(id)
+        const alertModal = new bootstrap.Modal(document.getElementById('partialPaymentModel'))
+        alertModal.show();
+        displayImage(path)
+    }
+
     function closeChargesForm(){
         $('#booking-id').val(""); // Set the user ID in the hidden field
         clearFormData();
+        closeModel('addChargeModel')
     }
 
     function closeReasonForm(){
@@ -603,14 +643,12 @@
             }
         });
     }
-
     function populateBookingTable(bookings) {
         let tableBody = $('#bookingTableBody');
 
         tableBody.empty(); // Clear existing table rows
         if (bookings.length === 0) {
-
-            let noBookingRow = '<tr><td colspan="8" class="text-center">No bookings found</td></tr>';
+            let noBookingRow = '<tr><td colspan="10" class="text-center">No bookings found</td></tr>';
             tableBody.append(noBookingRow);
             return; // Exit the function early
         }
@@ -618,7 +656,39 @@
         bookings.forEach(function(booking, index) {
             let startAddress =  JSON.parse(booking.startDestination).label;
             let endAddress = JSON.parse(booking.endDestination).label;
-            let status = booking.isTPApproved ? "Approved by Truck Provider" : "Pending";
+
+            let status = booking.status
+            let buttonHTML = '';
+            let tooltipText = '';
+            switch (booking.status) {
+                case 'Provider Pending':
+                    buttonHTML = '<button type="button" class="btn btn-success" data-toggle="tooltip" title="Add Charges" onclick="addCharge(' + booking.id + ')"><i class="fas fa-plus"></i></button>';
+                    buttonHTML += '<button type="button" class="btn btn-danger ml-1" data-toggle="tooltip" title="Cancel" onclick="declineReq(' + booking.id + ')"><i class="fas fa-times"></i></button>';
+                    tooltipText = 'Pending To Approve By You';
+                    status = "Pending To Approve By You"
+                    break;
+                case 'Customer Pending':
+                    buttonHTML = '<button type="button" class="btn btn-danger" data-toggle="tooltip" title="Cancel" onclick="declineReq(' + booking.id + ')"><i class="fas fa-times"></i></button>';
+                    tooltipText = 'Pending To Approve From Customer';
+                    status = "Pending To Approve From Customer"
+                    break;
+                case 'Partial Payment Send By Customer':
+                    buttonHTML = '<button type="button" class="btn btn-success" data-toggle="tooltip" title="Confirm" onclick="displayPartialPaymentModal(' + booking.id + ', \'' + booking.bookingConfirmPaymentImagePath + '\')"><i class="fas fa-check"></i></button>';
+                    buttonHTML += '<button type="button" class="btn btn-danger ml-1" data-toggle="tooltip" title="Cancel" onclick="declineReq(' + booking.id + ')"><i class="fas fa-times"></i></button>';
+                    tooltipText = 'Partial Payment Pending';
+                    break;
+                case 'Full Payment Pending':
+                    buttonHTML = '<button type="button" class="btn btn-success" data-toggle="tooltip" title="Complete" onclick="completeBooking(' + booking.id + ')"><i class="fas fa-check-circle"></i></button>';
+                    tooltipText = 'Full Payment Pending';
+                    break
+                case 'Pending PickUp':
+                    buttonHTML = '<button type="button" class="btn btn-success" data-toggle="tooltip" title="Complete" onclick="displayPartialPaymentModal(' + booking.id + ', \'' + booking.bookingConfirmPaymentImagePath + '\')"><i class="fas fa-check"></i></button>';
+                    buttonHTML += '<button type="button" class="btn btn-danger ml-1" data-toggle="tooltip" title="Cancel" onclick="declineReq(' + booking.id + ')"><i class="fas fa-times"></i></button>';
+                    tooltipText = 'Pending Pickup';
+                    break;
+                default:
+                    break;
+            }
 
             // Format booking date in local timezone
             let bookingDate = new Date(booking.bookingDate);
@@ -640,15 +710,20 @@
                 '<td data-toggle="tooltip" title="' + startAddress + '" class="fixed-size-cell">' + truncateDestination(startAddress)+ '</td>' +
                 '<td data-toggle="tooltip" title="' + endAddress + '" class="fixed-size-cell">' +truncateDestination(endAddress) + '</td>' +
                 '<td>' + booking.user.firstName + ' ' + booking.user.lastName + '</td>' +
+                '<td>' + booking.km+ '</td>' +
+                '<td>' + booking.goodsType+ '</td>' +
+                '<td>' + booking.noOfLabourers+ '</td>' +
                 '<td>' + status + '</td>' +
-                '<td><button type="button" class="btn btn-success" onclick="addCharge(' + booking.id + ')">Add Charges</button>' +
-                '<button type="button" onclick="declineReq(' + booking.id + ')" class="m-lg-1 btn btn-danger">Cancel</button></td>' +
-                '</td>' +
+                '<td>' + buttonHTML + '</td>' +
                 '</tr>';
             tableBody.append(row);
         });
 
+        // Initialize tooltips
+        $('[data-toggle="tooltip"]').tooltip();
     }
+
+
 
 
 
@@ -656,6 +731,31 @@
     function truncateDestination(destination) {
         var maxLength = 20; // Maximum length for display
         return destination.length > maxLength ? destination.substring(0, maxLength - 3) + '...' : destination;
+    }
+
+    function displayImage(path) {
+        const storageRef = storage.ref();
+        const imageRef = storageRef.child(path );
+        imageRef.getDownloadURL().then((url) => {
+            const imageContainer = document.getElementById('imagePreview');
+            imageContainer.innerHTML = `<img src="${url}" alt="Uploaded Image">`;
+        }).catch((error) => {
+            console.error('Error getting download URL: ', error);
+        });
+    }
+    function confirmPayment(){
+        let bookingId = $("#partialPaymentBookingId").val()
+        $.ajax({
+            url: '/confirmBookingByTp/'+bookingId,
+            type: 'PUT',
+            contentType: 'application/json',
+            success: function(data) {
+                window.location.reload();
+            },
+            error: function(xhr, status, error) {
+                console.error('Error uploading QR code:', error);
+            }
+        });
     }
 </script>
 

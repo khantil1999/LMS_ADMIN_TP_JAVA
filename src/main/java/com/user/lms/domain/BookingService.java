@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lowagie.text.DocumentException;
 import com.user.lms.entity.Booking;
+import com.user.lms.entity.BookingStatus;
 import com.user.lms.entity.User;
 import com.user.lms.entity.VehicleList;
 import com.user.lms.expections.BookingNotFoundException;
@@ -15,6 +16,7 @@ import com.user.lms.repository.VehicleListRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver;
@@ -57,22 +59,26 @@ public class BookingService {
         templateResolver.setCharacterEncoding("UTF-8");
     }
 
-    // Create a Thymeleaf template engine
+
     private static TemplateEngine templateEngine = new TemplateEngine();
 
     static {
-        // Set the template resolver for the template engine
         templateEngine.setTemplateResolver(templateResolver);
     }
 
     @Transactional
     public void approveBooking(Long bookingId, int fuelCharge, int tollCharge, int labourerCharge, int totalAmount, Boolean isTPApproved) {
-        bookingRepository.addCharges(bookingId, fuelCharge, tollCharge, labourerCharge, totalAmount, isTPApproved);
-        // Logic to approve the booking and generate PDF content
+
         try {
-            // Fetch the booking information, including the user who made the booking
             Booking booking = bookingRepository.findById(bookingId)
                     .orElseThrow(() -> new BookingNotFoundException("Booking not found with id: " + bookingId));
+                booking.setFuelCharge(fuelCharge);
+                booking.setTollCharge(tollCharge);
+                booking.setLabourerCharge(labourerCharge);
+                booking.setTotalAmount(totalAmount);
+                booking.setIsTPApproved(isTPApproved);
+                booking.setStatus(BookingStatus.CUSTOMER_PENDING);
+            booking = this.bookingRepository.saveAndFlush(booking);
             User user = booking.getUser();
             Context context = new Context();
             BookingModel bookingModel = BookingModel.fromEntity(booking);
@@ -174,6 +180,17 @@ public class BookingService {
         return detailsModels;
     }
 
+    public List<BookingModel> getAllBookingsByTp(Principal principal, String startDate, String endDate,BookingStatus status) throws ParseException {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        User user = this.userRepository.findByEmail(principal.getName(), true);
+        if (startDate != null && !startDate.isEmpty() && endDate != null && !endDate.isEmpty()) {
+            return this.bookingRepository.findByDriverAndStatusAndBookingDateBetween(user.getId(),status, BookingStatus.COMPLETED, dateFormat.parse(startDate),dateFormat.parse(endDate))
+                    .stream().map(BookingModel::fromEntity).collect(Collectors.toList());
+        }
+        return this.bookingRepository.findByDriverAndStatusAndBookingDateBetween(user.getId(),status, BookingStatus.COMPLETED, null,null)
+                .stream().map(BookingModel::fromEntity).collect(Collectors.toList());
+    }
+
     public List<BookingModel> getAllBookingsByTpWithDate(Principal principal, String startDate, String endDate,Boolean isPast) throws ParseException {
         boolean isTpApproved = false;
         if(isPast){
@@ -211,6 +228,17 @@ public class BookingService {
         } catch (Exception e) {
             return "";
         }
+    }
+
+    public String confirmPaymentBookingByTp(String bookingId){
+       Booking booking = this.bookingRepository.getReferenceById(Long.parseLong(bookingId));
+       if(booking != null){
+           booking.setIsPartialPaymentReceived(true);
+           booking.setStatus(BookingStatus.PENDING_PICKUP);
+            booking=  this.bookingRepository.saveAndFlush(booking);
+           this.emailService.sendPaymentReceivedSuccessfullyMail(booking);
+       }
+       return "Done";
     }
 }
 

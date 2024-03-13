@@ -2,6 +2,7 @@ package com.user.lms.controller;
 
 import com.lowagie.text.DocumentException;
 import com.user.lms.domain.BookingService;
+import com.user.lms.entity.BookingStatus;
 import com.user.lms.models.BookingAcceptModel;
 import com.user.lms.models.BookingDeclineModel;
 import com.user.lms.models.BookingModel;
@@ -138,12 +139,23 @@ public class BookingRestApiController {
 
     @GetMapping("/bookings")
     public List<BookingModel> getAllBookingByTp(@RequestParam(name = "startDate", required = false) String startDate, @RequestParam(name = "endDate", required = false) String endDate,
-                                                @RequestParam(name = "isPast", required = false,defaultValue = "false") Boolean isPast,
+                                                @RequestParam(name = "status", required = false) BookingStatus status,
                                                 Principal principal) throws ParseException {
+        return this.bookingService.getAllBookingsByTp(principal, startDate, endDate, status);
+    }
+
+    @GetMapping("/past/booking")
+    public List<BookingModel> getAllPastBookingByTp(@RequestParam(name = "startDate", required = false) String startDate, @RequestParam(name = "endDate", required = false) String endDate,
+                                                    Principal principal) throws ParseException {
         if (startDate != null && !startDate.isEmpty() && endDate != null && !endDate.isEmpty()) {
-            return this.bookingService.getAllBookingsByTpWithDate(principal, startDate, endDate,isPast);
+            return this.bookingService.getAllBookingsByTpWithDate(principal, startDate, endDate, true);
         } else {
-            return this.bookingService.getAllBookingsByTp(principal,isPast);
+            return this.bookingService.getAllBookingsByTp(principal, true);
         }
+    }
+
+    @PutMapping("/confirmBookingByTp/{bookingId}")
+    public String confirmPaymentBookingByTp(@PathVariable(name = "bookingId") String bookingId){
+        return this.bookingService.confirmPaymentBookingByTp(bookingId);
     }
 }

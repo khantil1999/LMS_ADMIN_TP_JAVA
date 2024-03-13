@@ -81,4 +81,8 @@ public class Booking {
     @Column(name = "is_full_payment_received")
     private Boolean isFullPaymentReceived = false;
 
+    @Column(name = "status")
+    @Enumerated(EnumType.STRING)
+    private BookingStatus status;
+
 }
