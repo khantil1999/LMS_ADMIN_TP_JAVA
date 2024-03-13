@@ -66,6 +66,12 @@ public class AuthApiController {
         model.addAttribute("changePassword",new ChangePasswordModel());
         return "changepass";
     }
+
+    @GetMapping("/changePasswordTP")
+    public String loadChangePasswordTP(Model model){
+        model.addAttribute("changePassword",new ChangePasswordModel());
+        return "changepasstp";
+    }
     @PostMapping("/changePassword")
     public String changePassword(@Valid @ModelAttribute("changePassword") ChangePasswordModel changePasswordModel,
                                  BindingResult bindingResult, Model model, Principal principal){

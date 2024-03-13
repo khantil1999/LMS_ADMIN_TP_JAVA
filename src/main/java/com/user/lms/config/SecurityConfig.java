@@ -23,9 +23,9 @@ public class SecurityConfig  {
                                 "/register", "/register/save", "/verify", "/forgotPassword",
                                 "/resetPassword","/truckDetails")
                         .permitAll()
-                        .requestMatchers("/home",
+                        .requestMatchers("/home","/changePasswordTP",
                                 "/updateApprovalForTruckProvider","/changePassword","/dashboardTP",
-                                "vehiclelistTP","/laborerslistTP","/bookingTP","/addVehicle",
+                                "/vehiclelistTP","/laborerslistTP","/bookingTP","/addVehicle",
                                 "/profileTP","/me","/states","/districts","/talukas",
                                 "/updateProviderArea", "/providerArea", "/updateProfile",
                                 "/getVehicle","/editVehicle","/bookings",
