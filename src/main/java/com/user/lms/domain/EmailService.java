@@ -204,4 +204,28 @@ public class EmailService {
         } catch (MessagingException e) {
         }
     }
+
+
+    public void marekBookingAsCompletedMail(Booking booking){
+        MimeMessage mimeMessage = javaMailSender.createMimeMessage();
+
+        try {
+            MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true);
+
+            Context context = new Context();
+            BookingModel bookingModel = BookingModel.fromEntity(booking);
+            context.setVariable("booking", bookingModel);
+
+
+            String htmlContent = templateEngine.process("booking-completed-template", context);
+
+            helper.setTo(booking.getUser().getEmail());
+            helper.setSubject("Transport Completed");
+            helper.setText(htmlContent, true);
+
+            javaMailSender.send(mimeMessage);
+
+        } catch (MessagingException e) {
+        }
+    }
 }

@@ -240,5 +240,25 @@ public class BookingService {
        }
        return "Done";
     }
+
+    public String markBookingAsCompleted(String bookingId,CompleteAndCancelBookingModel completeAndCancelBookingModel){
+        Booking booking = this.bookingRepository.getReferenceById(Long.parseLong(bookingId));
+        if(booking != null){
+            booking.setIsFullPaymentReceived(true);
+            booking.setStatus(BookingStatus.COMPLETED);
+            if(completeAndCancelBookingModel.getAdditionalCharges() > 0){
+                booking.setAdditionalCharges(completeAndCancelBookingModel.getAdditionalCharges());
+                long total = booking.getTotalAmount()  + completeAndCancelBookingModel.getAdditionalCharges();
+                booking.setTotalAmount((int) total);
+                booking.setAdditionalChargesReason(completeAndCancelBookingModel.getAdditionalChargesDetails());
+            }else{
+                booking.setAdditionalCharges(Long.parseLong("0"));
+            }
+
+            booking=  this.bookingRepository.saveAndFlush(booking);
+            this.emailService.marekBookingAsCompletedMail(booking);
+        }
+        return "Done";
+    }
 }
 

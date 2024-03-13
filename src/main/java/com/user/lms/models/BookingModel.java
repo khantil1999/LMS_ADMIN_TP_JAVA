@@ -1,6 +1,7 @@
 package com.user.lms.models;
 
 import com.user.lms.entity.Booking;
+import jakarta.persistence.Column;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -35,6 +36,10 @@ public class BookingModel {
     private String bookingConfirmPaymentImagePath;
     private String status;
 
+    private Long additionalCharges ;
+
+    private String additionalChargesReason;
+
     public static BookingModel fromEntity(Booking booking) {
         BookingModel bookingModel = new BookingModel();
         bookingModel.setId(booking.getId());
@@ -59,6 +64,8 @@ public class BookingModel {
         bookingModel.setIsPartialPaymentReceived(booking.getIsPartialPaymentReceived());
         bookingModel.setBookingConfirmPaymentImagePath(booking.getBookingConfirmPaymentImagePath());
         bookingModel.setStatus(booking.getStatus().getStatus());
+        bookingModel.setAdditionalCharges(booking.getAdditionalCharges());
+        bookingModel.setAdditionalChargesReason(booking.getAdditionalChargesReason());
         return bookingModel;
     }
 }

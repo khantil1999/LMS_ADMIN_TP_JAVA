@@ -85,4 +85,10 @@ public class Booking {
     @Enumerated(EnumType.STRING)
     private BookingStatus status;
 
+    @Column(name = "additional_charges")
+    private Long additionalCharges ;
+
+    @Column(name = "additional_charges_reason")
+    private String additionalChargesReason;
+
 }

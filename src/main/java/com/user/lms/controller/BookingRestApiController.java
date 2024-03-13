@@ -6,6 +6,7 @@ import com.user.lms.entity.BookingStatus;
 import com.user.lms.models.BookingAcceptModel;
 import com.user.lms.models.BookingDeclineModel;
 import com.user.lms.models.BookingModel;
+import com.user.lms.models.CompleteAndCancelBookingModel;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -157,5 +158,10 @@ public class BookingRestApiController {
     @PutMapping("/confirmBookingByTp/{bookingId}")
     public String confirmPaymentBookingByTp(@PathVariable(name = "bookingId") String bookingId){
         return this.bookingService.confirmPaymentBookingByTp(bookingId);
+    }
+
+    @PutMapping("/markBookingAsCompleted/{bookingId}")
+    public String markBookingAsCompleted(@PathVariable(name = "bookingId") String bookingId,@RequestBody CompleteAndCancelBookingModel completeAndCancelBookingModel){
+        return this.bookingService.markBookingAsCompleted(bookingId,completeAndCancelBookingModel);
     }
 }

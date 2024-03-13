@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Transport Confirmation</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f5f5f5;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+
+        section {
+            background-color: #fff;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        h2, h3 {
+            color: #3498db;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        table, th, td {
+            border: 1px solid #3498db;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #3498db;
+            color: #fff;
+        }
+    </style>
+</head>
+<body>
+
+<h2 style="text-align: center; color: #3498db;">Transport Completed</h2>
+<section>
+    <p>Dear Customer,</p>
+    <p>We are pleased to inform you that your transport has been successfully completed. Thank you for choosing our service! If you have any queries, please don't hesitate to contact us.</p>
+</section>
+
+<!-- Charges Details -->
+<section>
+    <h3>Charges Details:</h3>
+    <table>
+        <tr>
+            <th>Charge Type</th>
+            <th>Amount</th>
+        </tr>
+        <tr>
+            <td>Fuel Charge</td>
+            <td th:text="${booking.fuelCharge}"></td>
+        </tr>
+        <tr>
+            <td>Toll Charge</td>
+            <td th:text="${booking.tollCharge}"></td>
+        </tr>
+        <tr>
+            <td>Labourer Charge</td>
+            <td th:text="${booking.labourerCharge}"></td>
+        </tr>
+        <tr>
+            <td>Additional Charges</td>
+            <td th:text="${booking.additionalCharges}"></td>
+        </tr>
+        <tr>
+            <td>Reason for Additional Charges</td>
+            <td th:text="${booking.additionalCharges == 0 ? '-' : booking.additionalChargesReason}"></td>
+        </tr>
+        <tr>
+            <td>Total Amount</td>
+            <td th:text="${booking.totalAmount}"></td>
+        </tr>
+
+
+    </table>
+</section>
+
+
+</body>
+</html>

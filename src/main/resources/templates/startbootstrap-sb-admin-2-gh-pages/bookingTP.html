@@ -377,6 +377,39 @@
     </div>
 </div>
 
+<div class="modal fade" id="additionalChargeModal" tabindex="-1" aria-labelledby="addChargesModel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="additionalChargeModalLabel">Additional Charges</h5>
+                <button onclick="closeModel('additionalChargeModal')" class="close" type="button" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="additionalChargeForm">
+                    <input type="hidden" id="additionalChargesBookingId"/>
+                    <div class="mb-3">
+                        <label for="additionalCharges" class="col-form-label">Additional Charges:</label>
+                        <input type="text" class="form-control charge-input" value="0" id="additionalCharges" onkeypress="return addCharges(event)">
+                        <div id="additionalChargesError" class="text-danger"></div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="chargesDetails" class="col-form-label">Details for Charges:</label>
+                        <textarea class="form-control charge-input" id="chargesDetails"></textarea>
+                        <div id="chargesDetailsError" class="text-danger"></div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button  class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+                <button onclick="onComplete()" type="button" id="sendBtn" class="btn btn-primary">Mark As Complete</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
 <!-- Bootstrap core JavaScript-->
 <script src="/vendor/jquery/jquery.min.js"></script>
 <script src="/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
@@ -398,6 +431,35 @@
     const storage = firebase.storage();
     $(document).ready(function (){
         loadMyBookings();
+        $('#additionalCharges').on('input focusout', function() {
+            var additionalCharges = parseFloat($(this).val());
+            if (isNaN(additionalCharges) || additionalCharges < 0) {
+                $('#additionalChargesError').text('Additional charges must be a positive number.');
+            } else {
+                $('#additionalChargesError').text('');
+            }
+
+            // Validate chargesDetails only if additionalCharges is entered
+            var chargesDetails = $('#chargesDetails').val().trim();
+            if (additionalCharges > 0 && chargesDetails === '') {
+                $('#chargesDetailsError').text('Please provide details for the charges.');
+            } else {
+                $('#chargesDetailsError').text('');
+            }
+        });
+
+// Validation for Details for Charges field
+        $('#chargesDetails').on('input focusout', function() {
+            var chargesDetails = $(this).val().trim();
+            if (chargesDetails === '' && parseFloat($('#additionalCharges').val()) > 0) {
+                $('#chargesDetailsError').text('Please provide details for the charges.');
+            } else {
+                $('#chargesDetailsError').text('');
+            }
+        })
+
+
+
     })
     $(function() {
 
@@ -607,6 +669,12 @@
         displayImage(path)
     }
 
+    function showAdditionalChargeModal(id){
+        $("#additionalChargesBookingId").val(id)
+        const alertModal = new bootstrap.Modal(document.getElementById('additionalChargeModal'))
+        alertModal.show();
+    }
+
     function closeChargesForm(){
         $('#booking-id').val(""); // Set the user ID in the hidden field
         clearFormData();
@@ -682,7 +750,7 @@
                     tooltipText = 'Full Payment Pending';
                     break
                 case 'Pending PickUp':
-                    buttonHTML = '<button type="button" class="btn btn-success" data-toggle="tooltip" title="Complete" onclick="displayPartialPaymentModal(' + booking.id + ', \'' + booking.bookingConfirmPaymentImagePath + '\')"><i class="fas fa-check"></i></button>';
+                    buttonHTML = '<button type="button" class="btn btn-success" data-toggle="tooltip" title="Complete" onclick="showAdditionalChargeModal(' + booking.id + ')"><i class="fas fa-check"></i></button>';
                     buttonHTML += '<button type="button" class="btn btn-danger ml-1" data-toggle="tooltip" title="Cancel" onclick="declineReq(' + booking.id + ')"><i class="fas fa-times"></i></button>';
                     tooltipText = 'Pending Pickup';
                     break;
@@ -757,6 +825,44 @@
             }
         });
     }
+
+    function onComplete(){
+        let additionalCharges = $('#additionalCharges').val();
+        let chargesDetails = $('#chargesDetails').val();
+        let bookingId = $('#additionalChargesBookingId').val()
+
+        if (additionalCharges < 0 || isNaN(additionalCharges)) {
+            $('#additionalChargesError').text('Additional charges must be a positive number.');
+            return;
+        } else {
+            $('#additionalChargesError').text('');
+        }
+
+        if (additionalCharges > 0 && !chargesDetails.trim()) {
+            $('#chargesDetailsError').text('Please provide details for the charges.');
+            return;
+        } else {
+            $('#chargesDetailsError').text('');
+        }
+
+        $.ajax({
+            url: '/markBookingAsCompleted/'+bookingId,
+            type: 'PUT',
+            contentType: 'application/json',
+            data: JSON.stringify({
+                additionalCharges,
+                additionalChargesDetails:chargesDetails
+            }),
+            success: function(data) {
+                window.location.reload();
+            },
+            error: function(xhr, status, error) {
+                console.error('Error uploading QR code:', error);
+            }
+        });
+    }
+
+
 </script>
 
 </body>
