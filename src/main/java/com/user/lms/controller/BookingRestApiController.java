@@ -164,4 +164,9 @@ public class BookingRestApiController {
     public String markBookingAsCompleted(@PathVariable(name = "bookingId") String bookingId,@RequestBody CompleteAndCancelBookingModel completeAndCancelBookingModel){
         return this.bookingService.markBookingAsCompleted(bookingId,completeAndCancelBookingModel);
     }
+
+    @PutMapping("/cancelBookingByTp/{bookingId}")
+    public String cancelBookingByTp(@PathVariable(name = "bookingId") String bookingId,@RequestBody String reason){
+        return this.bookingService.cancelBookingByTp(bookingId,reason);
+    }
 }

@@ -228,4 +228,27 @@ public class EmailService {
         } catch (MessagingException e) {
         }
     }
+
+    public void cancelByTPMail(Booking booking){
+        MimeMessage mimeMessage = javaMailSender.createMimeMessage();
+
+        try {
+            MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true);
+
+            Context context = new Context();
+            BookingModel bookingModel = BookingModel.fromEntity(booking);
+            context.setVariable("booking", bookingModel);
+
+
+            String htmlContent = templateEngine.process("booking-cancel-template", context);
+
+            helper.setTo(booking.getUser().getEmail());
+            helper.setSubject("Booking Cancel");
+            helper.setText(htmlContent, true);
+
+            javaMailSender.send(mimeMessage);
+
+        } catch (MessagingException e) {
+        }
+    }
 }

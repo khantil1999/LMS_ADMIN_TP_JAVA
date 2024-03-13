@@ -260,5 +260,17 @@ public class BookingService {
         }
         return "Done";
     }
+
+    public String cancelBookingByTp(String bookingId,String reason){
+        Booking booking = this.bookingRepository.getReferenceById(Long.parseLong(bookingId));
+        if(booking != null){
+            booking.setIsFullPaymentReceived(false);
+            booking.setStatus(BookingStatus.CANCEL);
+            booking.setDeclineReason(reason);
+            booking=  this.bookingRepository.saveAndFlush(booking);
+            this.emailService.cancelByTPMail(booking);
+        }
+        return "Done";
+    }
 }
 
