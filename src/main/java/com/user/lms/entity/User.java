@@ -47,7 +47,7 @@ public class User {
 	@Column(name= "status")
 	private String status;
 
-	@OneToMany(mappedBy = "user")
+	@OneToMany(mappedBy = "user",fetch=FetchType.EAGER)
 	private List<UserRoles> userRoles = new ArrayList<>();
 
 	@OneToOne(mappedBy = "truckProvider",fetch=FetchType.EAGER)

@@ -86,60 +86,14 @@ public class VehicleRestApiController {
             return vehicleListService.editVehicle(vehicleId, vehicleAddEditRequestModel, principal);
     }
 
-    @GetMapping("/exportVehicle")
-    public void loadVehiclePage(Model model,
-                                HttpServletResponse response) throws IOException
-    {
-        System.out.println("export vehicle api is called in backed side---");
-        // Get data from the service based on startDate and endDate
-        List<VehicleDetailsModel> vehicles= vehicleListService.getAllVehicles();
-
-        Context context = new Context();
-        context.setVariable("vehicles", vehicles);
-        System.out.println("vehicles: " + vehicles);
-
-
-        // Create the HTML string with Thymeleaf template for table rendering
-        String htmlContent = templateEngine.process("startbootstrap-sb-admin-2-gh-pages/vehicle_template", context);
-        System.out.println("HTML Content: " + htmlContent);
-
-        System.out.println("HTML Content for PDF: " + htmlContent);
-
-        // Generate PDF content
-        byte[] pdfContent = generatePdfContent(htmlContent);
-
-        System.out.println("PDF Content Length: " + pdfContent.length);
-
-        // Set the response headers
-        response.setContentType("application/pdf");
-        response.setHeader("Content-Disposition", "attachment; filename=vehicle_report.pdf");
-
-        try (ServletOutputStream outputStream = response.getOutputStream()) {
-            // Write the PDF content to the response output stream
-            outputStream.write(pdfContent);
-        } catch (IOException e) {
-            e.printStackTrace(); // Handle the exception appropriately
-        }
-
-    }
-
-    private byte[] generatePdfContent(String htmlContent) {
-        try {
-            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-            ITextRenderer renderer = new ITextRenderer();
-            renderer.setDocumentFromString(htmlContent);
-            renderer.layout();
-            renderer.createPDF(outputStream);
-            renderer.finishPDF();
-            return outputStream.toByteArray();
-        } catch (Exception e) {
-            e.printStackTrace();
-            return new byte[0]; // Placeholder, replace with actual error handling
-        }
-    }
 
     @GetMapping("/vehiclesByTp")
     public List<VehicleDetailsModel> loadVehiclesByTp(Principal principal){
         return this.vehicleListService.loadVehiclesByTp(principal);
+    }
+
+    @GetMapping("/vehicles/admin")
+    public List<VehicleDetailsModel> loadVehiclesForAdmin(@RequestParam(value = "truck_provider_id",required = false) String truckProviderId, Principal principal){
+        return this.vehicleListService.loadVehiclesForAdmin(truckProviderId,principal);
     }
 }

@@ -13,24 +13,17 @@ import java.util.Collection;
 public class UserAuthenticationSuccessHandler extends SavedRequestAwareAuthenticationSuccessHandler {
 
     @Override
-    public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
-                                        Authentication authentication) throws ServletException, IOException {
-        super.onAuthenticationSuccess(request, response, authentication);
-
-        // Custom logic to redirect to the home page
-        redirectUserToHomePage(request, response, authentication);
-    }
-
-    private void redirectUserToHomePage(HttpServletRequest request, HttpServletResponse response,
-                                        Authentication authentication) throws IOException {
-        Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
-
-        for (GrantedAuthority authority : authorities) {
-            if (authority.getAuthority().equals("ADMIN") &&  authority.getAuthority().equals("TRUCK_PROVIDER")) {
-                response.sendRedirect("/home");
-                return;
-            }
+    public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
+        authentication.getAuthorities().forEach(grantedAuthority -> {
+            System.out.println(grantedAuthority.getAuthority());
+        });
+        if (authentication.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ADMIN"))) {
+            response.sendRedirect("/home");
+        } else if (authentication.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("TRUCK_PROVIDER"))) {
+            response.sendRedirect("/dashboardTP");
+        } else {
+            response.sendRedirect("/default-home");
         }
-
     }
+
 }

@@ -260,4 +260,11 @@ public class VehicleListService {
         }
         return Collections.emptyList();
     }
+
+    public List<VehicleDetailsModel> loadVehiclesForAdmin( String truckProviderId,Principal principal) {
+            return this.vehicleListRepository.findAll().stream()
+                    .map(VehicleDetailsModel::fromEntity).collect(Collectors.toList());
+
+
+    }
 }

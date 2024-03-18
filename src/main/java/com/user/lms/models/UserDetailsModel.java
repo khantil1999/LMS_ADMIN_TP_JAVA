@@ -16,6 +16,9 @@ public class UserDetailsModel {
     private String email;
     private String mobileNo;
     private String qrCodePath;
+    private Boolean isVerified;
+    private Boolean isApproved;
+
 
     public static UserDetailsModel fromEntity(User user) {
         UserDetailsModel userDetailsModel = new UserDetailsModel();
@@ -24,6 +27,8 @@ public class UserDetailsModel {
         userDetailsModel.setLastName(user.getLastName());
         userDetailsModel.setEmail(user.getEmail());
         userDetailsModel.setMobileNo(user.getMobileNo());
+        userDetailsModel.setIsVerified(user.getIsVerified());
+        userDetailsModel.setIsApproved(user.getIsApproved());
         if(user.getQrCode() != null){
             userDetailsModel.setQrCodePath(user.getQrCode().getQrCodePath());
         }else{

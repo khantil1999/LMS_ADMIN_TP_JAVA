@@ -144,7 +144,6 @@ public class BookingService {
 
 
     public long countBooking() {
-        // TODO Auto-generated method stub
         return bookingRepository.countBookings();
     }
 
@@ -271,6 +270,10 @@ public class BookingService {
             this.emailService.cancelByTPMail(booking);
         }
         return "Done";
+    }
+
+    public List<DateWiseBookingModel> getDateWiseBooking(){
+        return  this.bookingRepository.getBookingCountByDate();
     }
 }
 

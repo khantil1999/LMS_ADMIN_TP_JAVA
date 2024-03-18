@@ -30,4 +30,6 @@ public interface UserRepository extends JpaRepository<User, Long>{
 
 	@Query(value = "Select * from users where booking_id=?",nativeQuery = true)
 	List<User> getUserByBooking(String bookingId);
+
+
 }

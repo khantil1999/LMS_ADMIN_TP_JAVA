@@ -61,22 +61,14 @@ public class AuthApiController {
         return this.authService.verifyUser(email, model, redirectAttributes);
     }
 
-    @GetMapping("/changePassword")
-    public String loadChangePassword(Model model){
-        model.addAttribute("changePassword",new ChangePasswordModel());
-        return "changepass";
-    }
+
 
     @GetMapping("/changePasswordTP")
     public String loadChangePasswordTP(Model model){
         model.addAttribute("changePassword",new ChangePasswordModel());
         return "changepasstp";
     }
-    @PostMapping("/changePassword")
-    public String changePassword(@Valid @ModelAttribute("changePassword") ChangePasswordModel changePasswordModel,
-                                 BindingResult bindingResult, Model model, Principal principal){
-        return  this.authService.changePassword(changePasswordModel,bindingResult,model,principal);
-    }
+
     @GetMapping("/forgotPassword")
     public String loadForgotPassword(Model model) {
         model.addAttribute("forgotPassword", new ForgotPasswordModel());
@@ -101,5 +93,7 @@ public class AuthApiController {
                                 BindingResult bindingResult, Model model) {
         return this.authService.resetPassword(resetPasswordModel, bindingResult, model);
     }
+
+
 
 }

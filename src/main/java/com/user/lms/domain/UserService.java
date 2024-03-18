@@ -12,6 +12,8 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -28,8 +30,11 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 public class UserService implements UserDetailsService {
@@ -41,7 +46,6 @@ public class UserService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
         try {
-
             User user = this.userRepository.findExistingUser(username);
 
             if (user == null) {
@@ -51,10 +55,21 @@ public class UserService implements UserDetailsService {
             if (!user.getIsVerified()) {
                 throw new UsernameNotFoundException("Please Verify your email first!");
             }
+
+            // Retrieve user roles from the database
+            List<String> userRoles = user.getUserRoles().stream().map(userRoles1 -> userRoles1.getRole().getName()).collect(Collectors.toList());
+
+            // Create a list of GrantedAuthority objects from the user roles
+            List<GrantedAuthority> authorities = new ArrayList<>();
+            for (String role : userRoles) {
+                authorities.add(new SimpleGrantedAuthority(role));
+            }
+
+            // Create and return UserDetails object with the retrieved roles
             return org.springframework.security.core.userdetails.User
                     .withUsername(user.getEmail())
                     .password(user.getPassword())
-                    .roles("TRUCK_PROVIDER")
+                    .authorities(authorities) // Use authorities() instead of roles()
                     .build();
         } catch (UsernameNotFoundException ex) {
             throw new BadCredentialsException(ex.getMessage());

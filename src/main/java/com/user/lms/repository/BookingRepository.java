@@ -2,12 +2,14 @@ package com.user.lms.repository;
 
 import com.user.lms.entity.Booking;
 import com.user.lms.entity.BookingStatus;
+import com.user.lms.models.DateWiseBookingModel;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -54,5 +56,20 @@ public interface BookingRepository extends JpaRepository<Booking,Long> {
                                                              @Param("endDate") Date endDate);
 
 
+    @Query(value = "SELECT COUNT(booking_date) AS count, DATE(booking_date) AS bookingDate FROM booking GROUP BY DATE(booking_date)",nativeQuery = true)
+    List<Object[]> getBookingCountByDateRaw();
+
+    default List<DateWiseBookingModel> getBookingCountByDate() {
+        List<Object[]> results = getBookingCountByDateRaw();
+        List<DateWiseBookingModel> dateWiseBookingModels = new ArrayList<>();
+
+        for (Object[] result : results) {
+            Long count = (Long) result[0];
+            Date bookingDate = (Date) result[1];
+            dateWiseBookingModels.add(new DateWiseBookingModel(bookingDate,count));
+        }
+
+        return dateWiseBookingModels;
+    }
 }
 
