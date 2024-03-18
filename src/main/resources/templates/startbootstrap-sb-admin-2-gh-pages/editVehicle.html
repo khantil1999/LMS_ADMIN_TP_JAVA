@@ -23,7 +23,10 @@
 </head>
 
 <body class="bg-gradient-primary">
-
+<script src="https://www.gstatic.com/firebasejs/8.2.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.1.2/firebase-firestore.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.1.2/firebase-storage.js"></script>
+<script src="/js/firebase-config.js"></script>
 <div id="wrapper">
 
     <!-- Sidebar -->
@@ -127,145 +130,100 @@
             <!-- End of Topbar -->
             <!-- Begin Page Content -->
             <div class="container-fluid">
-                <div class="container">
-                    <div class="card o-hidden border-0 shadow-lg my-5">
-                        <div class="card-body p-0">
-                            <!-- Nested Row within Card Body -->
-                            <div class="row justify-content-center m-0">
-
-                                <div class="col-lg-7 p-0">
-                                    <div class="p-5">
-                                        <div class="text-center">
-                                            <h1 class="h4 text-gray-900 mb-4">Edit Vehicle</h1>
+                <div class="row justify-content-center">
+                    <div class="col-lg-10  rounded-sm">
+                        <div class="card shadow">
+                            <div class="card-body">
+                                <h1 class="h4 text-center mb-4">Edit Vehicle</h1>
+                                <form id="addVehicleForm" >
+                                    <div class="row mb-3">
+                                        <div class="col-sm-6">
+                                            <input type="text" class="form-control" id="model" name="model"
+                                                   placeholder="Model">
+                                            <small class="text-danger" id="modelError"></small>
                                         </div>
-                                        <form class="user"
-                                              id="editVehicleForm"
-                                              role="form"
-                                              method="put"
-
-                                              enctype="multipart/form-data">
-                                            <input type="hidden" />
-                                            <div class="form-group row">
-                                                <div class="col-sm-6 mb-3 mb-sm-0">
-                                                    <label for="model">Model:</label>
-                                                    <input type="text"
-                                                           class="form-control form-control-user"
-                                                           id="model"
-                                                           name="model"
-                                                           placeholder="Model" >
-                                                </div>
-                                                <div class="col-sm-6">
-                                                    <label for="licensePlate">License Plate:</label>
-                                                    <input type="text"
-                                                           class="form-control form-control-user"
-                                                           id="licensePlate"
-                                                           name="licensePlate"
-                                                           placeholder="licensePlate" required>
-                                                </div>
-                                            </div>
-                                            <div class="form-group row">
-                                                <div class="col-sm-6 mb-3 mb-sm-0">
-                                                    <label for="manufacturer">Manufacturer:</label>
-                                                    <input type="text"
-                                                           class="form-control form-control-user"
-                                                           id="manufacturer"
-                                                           name="manufacturer"
-                                                           placeholder="manufacturer"
-                                                    >
-                                                </div>
-                                                <div class="col-sm-6 mb-3 mb-sm-0">
-                                                    <label for="fuelType">Fuel Type:</label>
-                                                    <input type="text"
-                                                           class="form-control form-control-user"
-                                                           id="fuelType"
-                                                           name="fuelType"
-                                                           placeholder="fuelType">
-                                                </div>
-                                            </div>
-                                            <div class="form-group row">
-                                                <div class="col-sm-6 mb-3 mb-sm-0">
-                                                    <label for="currentMileage">Current Mileage:</label>
-                                                    <input type="text"
-                                                           class="form-control form-control-user"
-                                                           id="currentMileage"
-                                                           name="currentMileage"
-                                                           placeholder="currentMileage"
-                                                    >
-                                                </div>
-                                                <div class="col-sm-6">
-                                                    <label for="wheel">Wheel:</label>
-                                                    <input type="text" class="form-control form-control-user"
-                                                           id="wheel"
-                                                           name="wheel"
-                                                           placeholder="wheel"
-                                                    >
-                                                </div>
-                                            </div>
-                                            <div class="form-group row">
-                                                <div class="col-sm-6 mb-3 mb-sm-0">
-                                                    <label for="capacity">Capacity:</label>
-                                                    <input type="text"
-                                                           class="form-control form-control-user"
-                                                           id="capacity"
-                                                           name="capacity"
-                                                           placeholder="capacity"
-                                                    >
-                                                </div>
-                                                <div class="col-sm-6 mb-3 mb-sm-0">
-                                                    <label for="photo">Add Photo:</label>
-                                                    <input type="file"
-                                                           class="form-control-file"
-                                                           id="photo"
-                                                           name="photo" multiple>
-                                                </div>
-                                            </div>
-                                            <div class="form-group row">
-                                                <div class="col-sm-6 mb-3 mb-sm-0 d-flex justify-content-center">
-                                                    <button type="button"
-                                                            id="saveButton"
-                                                            class="btn btn-primary btn-user btn-block"
-                                                            onclick="saveChanges()"
-                                                            style="width: 150px;">
-                                                        Save Changes
-                                                    </button>
-                                                </div>
-                                                <div class="col-sm-6 mb-3 mb-sm-0 ">
-                                                    <a
-                                                            th:href="@{/vehiclelistTP}"
-                                                            class="btn btn-primary btn-user btn-block"
-                                                            style="width: 100px;"
-                                                    >
-                                                        Cancel
-                                                    </a>
-                                                </div>
-                                            </div>
-                                        </form>
+                                        <div class="col-sm-6">
+                                            <input type="text" class="form-control" id="licensePlate"
+                                                   name="licensePlate" placeholder="License Plate">
+                                            <small class="text-danger" id="licensePlateError"></small>
+                                        </div>
                                     </div>
-                                </div>
-                                <!-- Photos Table -->
-                                <div class="col-lg-7 p-0 mt-3">
-                                    <div class="card shadow mb-4">
-                                    <div class="card-header py-3">
-                                        <h6 class="m-0 font-weight-bold text-primary">Photos</h6>
+                                    <div class="row mb-3">
+                                        <div class="col-sm-6">
+                                            <input type="text" class="form-control" id="manufacturer"
+                                                   name="manufacturer" placeholder="Manufacturer">
+                                            <small class="text-danger" id="manufacturerError"></small>
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <select class="form-control" id="fuelType" name="fuelType">
+                                                <option value="">Select Fuel Type</option>
+                                                <option value="Petrol">Petrol</option>
+                                                <option value="Diesel">Diesel</option>
+                                                <option value="Gas">Gas</option>
+                                            </select>
+                                            <small class="text-danger" id="fuelTypeError"></small>
+                                        </div>
                                     </div>
-                                    <div class="card-body">
-                                        <table class="table">
-                                            <thead>
-                                            <tr>
-                                                <th>Photo</th>
-                                                <th>Action</th>
-                                            </tr>
-                                            </thead>
-                                            <tbody id="photoTableBody">
-                                            </tbody>
-                                        </table>
+                                    <div class="row mb-3">
+                                        <div class="col-sm-6">
+                                            <input type="text" class="form-control" id="currentMileage"
+                                                   name="currentMileage" placeholder="Current Mileage">
+                                            <small class="text-danger" id="currentMileageError"></small>
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <input type="text" class="form-control" id="wheel" name="wheel"
+                                                   placeholder="Wheel">
+                                            <small class="text-danger" id="wheelError"></small>
+                                        </div>
                                     </div>
-                                </div>
-                                </div>
+                                    <div class="row mb-3">
+                                        <div class="col-sm-6">
+                                            <input type="text" class="form-control" id="capacity" name="capacity"
+                                                   placeholder="Capacity (Ton)">
+                                            <small class="text-danger" id="capacityError"></small>
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <input class="form-control" type="file" name="photo" id="photo" multiple>
+                                            <small class="text-danger" id="photoError"></small>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-6 mb-3">
+                                            <button type="button" class="btn btn-primary btn-block"
+                                                    onclick="editVehicle()">Edit Vehicle
+                                            </button>
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <button type="button" onclick="cancel()" class="btn btn-secondary btn-block">Cancel</button>
+                                        </div>
+                                    </div>
+                                </form>
                             </div>
                         </div>
                     </div>
+                    <div class="col-lg-10 rounded-sm mt-3">
+                        <div class="card shadow">
+                            <div class="card-header">
+                                <h6 class="m-0 font-weight-bold text-primary">Photos</h6>
+                            </div>
+                            <div class="card-body">
+                                <table class="table">
+                                    <thead>
+                                    <tr>
+                                        <th>Photo</th>
+                                        <th>Action</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody id="photoTableBody">
+
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
+
                 <!-- /.container-fluid -->
             </div>
             <!-- End of Main Content -->
@@ -343,42 +301,59 @@
 <script th:inline="javascript">
     /*<![CDATA[*/
     let images = [];
-    $( document ).ready(function() {
-        console.log( "ready!" );
+    let profile = {}
+    const storage = firebase.storage();
+    $(document).ready(function () {
+        getProfileDetails();
         let vehicleId = getParameterByName('vehicleId');
-        console.log("ss",vehicleId)
         getVehicleDetails(vehicleId)
         $('#photo').change(function () {
-            console.log("ssss");
             var fileInput = this;
+            let allFilesAreValid = true;
 
             if (fileInput.files && fileInput.files.length > 0) {
                 for (var i = 0; i < fileInput.files.length; i++) {
-                    (function (index) {  // Using a closure to capture the value of i
-                        var reader = new FileReader();
-                        let image = {};
-                        reader.onload = function (e) {
-                            image = {
-                                id: generateUniqueID(),
-                                photoUrl: e.target.result,
-                                isNew: true
+                    let file = fileInput.files[i];
+                    if (!validateFile(file)) {
+                        allFilesAreValid = false;
+                        break;
+                    }
+                }
+
+                if (allFilesAreValid) {
+                    for (var i = 0; i < fileInput.files.length; i++) {
+                        (function (index) {  // Using a closure to capture the value of i
+                            var reader = new FileReader();
+                            let image = {};
+                            reader.onload = function (e) {
+                                image = {
+                                    id: generateUniqueID(),
+                                    photoUrl: e.target.result,
+                                    isNew: true,
+                                    file:fileInput.files[index]
+                                };
+                                console.log(image, index);
+
+                                images.push(image);
+
+                                if (index === fileInput.files.length - 1) {
+                                    bindImagesIntoTable(images);
+                                }
                             };
-                            console.log(image, index);
-
-                            images.push(image);
-
-                            if (index === fileInput.files.length - 1) {
-                                console.log("Images: ", images);
-                                bindImagesIntoTable(images);
-                            }
-                        };
-                        reader.readAsDataURL(fileInput.files[index]);
-                    })(i);
+                            reader.readAsDataURL(fileInput.files[index]);
+                        })(i);
+                    }
+                } else {
+                    // Handle case where one or more files are invalid
+                    console.log("One or more files are invalid.");
                 }
             }
         });
-
+        $('input, select').on('keyup change blur', function () {
+            validateInput(this);
+        });
     });
+
 
 
 
@@ -395,53 +370,57 @@
         return decodeURIComponent(results[2].replace(/\+/g, " "));
     }
     function validateInput(input) {
-
-        console.log("Validate Input function",input)
-        const value = input.value.trim();
+        const value = $(input).val().trim();
         const errorId = input.id + 'Error';
         const errorMessages = {
             'capacity': 'Capacity is required and can only contain alphabets and spaces',
-            'model': 'Model is required and can only contain alphabets and spaces',
+            'model': 'Model is required and can only contain alphabets, numbers, and spaces',
             'fuelType': 'Please select the fuel type.',
-            'manufacturer': 'Manufacturer  is required and can only contain alphabets and spaces',
-            'wheel': 'wheel  is required',
-            'currentMileage': 'currentMileage  is required ',
-            'licensePlate': 'licensePlate  is required and must be in proper format',
-
+            'manufacturer': 'Manufacturer is required and can only contain alphabets and spaces',
+            'wheel': 'Wheel is required',
+            'currentMileage': 'Current Mileage is required and must be a positive integer',
+            'licensePlate': 'License Plate is required and must be in the format GJXXAA####',
+            'photo': 'Photo is required and must be a .jpg, .jpeg, or .png file'
         };
 
+        // Clear previous error message
+        $('#' + errorId).text('');
+
+        // Display error message immediately if value is empty
         if (!value) {
-            document.getElementById(errorId).innerText = errorMessages[input.id] || 'This field is required';
+            $('#' + errorId).text(errorMessages[input.id] || 'This field is required');
             return false;
-        } else if (input.id === 'model' || input.id === 'manufacturer') {
-            const regex = /^[a-zA-Z ]+$/;
+        }
+
+        if (input.id === 'model' || input.id === 'manufacturer') {
+            const regex = /^[a-zA-Z0-9 ]+$/;
             if (!regex.test(value)) {
-                document.getElementById(errorId).innerText = errorMessages[input.id] || 'Invalid format';
+                $('#' + errorId).text(errorMessages[input.id] || 'Invalid format');
                 return false;
             }
-        } else if (input.id === 'wheel') {
+        } else if (input.id === 'wheel' || input.id === 'currentMileage' || input.id === 'capacity') {
             const regex = /^\d+$/;
-
-            if (!regex.test(value)) {
-                document.getElementById(errorId).innerText = errorMessages[input.id] || 'Invalid wheel format';
+            if (!regex.test(value) || parseInt(value) <= 0) {
+                $('#' + errorId).text(errorMessages[input.id] || 'Invalid format');
                 return false;
             }
         } else if (input.id === 'licensePlate') {
             const regex = /^GJ\d{2}[A-Za-z]{2}\d{4}$/;
-
             if (!regex.test(value.toString().toUpperCase())) {
-                document.getElementById(errorId).innerText = errorMessages[input.id] || 'Invalid License format';
+                $('#' + errorId).text(errorMessages[input.id] || 'Invalid License format');
                 return false;
             }
-        } else if (input.id === 'currentMileage' || input.id === 'capacity') {
-            const regex = /^\d+$/;
-            if (!regex.test(value)|| parseInt(value)<=0) {
-                document.getElementById(errorId).innerText = errorMessages[input.id] || 'Invalid format';
+        } else if (input.id === 'photo') {
+            const regex = /(\.jpg|\.jpeg|\.png)$/;
+            if (!regex.test(value)) {
+                $('#' + errorId).text(errorMessages[input.id] || 'Invalid format');
                 return false;
             }
-        }else if($('#fuelType').val()===""){
-            document.getElementById(errorId).innerText = errorMessages[input.id] || 'invalid format';
+        } else if ($('#fuelType').val() === "") {
+            $('#' + errorId).text(errorMessages[input.id] || 'Invalid format');
+            return false;
         }
+
         return true;
     }
     function getVehicleDetails(vehicleId){
@@ -466,10 +445,9 @@
                             }
                         })
                         images.push(...photos)
-
+                        bindImagesIntoTable(photos)
                     }
-                    console.log(response)
-                    bindImagesIntoTable(photos)
+
                 }
                 console.log("Get response success")
             },
@@ -481,79 +459,18 @@
 
     }
 
-    function saveChanges(photoId){
-        // var vehicleId = getParameterByName('vehicleId');
-        let vehicleId = getParameterByName('vehicleId');
-        console.log("add api call function")
-        var formData = new FormData();
-
-        // Append each key-value pair to the FormData object
-        formData.append('currentMileage', document.getElementById('currentMileage').value.trim());
-        formData.append('capacity', document.getElementById('capacity').value.trim());
-        formData.append('licensePlate', document.getElementById('licensePlate').value.trim());
-        formData.append('model', document.getElementById('model').value.trim());
-        formData.append('fuelType', document.getElementById('fuelType').value.trim());
-        formData.append('manufacturer', document.getElementById('manufacturer').value.trim());
-        formData.append('wheel', document.getElementById('wheel').value.trim());
-        var photoInput = document.getElementById('photo');
-
-        if (photoInput.files.length > 0) {
-            for (var i = 0; i < photoInput.files.length; i++) {
-                // Append each file with a unique key (e.g., 'photoFiles') to FormData
-                formData.append('photo', photoInput.files[i]);
-            }
-
-        }
-        /*else if (photoInput.files.length === 0) {
-            alert('Minimum 1 photo is required.');
-            return;
-        }*/
-
-        console.log("ffff", formData)
-        $.ajax({
-            type: 'PUT',
-            url: '/editVehicle?vehicleId='+vehicleId,
-            processData: false,  // Prevent jQuery from automatically processing the data
-            contentType: false,
-            // Prevent jQuery from automatically processing the data
-            // contentType: false,
-            //contentType: 'application/json',
-            /* headers: {
-                 'Content-Type': 'application/json',
-             },*/
-            data: formData,
-            success: function(response) {
-
-                console.log("post response success")
-                // Redirect to the desired page
-                window.location.reload()
-                window.location.href = '/vehiclelistTP';
-
-            },
-            error: function(xhr, status, error) {
-
-                console.log("post response error")
-                // Handle error
-            }
-        });
-
-    }
-
-
-
     // Function to delete a photo
     function deletePhoto(photoId,isNew){
 
-        console.log(images);
-        // Set the photoId to the hidden input in the modal
+
         $('#deleteId').val(photoId);
 
-        // Open the Bootstrap modal
+
         $('#deleteConfirmationModal').modal('show');
 
-        // Add a click event listener to the "Delete" button in the modal
+
         $('#confirmDeleteButton').click(function () {
-            // Close the modal
+
             $('#deleteConfirmationModal').modal('hide');
 
             if (isNew) {
@@ -567,9 +484,11 @@
                     type: 'DELETE',
                     url: '/deletePhoto?photoId=' + photoId,
                     success: function (response) {
-                        console.log('Photo deleted successfully');
-                        // Optionally, update the UI or refresh the table after deletion
-                        window.location.reload();
+                        let index = images.findIndex((data) => data.id == photoId);
+                        if (index != -1) {
+                            images.splice(index, 1)
+                            bindImagesIntoTable(images)
+                        }
                     },
                     error: function (xhr, status, error) {
                         console.error('Error deleting photo:', error);
@@ -581,20 +500,147 @@
     }
 
     function bindImagesIntoTable(item) {
+        console.log(item)
         let tableBody = $('#photoTableBody');
         tableBody.empty()
-        item.forEach((data) => {
-            let row = $('<tr>');
-            let imageUrl = data.isNew ? data.photoUrl : '/uploaded-files/' + data.photoUrl;
+        if(item && item.length > 0){
+            item.forEach((data) => {
+                let row = $('<tr>');
+                if(data.isNew){
+                    let imageUrl =data.photoUrl
 
-            row.append('<td><img src="' + imageUrl + '" alt="Photo" height="50%" width="50%"></td>');
-            row.append('<td><button class="btn btn-danger btn-delete" onclick="deletePhoto(' + data.id + ',' + data.isNew + ')" >Delete</button></td>');
-            row.append('<input type="hidden" class="photo-id " value="' + data.id + '">');
+                    row.append('<td><img src="' + imageUrl + '" alt="Photo" height="100px" width="150px"></td>');
+                    row.append('<td><button class="btn btn-danger btn-delete" onclick="deletePhoto(' + data.id + ',' + data.isNew + ')" >Delete</button></td>');
+                    row.append('<input type="hidden" class="photo-id " value="' + data.id + '">');
+                }else{
+                    var storageRef = storage.ref().child(data.photoUrl);
+                    storageRef.getDownloadURL().then(function(url) {
+                        row.append('<td><img src="' + url + '" alt="Photo" height="100px" width="150px"></td>');
+                        row.append('<td><button class="btn btn-danger btn-delete" onclick="deletePhoto(' + data.id + ',' + data.isNew + ')" >Delete</button></td>');
+                        row.append('<input type="hidden" class="photo-id " value="' + data.id + '">');
+
+                    }).catch(function(error) {
+                    });
+                }
+                tableBody.append(row);
+            });
+        }else{
+            let row = $('<tr class="text-center"><td colspan="2">No Photos</td></tr>');
             tableBody.append(row);
+        }
+
+
+
+
+    }
+
+    function getProfileDetails() {
+        $.ajax({
+            url: "/me",
+            type: "GET",
+            dataType: "json",
+            success: function (response) {
+                profile = response
+            },
+            error: function (xhr, status, error) {
+            }
+        });
+    }
+
+    function editVehicle() {
+        const inputs = ['capacity', 'model', 'fuelType', 'manufacturer', 'wheel', 'currentMileage', 'licensePlate', 'photo'];
+        let isValid = true;
+
+        inputs.forEach(inputId => {
+            const input = document.getElementById(inputId);
+            isValid = validateInput(input) && isValid;
         });
 
+        if (isValid) {
+            editApiCall();
+        }
+    }
+
+    function editApiCall() {
+        if(images.length <= 0){
+            alert("Select at least one image")
+        }else{
+            let newImages = images.filter((image) => image.isNew);
+            uploadFilesToFirebase(newImages).then((fileNames) => {
+                let vehicleId = getParameterByName('vehicleId');
+
+                let formDataObject = {};
+                formDataObject.currentMileage = $('#currentMileage').val().trim();
+                formDataObject.capacity = $('#capacity').val().trim();
+                formDataObject.licensePlate = $('#licensePlate').val().trim();
+                formDataObject.model = $('#model').val().trim();
+                formDataObject.fuelType = $('#fuelType').val().trim();
+                formDataObject.manufacturer = $('#manufacturer').val().trim();
+                formDataObject.wheel = $('#wheel').val().trim();
+                formDataObject.photos = fileNames
+
+                $.ajax({
+                    type: 'PUT',
+                    url: '/editVehicle?vehicleId='+vehicleId,
+                    contentType: 'application/json',
+                    data: JSON.stringify(formDataObject),
+                    success: function (response) {
+                        window.location.reload()
+                        window.location.href = '/vehiclelistTP';
+                    },
+                    error: function (xhr, status, error) {
+
+                        console.log("post response error")
+                        // Handle error
+                    }
+                });
+            })
+        }
 
 
+    }
+
+    function uploadFilesToFirebase(files) {
+        let fileNames = []
+        return new Promise((resolve, reject) => {
+            const promises = [];
+            files.forEach(file => {
+                const storageRef = storage.ref();
+                let fileName = "vehicles_images/truck_provider_" + profile.id + "_" + profile.firstName + "/" + file.id;
+                fileNames.push(fileName)
+                const imageRef = storageRef.child(fileName);
+                const uploadTask = imageRef.put(file.file);
+                promises.push(uploadTask);
+            });
+
+            Promise.all(promises)
+                .then(() => {
+                    resolve(fileNames);
+                })
+                .catch(error => {
+                    reject(error);
+                });
+        });
+    }
+    function validateFile(file) {
+        const maxSize = 3 * 1024 * 1024; // 3MB
+        const allowedTypes = ['image/jpeg', 'image/png', 'image/gif'];
+
+        if (!allowedTypes.includes(file.type)) {
+            alert('Only images are allowed (JPEG, PNG, GIF)');
+            return false;
+        }
+
+        if (file.size > maxSize) {
+            alert('Image size should be less than 3MB');
+            return false;
+        }
+
+        return true;
+    }
+
+    function cancel(){
+        window.location.href = "/vehiclelistTP"
     }
     /*]]>*/
 </script>

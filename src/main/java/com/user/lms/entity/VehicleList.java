@@ -1,5 +1,6 @@
 package com.user.lms.entity;
 
+import com.user.lms.models.VehicleAddEditRequestModel;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.Getter;
@@ -29,12 +30,22 @@ public class VehicleList {
     private String wheel;
 
 
-    @OneToMany(mappedBy = "vehicle", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "vehicle")
     private List<Photo> photos;
 
     @ManyToOne
     @JoinColumn(name = "truck_provider_id")
     private User driver;
-
+    public static VehicleList fromModel(VehicleAddEditRequestModel data) {
+        VehicleList vehicle = new VehicleList();
+        vehicle.setModel(data.getModel());
+        vehicle.setLicensePlate(data.getLicensePlate());
+        vehicle.setCapacity(Integer.parseInt(data.getCapacity()));
+        vehicle.setManufacturer(data.getManufacturer());
+        vehicle.setFuelType(data.getFuelType());
+        vehicle.setCurrentMileage(Integer.parseInt(data.getCurrentMileage()));
+        vehicle.setWheel(data.getWheel());
+        return vehicle;
+    }
 
 }

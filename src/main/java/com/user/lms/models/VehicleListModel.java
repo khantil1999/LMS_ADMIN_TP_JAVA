@@ -7,6 +7,7 @@ import jakarta.validation.constraints.*;
 import lombok.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -36,7 +37,7 @@ public class VehicleListModel {
 
     private String wheel;
 
-    private MultipartFile[] photo;
+    private List<String> photos = new ArrayList<>();
 
 
 

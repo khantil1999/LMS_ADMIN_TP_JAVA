@@ -336,24 +336,16 @@
         $('#userEmail').html(`<strong>Email:</strong> ${booking.user.email}`);
         $('#userMobile').html(`<strong>Mobile No:</strong> ${booking.user.mobileNo}`);
 
-        let status = '';
+        let status = booking.status;
         let statusClass = '';
-        if (!booking.isTPApproved) {
-            status = 'Not Approved By Provider';
+        if(booking.status === "Completed"){
+            statusClass = 'badge-success';
+        }
+        else if(booking.status === "Cancel"){
+            statusClass = 'badge-danger';
+        }
+        else{
             statusClass = 'badge-warning';
-        } else if (booking.isTPApproved && !booking.isCustApproved) {
-            status = 'Not Approved By Customer';
-            statusClass = 'badge-warning';
-        } else {
-            const bookingDate = new Date(booking.bookingDate);
-            const currentDate = new Date();
-            if (bookingDate < currentDate) {
-                status = 'Completed';
-                statusClass = 'badge-success';
-            } else {
-                status = 'Pending';
-                statusClass = 'badge-primary';
-            }
         }
         //
         $('#status').html(`<strong>Status</strong>: <span class="badge ${statusClass}">${status}</span>`);

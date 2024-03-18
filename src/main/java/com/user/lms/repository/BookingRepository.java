@@ -32,20 +32,24 @@ public interface BookingRepository extends JpaRepository<Booking,Long> {
     @Query(value = "SELECT * FROM booking WHERE booking_date BETWEEN :startDate AND :endDate", nativeQuery = true)
     List<Booking> getBookingsByDate(String startDate, String endDate);
 
-    @Query("SELECT b from Booking b where b.driver.id =:id and b.isTPApproved =:isTpApproved and b.bookingDate BETWEEN :startDate AND :endDate  ")
-    List<Booking> getAllBookingByTpWithDate(Long id, Boolean isTpApproved, Date startDate, Date endDate);
+    @Query("SELECT b from Booking b where b.driver.id =:id " +
+            "and b.isTPApproved =:isTpApproved" +
+            " and (b.status =:cancelStatus or b.status =:completeStatus) " +
+            "and b.bookingDate BETWEEN :startDate AND :endDate  ")
+    List<Booking> getAllBookingByTpWithDate(Long id, Boolean isTpApproved, Date startDate, Date endDate, BookingStatus cancelStatus,BookingStatus completeStatus);
 
-    @Query("SELECT b from Booking b where b.driver.id =:id and b.isTPApproved =:isTpApproved")
-    List<Booking> getAllBookingByTp(Long id, Boolean isTpApproved);
+    @Query("SELECT b from Booking b where b.driver.id =:id and b.isTPApproved =:isTpApproved and (b.status =:cancelStatus or b.status =:completeStatus) ")
+    List<Booking> getAllBookingByTp(Long id, Boolean isTpApproved,BookingStatus cancelStatus,BookingStatus completeStatus);
 
 
     @Query("SELECT b FROM Booking b WHERE b.driver.id = :id " +
-            "AND (:status IS NULL OR (b.status IS NOT NULL AND b.status <> :completedStatus)) " +
+            "AND (b.status IS NULL OR (b.status <> :completedStatus AND b.status <> :canceledStatus)) " +
             "AND (:status IS NULL OR b.status = :status) " +
             "AND (:startDate IS NULL OR :endDate IS NULL OR b.bookingDate BETWEEN :startDate AND :endDate)")
     List<Booking> findByDriverAndStatusAndBookingDateBetween(@Param("id") Long driverId,
                                                              @Param("status") BookingStatus status,
                                                              @Param("completedStatus") BookingStatus completedStatus,
+                                                             @Param("canceledStatus") BookingStatus canceledStatus,
                                                              @Param("startDate") Date startDate,
                                                              @Param("endDate") Date endDate);
 

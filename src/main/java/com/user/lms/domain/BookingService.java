@@ -184,10 +184,10 @@ public class BookingService {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         User user = this.userRepository.findByEmail(principal.getName(), true);
         if (startDate != null && !startDate.isEmpty() && endDate != null && !endDate.isEmpty()) {
-            return this.bookingRepository.findByDriverAndStatusAndBookingDateBetween(user.getId(),status, BookingStatus.COMPLETED, dateFormat.parse(startDate),dateFormat.parse(endDate))
+            return this.bookingRepository.findByDriverAndStatusAndBookingDateBetween(user.getId(),status, BookingStatus.COMPLETED,BookingStatus.CANCEL, dateFormat.parse(startDate),dateFormat.parse(endDate))
                     .stream().map(BookingModel::fromEntity).collect(Collectors.toList());
         }
-        return this.bookingRepository.findByDriverAndStatusAndBookingDateBetween(user.getId(),status, BookingStatus.COMPLETED, null,null)
+        return this.bookingRepository.findByDriverAndStatusAndBookingDateBetween(user.getId(),status, BookingStatus.COMPLETED,BookingStatus.CANCEL, null,null)
                 .stream().map(BookingModel::fromEntity).collect(Collectors.toList());
     }
 
@@ -199,7 +199,7 @@ public class BookingService {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         User user = this.userRepository.findByEmail(principal.getName(), true);
         if (user != null) {
-            return this.bookingRepository.getAllBookingByTpWithDate(user.getId(),isTpApproved,  dateFormat.parse(startDate),dateFormat.parse(endDate))
+            return this.bookingRepository.getAllBookingByTpWithDate(user.getId(),isTpApproved,  dateFormat.parse(startDate),dateFormat.parse(endDate),BookingStatus.CANCEL,BookingStatus.COMPLETED)
                     .stream().map(BookingModel::fromEntity).collect(Collectors.toList());
         }
         return Collections.emptyList();
@@ -212,7 +212,7 @@ public class BookingService {
         }
         User user = this.userRepository.findByEmail(principal.getName(), true);
         if (user != null) {
-            return this.bookingRepository.getAllBookingByTp(user.getId(),isTpApproved)
+            return this.bookingRepository.getAllBookingByTp(user.getId(),isTpApproved,BookingStatus.CANCEL,BookingStatus.COMPLETED)
                     .stream().map(BookingModel::fromEntity).collect(Collectors.toList());
         }
         return Collections.emptyList();

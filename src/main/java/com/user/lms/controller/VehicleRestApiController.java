@@ -1,6 +1,7 @@
 package com.user.lms.controller;
 
 import com.user.lms.domain.VehicleListService;
+import com.user.lms.models.VehicleAddEditRequestModel;
 import com.user.lms.models.VehicleDetailsModel;
 import com.user.lms.models.VehicleListModel;
 import jakarta.servlet.ServletOutputStream;
@@ -21,6 +22,7 @@ import org.xhtmlrenderer.pdf.ITextRenderer;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.security.Principal;
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -71,29 +73,17 @@ public class VehicleRestApiController {
     public VehicleDetailsModel getVehicleDetailsById(@RequestParam("vehicleId") String vehicleId){
         return this.vehicleListService.getVehicleById(vehicleId);
     }
-    @PostMapping(value = "/addVehicle",consumes =  MediaType.MULTIPART_FORM_DATA_VALUE)
-    public String addVehicle(@Valid @ModelAttribute VehicleListModel vehicleListModel, @RequestParam("photo") List<MultipartFile> photoFiles,
+    @PostMapping(value = "/addVehicle")
+    public String addVehicle(@RequestBody VehicleAddEditRequestModel vehicleAddEditRequestModel,
                              Principal principal) throws IOException {
 
-        System.out.println("this is controller for adding the details");
-
-        System.out.println(vehicleListModel);
-        // Save the vehicle and photos to the database
-        return vehicleListService.saveVehicle(vehicleListModel,photoFiles,principal,false, null);
+        return vehicleListService.saveVehicle(vehicleAddEditRequestModel, principal);
     }
-    @PutMapping(value = "/editVehicle" ,consumes =  MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<String> updateVehicle(@RequestParam("vehicleId") String vehicleId,
-                                                @Valid @ModelAttribute VehicleListModel vehicleListModel,
-                                                @RequestParam(value = "photo",required = false) List<MultipartFile> photoFiles,
+    @PutMapping(value = "/editVehicle" )
+    public String updateVehicle(@RequestParam("vehicleId") String vehicleId,
+                                                @RequestBody VehicleAddEditRequestModel vehicleAddEditRequestModel,
                                                 Principal principal) {
-        try {
-            // Use your service method to update the vehicle details
-            vehicleListService.saveVehicle(vehicleListModel,photoFiles,principal,true,vehicleId);
-            return ResponseEntity.ok("Vehicle updated successfully");
-        } catch (Exception e) {
-            e.printStackTrace(); // Log the exception for debugging purposes
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error updating vehicle");
-        }
+            return vehicleListService.editVehicle(vehicleId, vehicleAddEditRequestModel, principal);
     }
 
     @GetMapping("/exportVehicle")
@@ -146,5 +136,10 @@ public class VehicleRestApiController {
             e.printStackTrace();
             return new byte[0]; // Placeholder, replace with actual error handling
         }
+    }
+
+    @GetMapping("/vehiclesByTp")
+    public List<VehicleDetailsModel> loadVehiclesByTp(Principal principal){
+        return this.vehicleListService.loadVehiclesByTp(principal);
     }
 }

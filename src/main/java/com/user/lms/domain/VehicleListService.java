@@ -32,7 +32,7 @@ public class VehicleListService {
     private VehicleListRepository vehicleListRepository;
 
     @Autowired
-    private  PhotoRepository photoRepository;
+    private PhotoRepository photoRepository;
 
     @Autowired
     private UserRepository userRepository;
@@ -45,18 +45,18 @@ public class VehicleListService {
 
     public List<VehicleDetailsModel> getAllVehicles() {
         // Fetch the list of vehicles from the database
-        List<VehicleList> vehicleList= vehicleListRepository.findAll();
+        List<VehicleList> vehicleList = vehicleListRepository.findAll();
         List<VehicleDetailsModel> detailsModels = new ArrayList<>();
         vehicleList.forEach(vehicle -> {
-            VehicleDetailsModel vehicleDetailsModel=new VehicleDetailsModel();
+            VehicleDetailsModel vehicleDetailsModel = new VehicleDetailsModel();
 
             List<Photo> photos = this.photoRepository.getPhotoByVehicle(String.valueOf(vehicle.getId()));
 
-            List<PhotoModel> photoModels =  photos.stream().map(photo -> {
+            List<PhotoModel> photoModels = photos.stream().map(photo -> {
                 PhotoModel photoModel = new PhotoModel();
                 photoModel.setPhotoUrl(photo.getPath());
                 photoModel.setId(photo.getId());
-                return  photoModel;
+                return photoModel;
             }).toList();
 
             vehicleDetailsModel.setId(vehicle.getId());
@@ -88,22 +88,24 @@ public class VehicleListService {
         this.photoRepository.deleteById(photoId);
 
     }
+
     public long countVehicle() {
         // TODO Auto-generated method stub
         return vehicleListRepository.countVehicles();
     }
+
     @Transactional
-    public String saveVehicle(@Valid @ModelAttribute VehicleListModel vehicleListModel,
-                            List<MultipartFile> photoFiles, Principal principal,Boolean isUpdate, String vehicleId) throws IOException {
+    public String saveVehicle(VehicleListModel vehicleListModel,
+                              List<MultipartFile> photoFiles, Principal principal, Boolean isUpdate, String vehicleId) throws IOException {
 
         System.out.println("This is service class for adding vehicle details in db");
 
         try {
-            if(!isUpdate) {
+            if (!isUpdate) {
                 if (vehicleListModel == null || photoFiles == null || photoFiles.isEmpty()) {
                     throw new IllegalArgumentException("Invalid input parameters");
                 }
-            }else{
+            } else {
                 if (vehicleListModel == null) {
                     throw new IllegalArgumentException("Invalid input parameters");
                 }
@@ -120,7 +122,7 @@ public class VehicleListService {
             vehicleList.setCurrentMileage(vehicleListModel.getCurrentMileage());
             vehicleList.setModel(vehicleListModel.getModel());
             vehicleList.setDriver(user);
-            if(isUpdate){
+            if (isUpdate) {
                 vehicleList.setId(Long.parseLong(vehicleId));
             }
             VehicleList savedVehicle = vehicleListRepository.saveAndFlush(vehicleList);
@@ -157,26 +159,69 @@ public class VehicleListService {
 
             }
             return "/addVehicle";
-        }catch(Exception e){
-             e.printStackTrace();
-           return "/addVehicle";
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "/addVehicle";
         }
     }
 
 
-    public VehicleDetailsModel getVehicleById(String id){
-        Optional<VehicleList> optionalVehicle =  this.vehicleListRepository.findById(Long.parseLong(id));
+    public String saveVehicle(VehicleAddEditRequestModel requestModel, Principal principal) {
+        User user = this.userRepository.findExistingUser(principal.getName());
+        if (user != null) {
+            VehicleList vehicle = VehicleList.fromModel(requestModel);
+            vehicle.setDriver(user);
+            vehicle = this.vehicleListRepository.saveAndFlush(vehicle);
+            VehicleList finalVehicle = vehicle;
+            List<Photo> photos = requestModel.getPhotos().stream().map(name -> {
+                Photo photo = new Photo();
+                photo.setPath(name);
+                photo.setVehicle(finalVehicle);
+                photo.setTruckProvider(user);
+                return photo;
+            }).toList();
+            this.photoRepository.saveAllAndFlush(photos);
+        }
+        return "Done";
+    }
+
+    public String editVehicle(String vehicleId, VehicleAddEditRequestModel requestModel, Principal principal) {
+        User user = this.userRepository.findExistingUser(principal.getName());
+        VehicleList existingVehicle = this.vehicleListRepository.getReferenceById(Long.parseLong(vehicleId));
+        if (user != null && existingVehicle != null) {
+            VehicleList vehicle = VehicleList.fromModel(requestModel);
+            vehicle.setDriver(user);
+            vehicle.setId(existingVehicle.getId());
+            vehicle = this.vehicleListRepository.saveAndFlush(vehicle);
+            VehicleList finalVehicle = vehicle;
+
+            if(!requestModel.getPhotos().isEmpty()){
+                List<Photo> photos = requestModel.getPhotos().stream().map(name -> {
+                    Photo photo = new Photo();
+                    photo.setPath(name);
+                    photo.setVehicle(finalVehicle);
+                    photo.setTruckProvider(user);
+                    return photo;
+                }).toList();
+                this.photoRepository.saveAllAndFlush(photos);
+            }
+        }
+        return "Done";
+    }
+
+    public VehicleDetailsModel getVehicleById(String id) {
+        Optional<VehicleList> optionalVehicle = this.vehicleListRepository.findById(Long.parseLong(id));
 
         List<Photo> photos = this.photoRepository.getPhotoByVehicle(id);
 
-        if(optionalVehicle.isPresent()){
-             List<PhotoModel> photoModels =  photos.stream().map(photo -> {
-                 PhotoModel photoModel = new PhotoModel();
-                 photoModel.setPhotoUrl(photo.getPath());
-                 photoModel.setId(photo.getId());
-                 return  photoModel;
-             }).toList();
-            VehicleList vehicle =   optionalVehicle.get();
+        if (optionalVehicle.isPresent()) {
+            List<PhotoModel> photoModels = photos.stream().map(photo -> {
+                PhotoModel photoModel = new PhotoModel();
+                photoModel.setPhotoUrl(photo.getPath());
+                photoModel.setId(photo.getId());
+                return photoModel;
+            }).toList();
+            VehicleList vehicle = optionalVehicle.get();
 
             VehicleDetailsModel vehicleDetailsModel = new VehicleDetailsModel();
             vehicleDetailsModel.setId(vehicle.getId());
@@ -202,8 +247,17 @@ public class VehicleListService {
             vehicleDetailsModel.setCurrentMileage(vehicle.getCurrentMileage());
             vehicleDetailsModel.setFuelType(vehicle.getFuelType());
 
-            return  vehicleDetailsModel;
+            return vehicleDetailsModel;
         }
         return null;
+    }
+
+    public List<VehicleDetailsModel> loadVehiclesByTp(Principal principal) {
+        User user = this.userRepository.findExistingUser(principal.getName());
+        if (user != null) {
+            return this.vehicleListRepository.getVehicleListByTP(user.getId()).stream()
+                    .map(VehicleDetailsModel::fromEntity).collect(Collectors.toList());
+        }
+        return Collections.emptyList();
     }
 }
