@@ -20,7 +20,22 @@
 
   <!-- Custom styles for this template-->
   <link href="/css/sb-admin-2.min.css" rel="stylesheet">
-
+  <style>
+    .buttons-container {
+      display: flex;
+      column-gap: 10px;
+    }
+    .pdf-button{
+      background: #e74a3b !important;
+      border: #e74a3b !important;
+      color: white !important;
+    }
+    .add-btn{
+      background: #4e73df !important;
+      border: #4e73df !important;
+      color: white !important;
+    }
+  </style>
 </head>
 
 <body id="page-top">
@@ -142,59 +157,18 @@
           <div class="row col-md-20">
             <h2>List of Registered Laborers</h2>
           </div>
-          <form
-                  th:action="@{/laborerslistTP}"
-                  method="get">
-            <div style="
-                            display: flex;
-                            justify-content: flex-end;
-                            gap: 10px;">
-              <div class="form-group" style="align-self: self-end;">
-                <button type="button" class="btn btn-outline-primary btn-xs" id="add" onclick="addLaborers()"
-                    style="color:white; background-color: #7784d6;">Add</button>
-              </div>
-              <div class="form-group" style="align-self: self-end;">
-                <button type="button" id="exportBtn" class="btn btn-outline-primary btn-xs" style="color:white;
-		                    background-color: #7784d6;">Export</button>
-              </div>
-            </div>
-          </form><br>
-          <table class="table table-bordered table-hover">
+
+          <table  id="labourTable" class="table table-bordered table-hover">
             <thead class="table-dark" style="background-color: #7784d6;">
             <tr>
               <th>First Name</th>
               <th>Last Name</th>
               <th>Mobile No</th>
               <th>Email</th>
-              <th>Edit</th>
-              <th>Delete</th>
+              <th>Action</th>
             </tr>
             </thead>
-            <tbody>
-            <tr th:each = "user : ${users}">
-              <td th:text = "${user.firstName}"></td>
-              <td th:text = "${user.lastName}"></td>
-              <td th:text = "${user.mobileNo}"></td>
-              <td th:text = "${user.email}"></td>
-              <td class="text-center">
-                <button class="btn btn-outline-primary btn-xs edit-button"
-                        th:attr="data-user-id=${user.id}"
-                        onclick="editLabour(this.getAttribute('data-user-id'))"
-                        style="color:white; background-color: #7784d6;">Edit</button>
-              </td>
-              <td class="text-center">
-                <a
-
-                        class="btn btn-outline-primary btn-xs"
-                        data-toggle="modal"
-                        data-target="#deleteModal"
-                        th:attr="data-user-id=${user.id}"
-                        th:onclick="|deleteLaborers('${user.id}')|"
-
-                        style="color:white;
-                         background-color: #7784d6;">Delete</a>
-              </td>
-            </tr>
+            <tbody id="labourTableBody">
             </tbody>
           </table>
         </div>
@@ -322,12 +296,27 @@
 <script src="/js/sb-admin-2.min.js"></script>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+<link href="https://cdn.datatables.net/v/dt/dt-2.0.2/b-3.0.1/datatables.min.css" rel="stylesheet">
+
+<script src="https://cdn.datatables.net/v/dt/dt-2.0.2/b-3.0.1/datatables.min.js"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/buttons/1.3.1/js/dataTables.buttons.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/buttons/1.3.1/js/buttons.html5.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
 
 
 <!-- Bootstrap Modal -->
 
 
 <script th:inline="javascript">
+  let profile
+  $(document).ready(function (){
+    getProfileDetails()
+  })
   document.addEventListener('DOMContentLoaded', function() {
     const inputFields = document.querySelectorAll('#addLaborerForm input');
     inputFields.forEach(input => {
@@ -339,41 +328,6 @@
       input.addEventListener('blur', () => {
         validateInput(input);
       });
-    });
-  });
-  $('#exportBtn').click(function() {
-
-    // Make an AJAX request to fetch data based on the date range
-    $.ajax({
-      method: 'GET',
-      url: '/exportLabourer',
-      success: function(data) {
-        // Handle the success response and display the data
-        var blob = new Blob([data], { type: "application/pdf" });
-
-        // Create a link element
-        var link = document.createElement("a");
-
-        // Set the download attribute with the desired file name
-        link.download = "labourer_report.pdf";
-
-        // Create a URL for the Blob and set it as the link's href
-        link.href = window.URL.createObjectURL(blob);
-
-        // Append the link to the document
-        document.body.appendChild(link);
-
-        // Trigger a click on the link to start the download
-        link.click();
-
-        // Remove the link from the document
-        document.body.removeChild(link);
-
-      },
-      error: function(error) {
-        // Handle the error response
-        console.error("Error fetching data:", error);
-      }
     });
   });
   function addLaborer() {
@@ -422,7 +376,7 @@
         return false;
       }
     } else if (input.id === 'mobile-number') {
-      const regex = /^(?!.*(\d).*\1)[6789]\d{9}$/;
+      const regex = /^\d{10}$/;
       if (!regex.test(value)) {
         document.getElementById(errorId).innerText = errorMessages[input.id] || 'Invalid format';
         return false;
@@ -447,12 +401,12 @@
       firstName: document.getElementById('first-name').value.trim(),
       lastName: document.getElementById('last-name').value.trim(),
       email: document.getElementById('email').value.trim(),
-      mobileNumber: document.getElementById('mobile-number').value.trim()
+      mobile: document.getElementById('mobile-number').value.trim()
     };
 
     $.ajax({
       type: 'POST',
-      url: '/addLabour',
+      url: '/labour',
       contentType: 'application/json',
       data: JSON.stringify(formData),
       success: function(response) {
@@ -472,13 +426,13 @@
       firstName: document.getElementById('first-name').value.trim(),
       lastName: document.getElementById('last-name').value.trim(),
       email: document.getElementById('email').value.trim(),
-      mobileNumber: document.getElementById('mobile-number').value.trim(),
+      mobile: document.getElementById('mobile-number').value.trim(),
       id: document.getElementById('user-id').value.trim()
     };
 
     $.ajax({
       type: 'PUT',
-      url: '/editLabour',
+      url: '/labour/'+formData.id,
       contentType: 'application/json',
       data: JSON.stringify(formData),
       success: function(response) {
@@ -502,13 +456,13 @@
   function fetchLabourData(userId) {
     $.ajax({
       type: 'GET',
-      url: '/getLabour?userId=' + userId, // Replace this with the actual endpoint to fetch labor data
+      url: '/labour/' + userId, // Replace this with the actual endpoint to fetch labor data
       success: function(response) {
         $('#user-id').val(response.id); // Set the user ID in the hidden field
         $('#first-name').val(response.firstName);
         $('#last-name').val(response.lastName);
         $('#email').val(response.email);
-        $('#mobile-number').val(response.mobileNumber);
+        $('#mobile-number').val(response.mobile);
         $('#addBtn').text("Edit")
         $('#addEditLaborsModel').text("Edit Laborers")
         addLaborers()
@@ -539,7 +493,7 @@
     console.log(userId);
     $.ajax({
       type: 'DELETE',
-      url: '/labour?userId=' + userId, // Replace this with the actual endpoint to fetch labor data
+      url: '/labour' + userId, // Replace this with the actual endpoint to fetch labor data
       success: function(response) {
         window.location.reload();
       },
@@ -549,6 +503,85 @@
       }
     });
   }
+
+  function getProfileDetails() {
+    $.ajax({
+      url: "/me",
+      type: "GET",
+      dataType: "json",
+      success: function (response) {
+        profile = response
+        fetchLaborersData(profile.id)
+      },
+      error: function (xhr, status, error) {
+      }
+    });
+  }
+
+  function fetchLaborersData(tpId) {
+    $.ajax({
+      type: 'GET',
+      url: '/labours?truckProviderId='+tpId,
+      success: function(data) {
+        // Clear existing table body
+        $('#labourTableBody').empty();
+
+        // Iterate through the fetched data and append rows to the table
+        $.each(data, function(index, labourer) {
+          var row = '<tr>';
+          row += '<td>' + labourer.firstName + '</td>';
+          row += '<td>' + labourer.lastName + '</td>';
+          row += '<td>' + labourer.mobile + '</td>';
+          row += '<td>' + labourer.email + '</td>';
+          row += '<td>' +
+                  '<button class="btn btn-primary btn-sm edit-btn" data-id="' + labourer.id + '" onclick="editLabour($(this).data(\'id\'))">' +
+                  '<i class="fas fa-edit"></i>' +
+                  '</button> ' +
+                  '<button class="btn btn-danger btn-sm delete-btn" data-id="' + labourer.id + '" onclick="deleteLabour($(this).data(\'id\'))">' +
+                  '<i class="fas fa-trash-alt"></i>' +
+                  '</button>' +
+                  '</td>';
+          row += '</tr>';
+          $('#labourTableBody').append(row);
+        });
+
+        $('#labourTable').DataTable({
+          "dom": '<"top align-items-start d-flex justify-content-between"<"buttons-container"fl>B>rt<"bottom align-items-start d-flex justify-content-between"ip><"clear">',
+          "paging": true,
+          "searching": true,
+          "buttons": [
+            {
+              extend: 'pdf',
+              text: '<i class="fas fa-file-pdf"></i>',
+              className: 'btn pdf-button',
+              titleAttr: 'Export to PDF',
+              title: 'Labour List',
+              customize: function (doc) {
+
+                doc.content[1].table.body.forEach(row => {
+                  row.splice(4); // Keep only the first 7 columns
+                });
+
+              }
+            },
+            {
+              text: '<i class="fas fa-plus"></i>',
+              className: 'btn add-btn',
+              titleAttr: 'Add Labour',
+              action: function (e, dt, node, config) {
+                addLaborers()
+              }
+            }
+          ]
+
+        });
+      },
+      error: function(xhr, status, error) {
+        console.error('Failed to fetch laborers:', error);
+      }
+    });
+  }
+
 </script>
 </body>
 

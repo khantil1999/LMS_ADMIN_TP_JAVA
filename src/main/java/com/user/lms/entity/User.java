@@ -53,4 +53,6 @@ public class User {
 	@OneToOne(mappedBy = "truckProvider",fetch=FetchType.EAGER)
 	private QrCode qrCode;
 
+	@OneToMany(mappedBy = "user",fetch=FetchType.EAGER)
+	private List<Labour> labours = new ArrayList<>();
 }

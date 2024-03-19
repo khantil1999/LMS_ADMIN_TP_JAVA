@@ -166,6 +166,7 @@
                             <th>Fuel Type</th>
                             <th>Current Mileage</th>
                             <th>Wheel</th>
+                            <th>Truck Provider</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -228,14 +229,17 @@
     let table;
     let vehicles = [];
     $(document).ready(function () {
+
         loadAllVehicles()
     });
-    function loadAllVehicles() {
+    function loadAllVehicles(tpId = '0') {
+
         $.ajax({
             type: 'GET',
-            url: '/vehicles/admin',
+            url: '/vehicles/admin?truck_provider_id='+tpId,
             success: function (response) {
                 vehicles = response;
+                $('#vehicleTable tbody').empty();
                 $.each(response, function(index, vehicle) {
                     $('#vehicleTable tbody').append(
                         '<tr>' +
@@ -247,11 +251,18 @@
                         '<td>' + vehicle.fuelType + '</td>'+
                         '<td>' + vehicle.currentMileage + '</td>'+
                         '<td>' + vehicle.wheel + '</td>'+
+                        '<td>' + vehicle.truckProvider.firstName +" " + vehicle.truckProvider.lastName + '</td>'+
                         '</tr>'
                     );
                 });
+                if ($.fn.DataTable.isDataTable('#vehicleTable')) {
+                    // If DataTable exists, destroy it before reinitializing
+                    $('#vehicleTable').DataTable().destroy();
+                }
+
+
                 let table = $('#vehicleTable').DataTable({
-                    "dom": '<"top align-items-start d-flex justify-content-between"<"buttons-container"fl>B>rt<"bottom align-items-start d-flex justify-content-between"ip><"clear">',
+                    "dom": '<"top align-items-start d-flex justify-content-between"<"buttons-container"fl<"dropdown-container">>B>rt<"bottom align-items-start d-flex justify-content-between"ip><"clear">',
                     "paging": true,
                     "searching": true,
                     "buttons": [{
@@ -266,10 +277,17 @@
                         orderable: false,
                         "searchable": false,
 
-                    }]
-                });
+                    }],
+                    "language": {
+                        "search": "",
+                        "searchPlaceholder": "Search...",
+                        "lengthMenu": "_MENU_",
+                        "info": "Showing _START_ to _END_ of _TOTAL_ entries"
 
-                table.on('click', 'td.dt-control', async function (e) {
+                    }
+                });
+                loadAllTPs(tpId)
+                $('#vehicleTable').on('click', 'td.dt-control', async function (e) {
                    let id =  e.target.id || null
 
                     let photos = [];
@@ -283,11 +301,10 @@
                     let row = table.row(tr);
 
                     if (row.child.isShown()) {
-                        // This row is already open - close it
-                        row.child.hide();
+                        row.child.remove();
+
                     }
                     else {
-                        // Open this row
                         row.child(await getPhotoRow(photos, row.data())).show();
                     }
                 });
@@ -343,7 +360,38 @@
             '</table>'
         );
     }
+    function loadAllTPs(tpId){
+        $.ajax({
+            url: '/truckProvider/admin',
+            method: 'GET',
+            success: function(response) {
+                var selectDropdown = $('<select onchange="onTpSelect(this)" class="form-control form-select" id="myDropdown"></select>');
 
+
+                selectDropdown.append(  $('<option value="' + 0 + '">' + 'All Truck Provider' + '</option>'));
+                $.each(response, function(index, user) {
+                    var optionText = user.firstName + ' ' + user.lastName;
+                    var optionValue = user.id;
+
+                    var option = $('<option value="' + optionValue + '">' + optionText + '</option>');
+                    selectDropdown.append(option);
+                });
+
+                $('.dropdown-container').append(selectDropdown);
+                if(tpId !== 0){
+                    $('#myDropdown').val(tpId)
+                }
+
+            },
+            error: function(xhr, status, error) {
+                console.error("Error fetching data:", error);
+            }
+        });
+    }
+
+    function onTpSelect(data){
+        loadAllVehicles($(data).val())
+    }
 
 
 
