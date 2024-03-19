@@ -75,6 +75,10 @@
 </head>
 
 <body id="page-top">
+<script src="https://www.gstatic.com/firebasejs/8.2.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.1.2/firebase-firestore.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.1.2/firebase-storage.js"></script>
+<script src="/js/firebase-config.js"></script>
 <div id="wrapper">
     <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
         <a class="sidebar-brand d-flex align-items-center justify-content-center" th:href="@{/home}">
@@ -154,6 +158,7 @@
                     <table id="vehicleTable" class="table table-bordered table-hover">
                         <thead class="table-dark" style="background-color: #7784d6;">
                         <tr>
+                            <th></th>
                             <th>Model</th>
                             <th>License Plate</th>
                             <th>Capacity</th>
@@ -219,7 +224,9 @@
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
 <script th:inline="javascript">
+    const storage = firebase.storage();
     let table;
+    let vehicles = [];
     $(document).ready(function () {
         loadAllVehicles()
     });
@@ -228,10 +235,11 @@
             type: 'GET',
             url: '/vehicles/admin',
             success: function (response) {
-                // Populate the table with data
+                vehicles = response;
                 $.each(response, function(index, vehicle) {
                     $('#vehicleTable tbody').append(
                         '<tr>' +
+                        '<td id="' + vehicle.id + '" class="dt-control"></td>'+
                         '<td>' + vehicle.model + '</td>' +
                         '<td>' + vehicle.licensePlate + '</td>' +
                         '<td>' + vehicle.capacity + '</td>' +
@@ -252,24 +260,92 @@
                         className: 'btn pdf-button',
                         titleAttr: 'Export to PDF',
                         title: 'Vehicle List'
+                    }],
+                    "columnDefs": [{
+                        "targets": 0,
+                        orderable: false,
+                        "searchable": false,
+
                     }]
                 });
 
-                // Customize PDF export
-                table.on('buttons-callback', function(buttons, pdfHtml, buttonCommon) {
-                    if (buttons[0].textStr === 'pdf') {
-                        pdfHtml = pdfHtml.replace(/<input.*?approval-cell.*?>/g, function(match) {
-                            return $(match).is(':checked') ? 'true' : 'false';
-                        });
-                        return pdfHtml;
+                table.on('click', 'td.dt-control', async function (e) {
+                   let id =  e.target.id || null
+
+                    let photos = [];
+                    if(id){
+                        let vehicle = vehicles.find((ve) => ve.id == id);
+                        if(vehicle && vehicle.photo){
+                            photos = vehicle.photo
+                        }
+                    }
+                    let tr = e.target.closest('tr');
+                    let row = table.row(tr);
+
+                    if (row.child.isShown()) {
+                        // This row is already open - close it
+                        row.child.hide();
+                    }
+                    else {
+                        // Open this row
+                        row.child(await getPhotoRow(photos, row.data())).show();
                     }
                 });
+
             },
             error: function (error) {
                 console.error(error);
             }
         });
     }
+    async function getPhotoRow(photos, d) {
+        var photoCell = $('<td>');
+
+        if (photos && photos.length > 0) {
+            try {
+                var urls = await Promise.all(photos.map((photo) => {
+                    var storageRef = storage.ref().child(photo.photoUrl);
+                    return storageRef.getDownloadURL();
+                }));
+
+                urls.forEach((url, index) => {
+                    var thumbnail = $('<img>').attr('src', url)
+                        .attr('alt', 'Vehicle Photo')
+                        .addClass('img-thumbnail')
+                        .css({'max-width': '100px', 'max-height': '100px'});
+                    var div = $('<div>').append(thumbnail);
+
+                    // Apply margin to the div except for the first one
+                    if (index > 0) {
+                        div.css('margin-top', '10px');
+                    }
+
+                    photoCell.append(div);
+                });
+            } catch (error) {
+                console.error('Error generating download URL:', error);
+            }
+        } else {
+            // If no photos available, display a message centered
+            photoCell.css('text-align', 'center').text('No photos available');
+        }
+
+        return (
+            '<table class="table table-bordered">' +
+            '<tbody>' +
+            '<tr>' +
+            '<th>Photo</th>' +
+            '</tr>' +
+            '<tr>' +
+            '<td>' + photoCell.html() + '</td>' + // Append the photo thumbnails or message to the <td> element
+            '</tr>' +
+            '</tbody>' +
+            '</table>'
+        );
+    }
+
+
+
 
 
 </script>
