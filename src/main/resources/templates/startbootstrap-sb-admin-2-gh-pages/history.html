@@ -19,12 +19,10 @@
 
     <!-- Custom styles for this template-->
     <link href="css/sb-admin-2.min.css" rel="stylesheet">
-   
-    <title>Improvely</title>
 
-    <link rel="shortcut icon" type="image/png" href="/images/icon-64.png">
+  <!--  <link rel="shortcut icon" type="image/png" href="/images/icon-64.png">-->
     
-    <script type="text/javascript">
+    <!--<script type="text/javascript">
     window._wl = false;
 
     var userprefs = {
@@ -38,95 +36,80 @@
       plan_id: 3,
       columns: ''
     };
-    </script>
+    </script>-->
 
 
 
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
-    <!--[if lt IE 9]>
-      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-      <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
-    <![endif]-->
-    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-    <script>
-        $(function() {
-
-            $('#left-side-nav-toggle').click(function() {
-                if ($('#left-side-nav').hasClass('minimized')) {
-
-                    $('#left-side-nav').removeClass('minimized');
-                    $('#left-side-nav-toggle').removeClass('minimized').html('<i class="fa fa-chevron-left"></i>');
-                    $('#content-fixed').removeClass('minimized');
-                    $('#sub-nav').removeClass('minimized');
-
-                    var date = new Date();
-                    date.setDate(date.getDate() + 365);
-                    document.cookie = 'minimized=0; expires=' + date.toUTCString() + '; path=/';
-
-                } else {
-
-                    $('#left-side-nav').addClass('minimized');
-                    $('#left-side-nav-toggle').addClass('minimized').html('<i class="fa fa-chevron-right"></i>');
-                    $('#content-fixed').addClass('minimized');
-                    $('#sub-nav').addClass('minimized');
-
-                    var date = new Date();
-                    date.setDate(date.getDate() + 365);
-                    document.cookie = 'minimized=1; expires=' + date.toUTCString() + '; path=/';
-
-                }
-
-            });
-            $('#exportBtn').click(function() {
-                // Get the start and end dates
-                let startDate = $('#startDate').val();
-                let endDate = $('#endDate').val();
-
-                // Make an AJAX request to fetch data based on the date range
-                $.ajax({
-                    method: 'GET',
-                    url: '/export',
-                    data: {
-                        startDate: startDate,
-                        endDate: endDate
-                    },
-                    success: function(data) {
-                        // Handle the success response and display the data
-                        var blob = new Blob([data], { type: "application/pdf" });
-
-                        // Create a link element
-                        var link = document.createElement("a");
-
-                        // Set the download attribute with the desired file name
-                        link.download = "booking_report.pdf";
-
-                        // Create a URL for the Blob and set it as the link's href
-                        link.href = window.URL.createObjectURL(blob);
-
-                        // Append the link to the document
-                        document.body.appendChild(link);
-
-                        // Trigger a click on the link to start the download
-                        link.click();
-
-                        // Remove the link from the document
-                        document.body.removeChild(link);
-
-                    },
-                    error: function(error) {
-                        // Handle the error response
-                        console.error("Error fetching data:", error);
-                    }
-                });
-            });
-
-        if (!$('#left-side-nav').is(':visible')) {
-            $('#content-fixed').css('margin-left', 0);
-            $('#sub-nav').css('left', 0);
+    <!--[if lt IE 9]-->
+     <!-- <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>-->
+    <!--[endif]-->
+   <!-- <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>-->
+    <style>
+        h1 {
+            color: green;
         }
 
-        });
-    </script>
+        .toggle {
+            position: relative;
+            display: inline-block;
+            width: 100px;
+            height: 52px;
+            background-color: red;
+            border-radius: 30px;
+            border: 2px solid gray;
+        }
+
+        .toggle:after {
+            content: '';
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: gray;
+            top: 1px;
+            left: 1px;
+            transition: all 0.5s;
+        }
+
+        p {
+            font-family: Arial, Helvetica, sans-serif;
+            font-weight: bold;
+        }
+
+        .checkbox:checked+.toggle::after {
+            left: 49px;
+        }
+
+        .checkbox:checked+.toggle {
+            background-color: green;
+        }
+
+        .checkbox {
+            display: block;
+        }
+        .buttons-container {
+            display: flex;
+            column-gap: 10px;
+        }
+        .pdf-button{
+            background: #e74a3b !important;
+            border: #e74a3b !important;
+            color: white !important;
+        }
+        .add-btn{
+            background: #4e73df !important;
+            border: #4e73df !important;
+            color: white !important;
+        }
+        .fixed-size-cell {
+            width: 150px;
+            white-space: nowrap;
+            overflow: hidden; /* Hide overflowing content */
+            text-overflow: ellipsis; /* Display ellipsis (...) for truncated content */
+        }
+    </style>
 </head>
 
 <body id="page-top">
@@ -139,9 +122,6 @@
 
             <!-- Sidebar - Brand -->
             <a class="sidebar-brand d-flex align-items-center justify-content-center" th:href="@{/home}">
-                <!--                <div class="sidebar-brand-icon rotate-n-15">-->
-                <!--                    <i class="fas fa-laugh-wink"></i>-->
-                <!--                </div>-->
                 <div class="sidebar-brand-text mx-3"> Admin </div>
             </a>
 
@@ -158,86 +138,39 @@
             <!-- Divider -->
             <hr class="sidebar-divider">
 
-            <!-- Heading -->
-            <!-- <div class="sidebar-heading">
-                 Interface
-             </div>-->
-
             <!-- Nav Item - Pages Collapse Menu -->
             <li class="nav-item">
-                <a class="nav-link collapsed" th:href="@{/users}"> <!--data-toggle="collapse" data-target="#collapseTwo"
-                    aria-expanded="true" aria-controls="collapseTwo">-->
-                    <!-- <i class="fas fa-fw fa-cog"></i>-->
+                <a class="nav-link collapsed" th:href="@{/users}">
                     <span>User List</span>
                 </a>
-                <!-- <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
-                     <div class="bg-white py-2 collapse-inner rounded">
-                         <h6 class="collapse-header">Custom Components:</h6>
-                         <a class="collapse-item" href="buttons.html">Buttons</a>
-                         <a class="collapse-item" href="cards.html">Cards</a>
-                     </div>
-                 </div>-->
             </li>
 
             <!-- Nav Item - Utilities Collapse Menu -->
             <li class="nav-item">
-                <a class="nav-link collapsed" th:href="@{/truckproviderlist}" ><!--data-toggle="collapse" data-target="#collapseUtilities"
-                    aria-expanded="true" aria-controls="collapseUtilities">-->
-                    <!--<i class="fas fa-fw fa-wrench"></i>-->
+                <a class="nav-link collapsed" th:href="@{/truckproviderlist}" >
                     <span>Truck Providers List</span>
                 </a>
-                <!--<div id="collapseUtilities" class="collapse" aria-labelledby="headingUtilities"
-                    data-parent="#accordionSidebar">
-                    <div class="bg-white py-2 collapse-inner rounded">
-                        <h6 class="collapse-header">Custom Utilities:</h6>
-                        <a class="collapse-item" href="utilities-color.html">Colors</a>
-                        <a class="collapse-item" href="utilities-border.html">Borders</a>
-                        <a class="collapse-item" href="utilities-animation.html">Animations</a>
-                        <a class="collapse-item" href="utilities-other.html">Other</a>
-                    </div>
-                </div>-->
             </li>
 
             <!-- Divider -->
             <hr class="sidebar-divider">
 
-            <!-- Heading -->
-            <!--<div class="sidebar-heading">
-                Addons
-            </div>
--->
             <!-- Nav Item - Pages Collapse Menu -->
             <li class="nav-item">
-                <a class="nav-link collapsed" th:href="@{/vehiclelist}" ><!--data-toggle="collapse" data-target="#collapsePages"
-                    aria-expanded="true" aria-controls="collapsePages">-->
-                    <!--                    <i class="fas fa-fw fa-folder"></i>
-                    -->                    <span>Vehicle Lists</span>
+                <a class="nav-link collapsed" th:href="@{/vehiclelist}" >
+                    <span>Vehicle Lists</span>
                 </a>
-                <!--  <div id="collapsePages" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
-                      <div class="bg-white py-2 collapse-inner rounded">
-                          <h6 class="collapse-header">Login Screens:</h6>
-                          <a class="collapse-item" href="login.html">Login</a>
-                          <a class="collapse-item" href="register.html">Register</a>
-                          <a class="collapse-item" href="forgot-password.html">Forgot Password</a>
-                          <div class="collapse-divider"></div>
-                          <h6 class="collapse-header">Other Pages:</h6>
-                          <a class="collapse-item" href="404.html">404 Page</a>
-                          <a class="collapse-item" href="blank.html">Blank Page</a>
-                      </div>
-                  </div>-->
             </li>
 
             <!-- Nav Item - Charts -->
             <li class="nav-item">
                 <a class="nav-link" th:href="@{/laborerslist}">
-                    <!-- <i class="fas fa-fw fa-chart-area"></i>-->
                     <span>Laborers List</span></a>
             </li>
 
             <!-- Nav Item - Tables -->
             <li class="nav-item">
                 <a class="nav-link" th:href="@{/history}">
-                    <!-- <i class="fas fa-fw fa-table"></i>-->
                     <span>History</span></a>
             </li>
 
@@ -249,13 +182,6 @@
                 <button class="rounded-circle border-0" id="sidebarToggle"></button>
             </div>
 
-            <!-- Sidebar Message -->
-            <!--<div class="sidebar-card d-none d-lg-flex">
-                <img class="sidebar-card-illustration mb-2" src="img/undraw_rocket.svg" alt="...">
-                <p class="text-center mb-2"><strong>SB Admin Pro</strong> is packed with premium features, components, and more!</p>
-                <a class="btn btn-success btn-sm" href="https://startbootstrap.com/theme/sb-admin-pro">Upgrade to Pro!</a>
-            </div>
--->
         </ul>
         <!-- End of Sidebar -->
 
@@ -314,72 +240,29 @@
                 <div class="container-fluid">
 
                   <div class="container">
-    <div class="row col-md-20">
-        <h2>History of the Trip</h2>
-    </div><br>
-                      <form
-                              th:action="@{/history}"
-                              method="get"
-                      >
-                          <div style="
-                            display: flex;
-                            justify-content: flex-end;
-                            gap: 10px;">
-                              <div class="form-group">
-                                  <label  for="startDate">Start Date:
-                                  </label>
-                                  <input type="date" id="startDate" name="startDate" class="form-control"
-                                         style="width: 100%; box-align: end;"/> <!--th:field="*{birthDate}"-->
-                              </div>
-                              <div class="form-group">
-                                  <label for="endDate">End Date:
-                                  </label>
-                                  <input type="date" placeholder="" id="endDate" name="endDate" class="form-control"
-                                         style="width: 100%; box-align: end;"/> <!--th:field="*{birthDate}" -->
-                              </div>
-                              <div class="form-group" style="align-self: self-end;">
-                                  <button type="submit" id="submitBtn" class="btn btn-outline-primary btn-xs" style="color:white;
-		     background-color: #7784d6;">Search</button>
-                              </div>
-                              <div class="form-group" style="align-self: self-end;">
-                                  <button type="Button" id="exportBtn" class="btn btn-outline-primary btn-xs" style="color:white;
-		                            background-color: #7784d6;">Export</button>
-                              </div>
-                          </div>
-                      </form>
-		   
-    <table class="table table-bordered table-hover">
-        <thead class="table-dark" style="background-color: #7784d6;">
-            <tr>
-                <th>Start Destination</th>
-                <th>End Destination</th>
-                <th>Date</th>
-                <th>User Name</th>
-                <th>KM</th>
-                <th>No of Laborers</th>
-                <th>Total Amount</th>
-            </tr>
-        </thead>
-        <tbody id="resultTableBody">
-        <tr th:each = "booking : ${bookings}">
-            <input type="hidden" id="bookingId" th:value="${booking.id}">
-            <td th:text = "${booking.startDestination}"></td>
-            <td th:text = "${booking.endDestination}"></td>
-            <td th:text="${booking.bookingDate}"></td>
-            <td th:text="${booking.truckProvider.firstName} + ${booking.truckProvider.lastName}" ></td>
-            <td th:text = "${booking.km}"></td>
-            <td th:text = "${booking.noOfLabourers}"></td>
-            <td th:text="${booking.totalAmount}"></td>
-        </tbody>
-    </table>
-</div>
- <!-- Content Row -->
-                    <div class="row">
+                    <div class="row col-md-20">
+                        <h2>History of the Trip</h2>
+                    </div><br>
+                      <table id="bookingTable" class="table table-bordered table-hover">
+                          <thead class="table-dark" style="background-color: #7784d6;">
+                          <tr>
+                              <th>Sr. No</th>
+                              <th>Booking Date</th>
+                              <th class="fixed-size-cell">Start Destination</th>
+                              <th class="fixed-size-cell">End Destination</th>
+                              <th>Customer Name</th>
+                              <th>Status</th>
+                              <!--<th scope="col">Actions</th>-->
+                          </tr>
+                          </thead>
+                          <tbody>
 
-                        <div class="col-lg-6 mb-4">
-                        </div>
+                          </tbody>
+                      </table>
                     </div>
-
+                    <div id="alertContainer" class="position-fixed top-0 end-0 p-3" style="z-index: 9999;">
+                    </div>
+                    <!-- Content Row -->
                 </div>
                 <!-- /.container-fluid -->
 
@@ -395,10 +278,8 @@
                 </div>
             </footer>
             <!-- End of Footer -->
-
         </div>
         <!-- End of Content Wrapper -->
-
     </div>
     <!-- End of Page Wrapper -->
 
@@ -427,16 +308,177 @@
         </div>
     </div>
 
-    <!-- Bootstrap core JavaScript-->
     <script src="vendor/jquery/jquery.min.js"></script>
     <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-
-    <!-- Core plugin JavaScript-->
     <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
-
-    <!-- Custom scripts for all pages-->
     <script src="js/sb-admin-2.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 
+    <link href="https://cdn.datatables.net/v/dt/dt-2.0.2/b-3.0.1/datatables.min.css" rel="stylesheet">
+
+    <script src="https://cdn.datatables.net/v/dt/dt-2.0.2/b-3.0.1/datatables.min.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.3.1/js/dataTables.buttons.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.3.1/js/buttons.html5.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
+
+    <script th:inline="javascript">
+
+        $(document).ready(function (){
+            loadMyBookings();
+        })
+       /* $(function() {
+
+           /!* $('#left-side-nav-toggle').click(function () {
+                if ($('#left-side-nav').hasClass('minimized')) {
+
+                    $('#left-side-nav').removeClass('minimized');
+                    $('#left-side-nav-toggle').removeClass('minimized').html('<i class="fa fa-chevron-left"></i>');
+                    $('#content-fixed').removeClass('minimized');
+                    $('#sub-nav').removeClass('minimized');
+
+                    var date = new Date();
+                    date.setDate(date.getDate() + 365);
+                    document.cookie = 'minimized=0; expires=' + date.toUTCString() + '; path=/';
+
+                } else {
+
+                    $('#left-side-nav').addClass('minimized');
+                    $('#left-side-nav-toggle').addClass('minimized').html('<i class="fa fa-chevron-right"></i>');
+                    $('#content-fixed').addClass('minimized');
+                    $('#sub-nav').addClass('minimized');
+
+                    var date = new Date();
+                    date.setDate(date.getDate() + 365);
+                    document.cookie = 'minimized=1; expires=' + date.toUTCString() + '; path=/';
+
+                }
+
+            });*!/
+         /!*   $('#exportBtn').click(function () {
+                // Get the start and end dates
+                let startDate = $('#startDate').val();
+                let endDate = $('#endDate').val();
+
+                // Make an AJAX request to fetch data based on the date range
+                $.ajax({
+                    method: 'GET',
+                    url: '/export',
+                    data: {
+                        startDate: startDate,
+                        endDate: endDate
+                    },
+                    success: function (data) {
+                        // Handle the success response and display the data
+                        var blob = new Blob([data], {type: "application/pdf"});
+
+                        // Create a link element
+                        var link = document.createElement('a');
+
+                        // Create a URL for the Blob and set it as the link's href
+                        link.href = window.URL.createObjectURL(blob);
+
+                        // Set the download attribute with the desired file name
+                        link.download = "booking_report.pdf";
+
+                        // Append the link to the document
+                        document.body.appendChild(link);
+
+                        // Trigger a click on the link to start the download
+                        link.click();
+
+                        // Remove the link from the document
+                        document.body.removeChild(link);
+
+                    },
+                    error: function (error) {
+                        // Handle the error response
+                        console.error("Error fetching data:", error);
+                    }
+                });
+            });*!/
+        });*/
+        function loadMyBookings() {
+          /*  let endDate = $("#endDate")?.val() || null;
+            let startDate = $("#startDate")?.val() || null;
+            console.log(endDate,startDate)*/
+            $.ajax({
+                url: "/history/booking",
+                method: "GET",
+                /*data:{
+                    startDate,endDate
+                },*/
+                success: function (response) {
+
+                    $.each(response, function(index, booking) {
+                        let startAddress =  JSON.parse(booking.startDestination).label;
+                        let endAddress = JSON.parse(booking.endDestination).label;
+                        let status = booking.isTPApproved ? "Approved by Truck Provider" : "Pending";
+
+                        let bookingDate = new Date(booking.bookingDate);
+                        let formattedDate = bookingDate.toLocaleDateString('en-US', {
+                            day: '2-digit',
+                            month: '2-digit',
+                            year: 'numeric'
+                        });
+                        let formattedTime = bookingDate.toLocaleTimeString('en-US', {
+                            hour: '2-digit',
+                            minute: '2-digit',
+                            timeZone: 'Asia/Kolkata'
+                        });
+                        let formattedDateTime = formattedDate + ' ' + formattedTime;
+
+                        $('#bookingTable tbody').append(
+                            '<tr>' +
+                                '<td>' + (index + 1) + '</td>' +
+                                '<td>' + formattedDateTime + '</td>' +
+                                '<td data-toggle="tooltip" title="' + startAddress + '" class="fixed-size-cell">' + truncateDestination(startAddress)+ '</td>' +
+                                '<td data-toggle="tooltip" title="' + endAddress + '" class="fixed-size-cell">' +truncateDestination(endAddress) + '</td>' +
+                                '<td>' + booking.user.firstName + ' ' + booking.user.lastName + '</td>' +
+                                '<td>' + booking.status +'</td>' +
+                            '</tr>'
+                        );
+                    });
+                    let table = $('#bookingTable').DataTable({
+                        "dom": '<"top align-items-start d-flex justify-content-between"<"buttons-container"fl>B>rt<"bottom align-items-start d-flex justify-content-between"ip><"clear">',
+                        "paging": true,
+                        "searching": true,
+                        "buttons": [{
+                            extend: 'pdf',
+                            text: '<i class="fas fa-file-pdf"></i>',
+                            className: 'btn pdf-button',
+                            titleAttr: 'Export to PDF',
+                            title: 'Booking List'
+                        }]
+                    });
+                    // Customize PDF export
+                    table.on('buttons-callback', function(buttons, pdfHtml, buttonCommon) {
+                        if (buttons[0].textStr === 'pdf') {
+                            pdfHtml = pdfHtml.replace(/<input.*?approval-cell.*?>/g, function(match) {
+                                return $(match).is(':checked') ? 'true' : 'false';
+                            });
+                            return pdfHtml;
+                        }
+                    });
+                },
+                error: function (xhr, status, error) {
+                    console.error("Error:", error);
+                }
+            });
+
+        }
+        function truncateDestination(destination) {
+            var maxLength = 20;
+            return destination.length > maxLength ? destination.substring(0, maxLength - 3) + '...' : destination;
+        }
+
+       /* function viewDetails(id){
+            window.location.href='/allDetails?id='+id
+        }*/
+    </script>
 
 </body>
 

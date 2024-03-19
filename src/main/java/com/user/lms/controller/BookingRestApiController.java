@@ -155,6 +155,15 @@ public class BookingRestApiController {
         }
     }
 
+    @GetMapping("/history/booking")
+    public List<BookingModel> getAllBookings(@RequestParam(name="startDate",required = false)String startDate,@RequestParam(name = "endDate",required = false)String endDate){
+        if(startDate !=null && !startDate.isEmpty() && endDate !=null && !endDate.isEmpty()){
+            return this.bookingService.getAllBookings(startDate,endDate);
+        }else {
+            return this.bookingService.getAllBookings();
+        }
+    }
+
     @PutMapping("/confirmBookingByTp/{bookingId}")
     public String confirmPaymentBookingByTp(@PathVariable(name = "bookingId") String bookingId){
         return this.bookingService.confirmPaymentBookingByTp(bookingId);

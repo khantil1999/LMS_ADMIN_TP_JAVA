@@ -80,19 +80,11 @@ public class AdminMainViewController {
     }
 
     @GetMapping("/history")
-    public String loadHistoryPage(Model model, @RequestParam(name = "startDate",required = false)String startDate, @RequestParam(name = "endDate",required = false)String endDate)
+    public String loadHistoryPage(Model model)
     {
-        System.out.println("ssss" + startDate + endDate);
-        List<BookingModel> bookings = new ArrayList<>();
-        if(startDate != null && !startDate.isEmpty() && endDate != null && !endDate.isEmpty()){
-            bookings=bookingService.getAllBookings(startDate, endDate);
-        }else{
-            bookings=bookingService.getAllBookings();
-        }
-
+        List<BookingModel> bookings=bookingService.getAllBookings();
         model.addAttribute("bookings",bookings);
         return "history";
-
     }
 
 }

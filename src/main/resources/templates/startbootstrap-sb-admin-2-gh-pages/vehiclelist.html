@@ -151,16 +151,6 @@
                         <h2>List of Registered Vehicles</h2>
                     </div>
                     <br>
-                    <!--<form th:action="@{/vehiclelist}" method="get">
-                        <div style="display: flex; justify-content: flex-end; gap: 10px;">
-                            <div class="form-group" style="align-self: self-end;">
-                                <button type="Button" id="exportBtn" class="btn btn-outline-primary btn-xs"
-                                        style="color:white; background-color: #7784d6;">Export
-                                </button>
-                            </div>
-                        </div>
-                    </form>
-                    <br>-->
                     <table id="vehicleTable" class="table table-bordered table-hover">
                         <thead class="table-dark" style="background-color: #7784d6;">
                         <tr>
@@ -281,26 +271,6 @@
         });
     }
 
-    function populateData(response) {
-        var tbody = $('#vehicleTable tbody');
-        tbody.empty(); // Clear existing rows
-
-        // Loop through each vehicle in the response data
-        response.forEach(function (vehicle) {
-            // Create a new row for each vehicle
-            var row = $('<tr>');
-            row.append('<td>' + vehicle.model + '</td>');
-            row.append('<td>' + vehicle.licensePlate + '</td>');
-            row.append('<td>' + vehicle.capacity + '</td>');
-            row.append('<td>' + vehicle.manufacturer + '</td>');
-            row.append('<td>' + vehicle.fuelType + '</td>');
-            row.append('<td>' + vehicle.currentMileage + '</td>');
-            row.append('<td>' + vehicle.wheel + '</td>');
-
-            // Append the row to the table body
-            tbody.append(row);
-        });
-    }
 
 </script>
 
