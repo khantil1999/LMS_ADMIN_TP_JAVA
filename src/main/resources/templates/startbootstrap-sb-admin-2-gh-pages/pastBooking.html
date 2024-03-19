@@ -26,6 +26,7 @@
             white-space: nowrap;
             overflow: hidden; /* Hide overflowing content */
             text-overflow: ellipsis; /* Display ellipsis (...) for truncated content */
+
         }
         h1 {
             color: green;
@@ -114,37 +115,27 @@
         <!-- Divider -->
         <hr class="sidebar-divider">
 
-        <!-- Heading -->
-        <!--<div class="sidebar-heading">
-            Addons
-        </div>
-    -->
         <!-- Nav Item - Pages Collapse Menu -->
         <li class="nav-item">
-            <a class="nav-link collapsed" th:href="@{/vehiclelistTP}" ><!--data-toggle="collapse" data-target="#collapsePages"
-                    aria-expanded="true" aria-controls="collapsePages">-->
-                <!--                    <i class="fas fa-fw fa-folder"></i>
-                -->                    <span>Vehicle Lists</span>
+            <a class="nav-link collapsed" th:href="@{/vehiclelistTP}" >
+                <span>Vehicle Lists</span>
             </a>
         </li>
 
         <!-- Nav Item - Charts -->
         <li class="nav-item">
             <a class="nav-link" th:href="@{/laborerslistTP}">
-                <!-- <i class="fas fa-fw fa-chart-area"></i>-->
                 <span>Laborers List</span></a>
         </li>
 
         <!-- Nav Item - Tables -->
         <li class="nav-item">
             <a class="nav-link" th:href="@{/bookingTP}">
-                <!-- <i class="fas fa-fw fa-table"></i>-->
                 <span>Booking</span></a>
         </li>
 
         <li class="nav-item">
             <a class="nav-link" th:href="@{/pastbooking}">
-                <!-- <i class="fas fa-fw fa-table"></i>-->
                 <span>Past Booking</span></a>
         </li>
 
@@ -539,6 +530,7 @@
                         '</td>' +
                         '</tr>');
                 });
+                $('[data-toggle="tooltip"]').tooltip();
                 let table = $('#bookingTable').DataTable({
                     "dom": '<"top align-items-start d-flex justify-content-between"<"buttons-container"fl>B>rt<"bottom align-items-start d-flex justify-content-between"ip><"clear">',
                     "paging": true,

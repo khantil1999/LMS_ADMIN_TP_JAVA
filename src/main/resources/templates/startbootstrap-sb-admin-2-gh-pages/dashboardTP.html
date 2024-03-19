@@ -219,6 +219,56 @@
                     </div>
 
                 </div>
+                <div class="row">
+                    <div class="col-xl-3 col-md-6 mb-4">
+                        <div class="card border-left-primary shadow h-100 py-2">
+                            <div class="card-body">
+                                <div class="row no-gutters align-items-center">
+                                    <div class="col mr-2">
+                                        <h3 class="chart-heading">Vehicles</h3>
+                                        <div id="chartVehicle" style="height: 300px;"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-md-6 mb-4">
+                        <div class="card border-left-success shadow h-100 py-2">
+                            <div class="card-body">
+                                <div class="row no-gutters align-items-center">
+                                    <div class="col mr-2">
+                                        <h3 class="chart-heading">Laborers</h3>
+                                        <div id="chartLaborers" style="height: 300px;"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-md-6 mb-4col-xl-3 col-md-6 mb-4">
+                        <div class="card border-left-info shadow h-100 py-2">
+                            <div class="card-body">
+                                <div class="row no-gutters align-items-center">
+                                    <div class="col mr-2">
+                                        <h3 class="chart-heading">Bookings</h3>
+                                        <div id="chartBookings" style="height: 300px;"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+                <!--<div class="row mt-5">
+                    <div class="col-md-12">
+                        <div class="card border-left-dark shadow h-100 py-2">
+                            <div class="card-body">
+                                <h2 class="chart-heading">Date Wise Booking</h2>
+                                <div id="dateWiseBooking" style="height: 300px;"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>-->
+            </div>
 
                 <!-- Content Row -->
 
@@ -279,6 +329,72 @@
 <!-- Custom scripts for all pages-->
 <script src="js/sb-admin-2.min.js"></script>
 
+
+<script src="https://cdn.amcharts.com/lib/4/core.js"></script>
+<script src="https://cdn.amcharts.com/lib/4/charts.js"></script>
+<script src="https://cdn.amcharts.com/lib/4/themes/animated.js"></script>
+
+<script th:inline="javascript">
+    $(document).ready(function() {
+        generateChart('chartVehicle',  'countVehicles','/getVehicleCount', 'Vehicles','#4e73df');
+        generateChart('chartLaborers','countLaborers', '/getLaborerCountForTP', 'Laborers','#36b9cc');
+        generateChart('chartBookings', 'countBookings','/getBookingCountForTP', 'Bookings','#f6c23e');
+        //loadDateWiseBookingDataAndGenerateChart();
+    });
+
+    function generateChart(containerId, countDivId,url, category,color) {
+        $.ajax({
+            url: url,
+            type: 'GET',
+            success: function(count) {
+                $("#"+countDivId).html(count)
+                let chart = am4core.create(containerId, am4charts.XYChart);
+                chart.logo.disabled = true;
+                chart.data = [{
+                    "category": category,
+                    "count": count
+                }];
+                let categoryAxis = chart.xAxes.push(new am4charts.CategoryAxis());
+                categoryAxis.dataFields.category = "category";
+                let valueAxis = chart.yAxes.push(new am4charts.ValueAxis());
+                let series = chart.series.push(new am4charts.ColumnSeries());
+                series.dataFields.valueY = "count";
+                series.dataFields.categoryX = "category";
+                series.name = "Count";
+                series.columns.template.tooltipText = "{categoryX}: [bold]{valueY}[/]";
+                series.columns.template.fill = am4core.color(color);
+            },
+            error: function(xhr, status, error) {
+                console.log('Error fetching data: ' + error);
+            }
+        });
+    }
+
+    function loadDateWiseBookingDataAndGenerateChart(){
+        $.ajax({
+            url: '/loadDateWiseBookingForTP',
+            type: 'GET',
+            success: function(data) {
+                let chart = am4core.create("dateWiseBooking", am4charts.XYChart);
+                chart.logo.disabled = true;
+                chart.data = data;
+                let categoryAxis = chart.xAxes.push(new am4charts.CategoryAxis());
+                categoryAxis.dataFields.category = "bookingDate";
+                let valueAxis = chart.yAxes.push(new am4charts.ValueAxis());
+                let series = chart.series.push(new am4charts.ColumnSeries());
+                series.dataFields.valueY = "count";
+                series.dataFields.categoryX = "bookingDate"; // Corrected field name
+                series.name = "Count";
+                series.columns.template.tooltipText = "Date:{categoryX}: Count:[bold]{valueY}[/]";
+                series.columns.template.fill = am4core.color("#4e73df");
+            },
+            error: function(xhr, status, error) {
+                console.log('Error fetching data: ' + error);
+            }
+        });
+
+    }
+</script>
 
 </body>
 

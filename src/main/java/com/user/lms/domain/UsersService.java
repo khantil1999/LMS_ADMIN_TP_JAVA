@@ -38,4 +38,7 @@ public class UsersService {
         return users.stream().map(UserDetailsModel::fromEntity).collect(Collectors.toList());
     }
 
+    public int getLabourCountForTP() {
+        return (int) this.userRepository.countUsers(Long.parseLong("4"));
+    }
 }

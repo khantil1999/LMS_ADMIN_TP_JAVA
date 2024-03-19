@@ -267,4 +267,8 @@ public class VehicleListService {
 
 
     }
+
+    public int getVehicleCountForTP() {
+        return (int) this.vehicleListRepository.countVehicles();
+    }
 }
