@@ -64,8 +64,10 @@ public class TruckProviderMainViewController {
     }
 
     @GetMapping("/bookingTP")
-    public String loadBookingPage()
+    public String loadBookingPage(Model model)
     {
+        List<BookingModel> bookings=bookingService.getAllBookings();
+        model.addAttribute("bookings",bookings);
         return "bookingTP";
     }
 
