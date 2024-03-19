@@ -13,7 +13,8 @@ import java.util.Collection;
 public class UserAuthenticationSuccessHandler extends SavedRequestAwareAuthenticationSuccessHandler {
 
     @Override
-    public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
+    public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
+                                        Authentication authentication) throws IOException, ServletException {
         authentication.getAuthorities().forEach(grantedAuthority -> {
             System.out.println(grantedAuthority.getAuthority());
         });

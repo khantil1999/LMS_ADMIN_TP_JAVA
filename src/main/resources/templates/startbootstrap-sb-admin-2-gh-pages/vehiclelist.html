@@ -12,6 +12,66 @@
     <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
           rel="stylesheet">
     <link href="css/sb-admin-2.min.css" rel="stylesheet">
+    <style>
+        h1 {
+            color: green;
+        }
+
+        .toggle {
+            position: relative;
+            display: inline-block;
+            width: 100px;
+            height: 52px;
+            background-color: red;
+            border-radius: 30px;
+            border: 2px solid gray;
+        }
+
+        .toggle:after {
+            content: '';
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: gray;
+            top: 1px;
+            left: 1px;
+            transition: all 0.5s;
+        }
+
+        p {
+            font-family: Arial, Helvetica, sans-serif;
+            font-weight: bold;
+        }
+
+        .checkbox:checked+.toggle::after {
+            left: 49px;
+        }
+
+        .checkbox:checked+.toggle {
+            background-color: green;
+        }
+
+        .checkbox {
+            display: block;
+        }
+        .buttons-container {
+            display: flex;
+            column-gap: 10px;
+        }
+        .pdf-button{
+            background: #e74a3b !important;
+            border: #e74a3b !important;
+            color: white !important;
+        }
+        .add-btn{
+            background: #4e73df !important;
+            border: #4e73df !important;
+            color: white !important;
+        }
+
+    </style>
+
 </head>
 
 <body id="page-top">
@@ -91,7 +151,7 @@
                         <h2>List of Registered Vehicles</h2>
                     </div>
                     <br>
-                    <form th:action="@{/vehiclelist}" method="get">
+                    <!--<form th:action="@{/vehiclelist}" method="get">
                         <div style="display: flex; justify-content: flex-end; gap: 10px;">
                             <div class="form-group" style="align-self: self-end;">
                                 <button type="Button" id="exportBtn" class="btn btn-outline-primary btn-xs"
@@ -100,11 +160,10 @@
                             </div>
                         </div>
                     </form>
-                    <br>
+                    <br>-->
                     <table id="vehicleTable" class="table table-bordered table-hover">
                         <thead class="table-dark" style="background-color: #7784d6;">
                         <tr>
-                            <th></th>
                             <th>Model</th>
                             <th>License Plate</th>
                             <th>Capacity</th>
@@ -115,9 +174,11 @@
                         </tr>
                         </thead>
                         <tbody>
+
                         </tbody>
                     </table>
-
+                </div>
+                <div id="alertContainer" class="position-fixed top-0 end-0 p-3" style="z-index: 9999;">
                 </div>
             </div>
         </div>
@@ -177,7 +238,42 @@
             type: 'GET',
             url: '/vehicles/admin',
             success: function (response) {
-               populateData(response)
+                // Populate the table with data
+                $.each(response, function(index, vehicle) {
+                    $('#vehicleTable tbody').append(
+                        '<tr>' +
+                        '<td>' + vehicle.model + '</td>' +
+                        '<td>' + vehicle.licensePlate + '</td>' +
+                        '<td>' + vehicle.capacity + '</td>' +
+                        '<td>' + vehicle.manufacturer + '</td>' +
+                        '<td>' + vehicle.fuelType + '</td>'+
+                        '<td>' + vehicle.currentMileage + '</td>'+
+                        '<td>' + vehicle.wheel + '</td>'+
+                        '</tr>'
+                    );
+                });
+                let table = $('#vehicleTable').DataTable({
+                    "dom": '<"top align-items-start d-flex justify-content-between"<"buttons-container"fl>B>rt<"bottom align-items-start d-flex justify-content-between"ip><"clear">',
+                    "paging": true,
+                    "searching": true,
+                    "buttons": [{
+                        extend: 'pdf',
+                        text: '<i class="fas fa-file-pdf"></i>',
+                        className: 'btn pdf-button',
+                        titleAttr: 'Export to PDF',
+                        title: 'Vehicle List'
+                    }]
+                });
+
+                // Customize PDF export
+                table.on('buttons-callback', function(buttons, pdfHtml, buttonCommon) {
+                    if (buttons[0].textStr === 'pdf') {
+                        pdfHtml = pdfHtml.replace(/<input.*?approval-cell.*?>/g, function(match) {
+                            return $(match).is(':checked') ? 'true' : 'false';
+                        });
+                        return pdfHtml;
+                    }
+                });
             },
             error: function (error) {
                 console.error(error);
@@ -193,7 +289,6 @@
         response.forEach(function (vehicle) {
             // Create a new row for each vehicle
             var row = $('<tr>');
-            row.append('<td></td>')
             row.append('<td>' + vehicle.model + '</td>');
             row.append('<td>' + vehicle.licensePlate + '</td>');
             row.append('<td>' + vehicle.capacity + '</td>');
