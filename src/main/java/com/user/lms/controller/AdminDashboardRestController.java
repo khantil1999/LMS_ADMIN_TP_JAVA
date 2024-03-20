@@ -44,7 +44,7 @@ public class AdminDashboardRestController {
     @GetMapping("/getBookingCount")
     @ResponseBody
     public int getBookingCount() {
-        return (int) bookingService.countBooking();
+        return (int) bookingService.countBookingForAdmin();
     }
     @GetMapping("/loadDateWiseBooking")
     @ResponseBody

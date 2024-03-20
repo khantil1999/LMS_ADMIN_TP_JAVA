@@ -143,8 +143,9 @@ public class BookingService {
     }
 
 
-    public long countBooking() {
-        return bookingRepository.countBookings();
+    public long getBookingCountForTP(Principal principal) {
+        User user = this.userRepository.findExistingUser(principal.getName());
+        return this.bookingRepository.countBookings(user.getId());
     }
 
     public BookingModel getBookingById(Long id) {
@@ -276,6 +277,10 @@ public class BookingService {
     public List<DateWiseBookingModel> getDateWiseBookingForTP(Principal principal) {
         User user = this.userRepository.findExistingUser(principal.getName());
         return  this.bookingRepository.getBookingCountByDateForTP(user.getId());
+    }
+
+    public long countBookingForAdmin() {
+        return this.bookingRepository.countBookingsForAdmin();
     }
 }
 

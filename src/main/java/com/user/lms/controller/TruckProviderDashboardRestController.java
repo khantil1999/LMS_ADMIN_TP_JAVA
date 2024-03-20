@@ -42,8 +42,8 @@ public class TruckProviderDashboardRestController {
 
     @GetMapping("/getBookingCountForTP")
     @ResponseBody
-    public int getBookingCount() {
-        return (int) bookingService.countBooking();
+    public int getBookingCount(Principal principal) {
+        return (int) bookingService.getBookingCountForTP(principal);
     }
 
     @GetMapping("/loadDateWiseBookingForTP")
