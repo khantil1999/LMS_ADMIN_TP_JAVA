@@ -195,7 +195,7 @@ public class VehicleListService {
             vehicle = this.vehicleListRepository.saveAndFlush(vehicle);
             VehicleList finalVehicle = vehicle;
 
-            if(!requestModel.getPhotos().isEmpty()){
+            if (!requestModel.getPhotos().isEmpty()) {
                 List<Photo> photos = requestModel.getPhotos().stream().map(name -> {
                     Photo photo = new Photo();
                     photo.setPath(name);
@@ -261,9 +261,13 @@ public class VehicleListService {
         return Collections.emptyList();
     }
 
-    public List<VehicleDetailsModel> loadVehiclesForAdmin( String truckProviderId,Principal principal) {
-            return this.vehicleListRepository.findAll().stream()
+    public List<VehicleDetailsModel> loadVehiclesForAdmin(String truckProviderId, Principal principal) {
+        if (truckProviderId != null && !truckProviderId.isEmpty() && !truckProviderId.equals("0")) {
+            return this.vehicleListRepository.getVehicleListByTP(Long.parseLong(truckProviderId)).stream()
                     .map(VehicleDetailsModel::fromEntity).collect(Collectors.toList());
+        }
+        return this.vehicleListRepository.findAll().stream()
+                .map(VehicleDetailsModel::fromEntity).collect(Collectors.toList());
 
 
     }

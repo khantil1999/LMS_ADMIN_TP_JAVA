@@ -1,91 +1,66 @@
 package com.user.lms.domain;
 
-import com.user.lms.entity.Role;
+import com.user.lms.entity.Labour;
 import com.user.lms.entity.User;
-import com.user.lms.entity.UserRoles;
 import com.user.lms.models.LaborerModel;
-import com.user.lms.repository.RoleRepository;
+import com.user.lms.models.LabourDetailsModel;
+import com.user.lms.repository.LabourRepository;
 import com.user.lms.repository.UserRepository;
-import com.user.lms.repository.UserRoleRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
+import java.security.Principal;
 import java.util.List;
-import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class LaborersService {
 
     @Autowired
-    private  UserRepository userRepository;
+    private LabourRepository labourRepository;
 
     @Autowired
-    private RoleRepository roleRepository;
+    private UserRepository userRepository;
 
-
-    @Autowired
-    private UserRoleRepository userRoleRepository;
 
     @Transactional
-    public void deleteUser(Long userId) {
-        this.userRoleRepository.deleteUserRolesByUserId(userId);
-        this.userRepository.deleteById(userId);
+    public void deleteUser(Long id) {
+        this.labourRepository.deleteById(id);
     }
 
 
     @Transactional
-    public User addLabour(LaborerModel laborer){
-        Role role = this.roleRepository.findByName("LABOUR");
-        User labour = new User();
-        labour.setLastName(laborer.getLastName());
-        labour.setFirstName(laborer.getFirstName());
-        labour.setEmail(laborer.getEmail());
-        labour.setMobileNo(laborer.getMobileNumber());
-        labour.setIsVerified(true);
-        labour.setIsApproved(true);
-
-        labour = this.userRepository.saveAndFlush(labour);
-        UserRoles userRoles = new UserRoles();
-        userRoles.setRole(role);
-        userRoles.setUser(labour);
-        this.userRoleRepository.saveAndFlush(userRoles);
-
-        return  labour;
+    public LabourDetailsModel addLabour(LabourDetailsModel detailsModel, Principal principal) {
+        User user = this.userRepository.findExistingUser(principal.getName());
+        Labour labour = Labour.toEntity(detailsModel);
+        labour.setUser(user);
+        labour = this.labourRepository.saveAndFlush(labour);
+        return LabourDetailsModel.fromEntity(labour);
     }
 
     @Transactional
-    public String editLabour(LaborerModel laborer){
-        Optional<User> optionalUser =  this.userRepository.findById(laborer.getId());
-        if(optionalUser.isPresent()){
-            User user = optionalUser.get();
-            user.setMobileNo(laborer.getMobileNumber());
-            user.setFirstName(laborer.getFirstName());
-            user.setLastName(laborer.getLastName());
-            user.setEmail(laborer.getEmail());
-            this.userRepository.saveAndFlush(user);
+    public LabourDetailsModel editLabour(String id, LabourDetailsModel detailsModel, Principal principal) {
+        User user = this.userRepository.findExistingUser(principal.getName());
+        Labour existingLabour = this.labourRepository.getReferenceById(Long.parseLong(id));
+
+        Labour updateLabour = Labour.toEntity(detailsModel);
+        updateLabour.setId(existingLabour.getId());
+        updateLabour.setUser(user);
+        updateLabour = this.labourRepository.saveAndFlush(updateLabour);
+        return LabourDetailsModel.fromEntity(updateLabour);
+    }
+
+    public LabourDetailsModel getLabourById(String id) {
+        Labour labour = this.labourRepository.getReferenceById(Long.parseLong(id));
+        return LabourDetailsModel.fromEntity(labour);
+    }
+
+    public List<LabourDetailsModel> getAllLabours(String truckProviderId){
+        if(truckProviderId != null && !truckProviderId.isEmpty() && !truckProviderId.equals("0")){
+           return this.labourRepository.getAllByTruckProvider(Long.parseLong(truckProviderId)).stream().map(LabourDetailsModel::fromEntity).collect(Collectors.toList());
         }
-        return "Updated";
+        return this.labourRepository.findAll().stream().map(LabourDetailsModel::fromEntity).collect(Collectors.toList());
     }
 
-    public LaborerModel getLabourById(String id){
-        Optional<User> optionalUser =  this.userRepository.findById(Long.parseLong(id));
-        if(optionalUser.isPresent()){
-           User user =   optionalUser.get();
-           LaborerModel laborerModel = new LaborerModel();
-           laborerModel.setId(user.getId());
-           laborerModel.setEmail(user.getEmail());
-           laborerModel.setMobileNumber(user.getMobileNo());
-           laborerModel.setLastName(user.getLastName());
-           laborerModel.setFirstName(user.getFirstName());
-           return  laborerModel;
-        }
-        return null;
-    }
-
-//    public List<LaborerModel> getAllLabour() {
-//        List<LaborerModel> laborerModels=new ArrayList<LaborerModel>();
-//       return laborerModels;
-//    }
 }
