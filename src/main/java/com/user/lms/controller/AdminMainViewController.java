@@ -2,10 +2,12 @@ package com.user.lms.controller;
 
 import com.user.lms.domain.AuthService;
 import com.user.lms.domain.BookingService;
+import com.user.lms.domain.LaborersService;
 import com.user.lms.domain.VehicleListService;
 import com.user.lms.entity.User;
 import com.user.lms.models.BookingModel;
 import com.user.lms.models.ChangePasswordModel;
+import com.user.lms.models.LabourDetailsModel;
 import com.user.lms.models.VehicleDetailsModel;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +33,9 @@ public class AdminMainViewController {
 
     @Autowired
     private AuthService authService;
+
+    @Autowired
+    private LaborersService laborersService;
 
     @GetMapping("/home")
     public String loadHomePage(Model model) {
@@ -74,8 +79,8 @@ public class AdminMainViewController {
 
     @GetMapping("/laborerslist")
     public String laborersList(Model model){
-        List<User> users = authService.findAllUsers((long)4);
-        model.addAttribute("users", users);
+        List<LabourDetailsModel> labours = laborersService.getAllLabours();
+        model.addAttribute("labourers", labours);
         return "laborerslist";
     }
 

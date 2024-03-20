@@ -14,6 +14,11 @@ public class LaborersRestApiController {
     @Autowired
     private LaborersService laborersService;
 
+    @GetMapping("/labours/admin")
+    public List<LabourDetailsModel> loadLaboursForAdmin(@RequestParam(value = "truck_provider_id",required = false) String truckProviderId, Principal principal){
+        return this.laborersService.getAllLabours(truckProviderId);
+    }
+
     @DeleteMapping("/labour/{labourId}")
     private String deleteLaborer(@PathVariable(name = "labourId" ) String id){
         try{

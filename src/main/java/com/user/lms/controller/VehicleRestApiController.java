@@ -1,6 +1,7 @@
 package com.user.lms.controller;
 
 import com.user.lms.domain.VehicleListService;
+import com.user.lms.models.LabourDetailsModel;
 import com.user.lms.models.VehicleAddEditRequestModel;
 import com.user.lms.models.VehicleDetailsModel;
 import com.user.lms.models.VehicleListModel;
@@ -96,4 +97,6 @@ public class VehicleRestApiController {
     public List<VehicleDetailsModel> loadVehiclesForAdmin(@RequestParam(value = "truck_provider_id",required = false) String truckProviderId, Principal principal){
         return this.vehicleListService.loadVehiclesForAdmin(truckProviderId,principal);
     }
+
+
 }
