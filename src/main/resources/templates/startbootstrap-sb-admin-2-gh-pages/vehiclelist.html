@@ -169,7 +169,7 @@
                             <th>Truck Provider</th>
                         </tr>
                         </thead>
-                        <tbody>
+                        <tbody id="vehicleTableBody">
 
                         </tbody>
                     </table>
@@ -236,31 +236,18 @@
 
         $.ajax({
             type: 'GET',
-            url: '/vehicles/admin?truck_provider_id='+tpId,
+            url: '/vehicles/admin?truck_provider_id=' + tpId,
             success: function (response) {
                 vehicles = response;
-                $('#vehicleTable tbody').empty();
-                $.each(response, function(index, vehicle) {
-                    $('#vehicleTable tbody').append(
-                        '<tr>' +
-                        '<td id="' + vehicle.id + '" class="dt-control"></td>'+
-                        '<td>' + vehicle.model + '</td>' +
-                        '<td>' + vehicle.licensePlate + '</td>' +
-                        '<td>' + vehicle.capacity + '</td>' +
-                        '<td>' + vehicle.manufacturer + '</td>' +
-                        '<td>' + vehicle.fuelType + '</td>'+
-                        '<td>' + vehicle.currentMileage + '</td>'+
-                        '<td>' + vehicle.wheel + '</td>'+
-                        '<td>' + vehicle.truckProvider.firstName +" " + vehicle.truckProvider.lastName + '</td>'+
-                        '</tr>'
-                    );
-                });
+                console.log(response);
                 if ($.fn.DataTable.isDataTable('#vehicleTable')) {
                     // If DataTable exists, destroy it before reinitializing
                     $('#vehicleTable').DataTable().destroy();
                 }
+                // Clear table before adding new data
+                $('#vehicleTableBody').empty();
 
-
+                // Define DataTable
                 let table = $('#vehicleTable').DataTable({
                     "dom": '<"top align-items-start d-flex justify-content-between"<"buttons-container"fl<"dropdown-container">>B>rt<"bottom align-items-start d-flex justify-content-between"ip><"clear">',
                     "paging": true,
@@ -272,49 +259,74 @@
                         titleAttr: 'Export to PDF',
                         title: 'Vehicle List'
                     }],
-                    "columnDefs": [{
-                        "targets": 0,
-                        orderable: false,
-                        "searchable": false,
-
-                    }],
                     "language": {
                         "search": "",
                         "searchPlaceholder": "Search...",
                         "lengthMenu": "_MENU_",
                         "info": "Showing _START_ to _END_ of _TOTAL_ entries"
-
                     }
                 });
-                loadAllTPs(tpId)
-                $('#vehicleTable').on('click', 'td.dt-control', async function (e) {
-                   let id =  e.target.id || null
 
-                    let photos = [];
-                    if(id){
-                        let vehicle = vehicles.find((ve) => ve.id == id);
-                        if(vehicle && vehicle.photo){
-                            photos = vehicle.photo
+                // Check if response is empty
+                if (response.length === 0) {
+                    // console.log("sss");
+                    // $('#vehicleTableBody').append('<tr><td colspan="9">No vehicles found</td></tr>');
+                } else {
+                    // Add data to table
+                    $.each(response, function (index, vehicle) {
+                        $('#vehicleTable tbody').append(
+                            '<tr>' +
+                            '<td id="' + vehicle.id + '" class="dt-control"></td>' +
+                            '<td>' + vehicle.model + '</td>' +
+                            '<td>' + vehicle.licensePlate + '</td>' +
+                            '<td>' + vehicle.capacity + '</td>' +
+                            '<td>' + vehicle.manufacturer + '</td>' +
+                            '<td>' + vehicle.fuelType + '</td>' +
+                            '<td>' + vehicle.currentMileage + '</td>' +
+                            '<td>' + vehicle.wheel + '</td>' +
+                            '<td>' + vehicle.truckProvider.firstName + " " + vehicle.truckProvider.lastName + '</td>' +
+                            '</tr>'
+                        );
+                    });
+
+                    // Add columnDefs only when there's data available
+                    table.columnDefs.push({
+                        "targets": 0,
+                        orderable: false,
+                        "searchable": false,
+                    });
+
+                    loadAllTPs(tpId);
+
+                    $('#vehicleTable').on('click', 'td.dt-control', async function (e) {
+                        let id = e.target.id || null
+
+                        let photos = [];
+                        if (id) {
+                            let vehicle = vehicles.find((ve) => ve.id == id);
+                            if (vehicle && vehicle.photo) {
+                                photos = vehicle.photo
+                            }
                         }
-                    }
-                    let tr = e.target.closest('tr');
-                    let row = table.row(tr);
+                        let tr = e.target.closest('tr');
+                        let row = table.row(tr);
 
-                    if (row.child.isShown()) {
-                        row.child.remove();
+                        if (row.child.isShown()) {
+                            row.child.remove();
 
-                    }
-                    else {
-                        row.child(await getPhotoRow(photos, row.data())).show();
-                    }
-                });
-
+                        } else {
+                            row.child(await getPhotoRow(photos, row.data())).show();
+                        }
+                    });
+                }
             },
             error: function (error) {
                 console.error(error);
             }
         });
     }
+
+
     async function getPhotoRow(photos, d) {
         var photoCell = $('<td>');
 

@@ -269,6 +269,7 @@
                 url: '/labours/admin?truck_provider_id='+tpId,
                 method: 'GET',
                 success: function(response) {
+                    console.log(response)
                     // Populate the table with data
                     $.each(response, function(index, labourer) {
                         $('#LabourerTable tbody').append(
