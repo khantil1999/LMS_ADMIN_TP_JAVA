@@ -74,14 +74,4 @@ public List<LabourDetailsModel> getAllLabours(){
         return this.labourRepository.findAll().stream().map(LabourDetailsModel::fromEntity).collect(Collectors.toList());
     }
 
-    /*public List<LabourDetailsModel> loadLabourersForAdmin(String truckProviderId, Principal principal) {
-        if (truckProviderId != null && !truckProviderId.isEmpty() && !truckProviderId.equals("0")) {
-            return this.labourRepository.getLabourersByTP(Long.parseLong(truckProviderId)).stream()
-                    .map(LabourDetailsModel::fromEntity).collect(Collectors.toList());
-        }
-        return this.labourRepository.findAll().stream()
-                .map(LabourDetailsModel::fromEntity).collect(Collectors.toList());
-
-
-    }*/
 }

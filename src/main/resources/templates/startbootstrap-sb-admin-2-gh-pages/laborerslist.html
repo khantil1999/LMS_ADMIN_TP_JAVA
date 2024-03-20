@@ -175,24 +175,7 @@
                             <h2>List of Registered Laborers</h2>
                         </div>
 
-                        <!--<form
-                                th:action="@{/laborerslistTP}"
-                                method="get">
-                            <div style="
-                            display: flex;
-                            justify-content: flex-end;
-                            gap: 10px;">
-                                <div class="form-group" style="align-self: self-end;">
-	   
-                            <button class="btn btn-outline-primary btn-xs" id="add" onclick="addLaborers()"  style="color:white; background-color: #7784d6;">Add</button>
 
-                                </div>
-                                <div class="form-group" style="align-self: self-end;">
-                                    <button type="Button" id="exportBtn" class="btn btn-outline-primary btn-xs" style="color:white;
-		                    background-color: #7784d6;">Export</button>
-                                </div>
-                            </div>
-                        </form><br>-->
                         <table id="LabourerTable" class="table table-bordered table-hover">
                             <thead class="table-dark" style="background-color: #7784d6;">
                                 <tr>
@@ -200,33 +183,10 @@
                                     <th>Last Name</th>
                                     <th>Mobile No</th>
                                     <th>Email</th>
+                                    <th>Truck Provider</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <!--<tr th:each = "user : ${users}">
-                                    <td th:text = "${user.firstName}"></td>
-                                    <td th:text = "${user.lastName}"></td>
-                                    <td th:text = "${user.mobileNo}"></td>
-                                    <td th:text = "${user.email}"></td>
-                                    <td class="text-center">
-                                        <button class="btn btn-outline-primary btn-xs edit-button"
-                                                th:attr="data-user-id=${user.id}"
-                                                onclick="editLabour(this.getAttribute('data-user-id'))"
-                                                style="color:white; background-color: #7784d6;">Edit</button>
-                                    </td>
-                                    <td class="text-center">
-                                        <a
-
-                                                class="btn btn-outline-primary btn-xs"
-                                                data-toggle="modal"
-                                                data-target="#deleteModal"
-                                                th:attr="data-user-id=${user.id}"
-                                                th:onclick="|deleteLaborers('${user.id}')|"
-
-                                                style="color:white;
-                         background-color: #7784d6;">Delete</a>
-                                    </td>
-                                </tr>-->
                             </tbody>
                         </table>
                   </div>
@@ -281,72 +241,6 @@
         </div>
     </div>
 
-<!--    <div class="modal fade" id="addEditLaborModel" tabindex="-1" aria-labelledby="addEditLaborsModel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="addEditLaborsModel">Add Laborers</h5>
-                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">×</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <form id="addLaborerForm">
-                        <input type="hidden" id="user-id" value="">
-                        <div class="mb-3">
-                            <label for="first-name" class="col-form-label">First Name:</label>
-                            <input type="text" class="form-control" id="first-name">
-                            <div id="first-nameError" class="text-danger"></div>
-                        </div>
-                        <div class="mb-3">
-                            <label for="last-name" class="col-form-label">Last Name:</label>
-                            <input type="text" class="form-control" id="last-name">
-                            <div id="last-nameError" class="text-danger"></div>
-                        </div>
-                        <div class="mb-3">
-                            <label for="email" class="col-form-label">Email:</label>
-                            <input type="email" class="form-control" id="email">
-                            <div id="emailError" class="text-danger"></div>
-                        </div>
-                        <div class="mb-3">
-                            <label for="mobile-number" class="col-form-label">Mobile Number:</label>
-                            <input type="text" class="form-control" id="mobile-number">
-                            <div id="mobile-numberError" class="text-danger"></div>
-                        </div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button onclick="closeLabourForm()" class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-                    <button type="button" id="addBtn" class="btn btn-primary" onclick="addLaborer()">Add</button>
-                </div>
-            </div>
-        </div>
-    </div>-->
-<!--
-    <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel"
-         aria-hidden="true"  th:each="user:${users}">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content" >
-                <div class="modal-header" >
-                    <input type="hidden" value="" id="deleteId">
-                    <h5 class="modal-title" id="deleteModalLabel">Are you sure to delete the labourer?</h5>
-                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">×</span>
-                    </button>
-                </div>
-                <div class="modal-footer">
-
-                    <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-                    <a
-
-                            class="btn btn-primary"
-                            th:attr="data-user-id=${user.id}"
-                            onclick="deleteLabor(this.getAttribute('data-user-id'))">Delete</a>
-                </div>
-            </div>
-        </div>
-    </div>-->
-
 
     <script src="vendor/jquery/jquery.min.js"></script>
     <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
@@ -368,9 +262,9 @@
 
     <script th:inline="javascript">
         $(document).ready(function (){
-            loadAllTPs();
+            loadAllLabourers();
         })
-        function loadAllTPs(tpId = '0'){
+        function loadAllLabourers(tpId = '0'){
             $.ajax({
                 url: '/labours/admin?truck_provider_id='+tpId,
                 method: 'GET',
@@ -383,11 +277,17 @@
                             '<td>' + labourer.lastName + '</td>' +
                             '<td>' + labourer.mobile + '</td>' +
                             '<td>' + labourer.email + '</td>' +
+                            '<td>' + labourer.user.firstName +" " + labourer.user.lastName + '</td>'+
                             '</tr>'
                         );
                     });
+
+                    if ($.fn.DataTable.isDataTable('#LabourerTable')) {
+                        // If DataTable exists, destroy it before reinitializing
+                        $('#LabourerTable').DataTable().destroy();
+                    }
                     let table = $('#LabourerTable').DataTable({
-                        "dom": '<"top align-items-start d-flex justify-content-between"<"buttons-container"fl>B>rt<"bottom align-items-start d-flex justify-content-between"ip><"clear">',
+                        "dom": '<"top align-items-start d-flex justify-content-between"<"buttons-container"fl<"dropdown-container">>B>rt<"bottom align-items-start d-flex justify-content-between"ip><"clear">',
                         "paging": true,
                         "searching": true,
                         "buttons": [{
@@ -396,8 +296,16 @@
                             className: 'btn pdf-button',
                             titleAttr: 'Export to PDF',
                             title: 'Labourer List'
-                        }]
+                        }],
+                        "language": {
+                            "search": "",
+                            "searchPlaceholder": "Search...",
+                            "lengthMenu": "_MENU_",
+                            "info": "Showing _START_ to _END_ of _TOTAL_ entries"
+
+                        }
                     });
+                    loadAllTPs(tpId)
 
                     // Customize PDF export
                     table.on('buttons-callback', function(buttons, pdfHtml, buttonCommon) {
@@ -414,244 +322,38 @@
                 }
             });
         }
-
-        /*document.addEventListener('DOMContentLoaded', function() {
-            const inputFields = document.querySelectorAll('#addLaborerForm input');
-            inputFields.forEach(input => {
-                input.addEventListener('input', () => {
-                    const errorId = input.id + 'Error';
-                    document.getElementById(errorId).innerText = '';
-                });
-
-                input.addEventListener('blur', () => {
-                    validateInput(input);
-                });
-            });
-        });
-        $('#exportBtn').click(function() {
-
-            // Make an AJAX request to fetch data based on the date range
+        function loadAllTPs(tpId){
             $.ajax({
+                url: '/truckProvider/admin',
                 method: 'GET',
-                url: '/exportLabourer',
-                success: function(data) {
-                    // Handle the success response and display the data
-                    var blob = new Blob([data], { type: "application/pdf" });
+                success: function(response) {
+                    var selectDropdown = $('<select onchange="onTpSelect(this)" class="form-control form-select" id="myDropdown"></select>');
 
-                    // Create a link element
-                    var link = document.createElement("a");
 
-                    // Set the download attribute with the desired file name
-                    link.download = "labourer_report.pdf";
+                    selectDropdown.append(  $('<option value="' + 0 + '">' + 'All Truck Provider' + '</option>'));
+                    $.each(response, function(index, user) {
+                        var optionText = user.firstName + ' ' + user.lastName;
+                        var optionValue = user.id;
 
-                    // Create a URL for the Blob and set it as the link's href
-                    link.href = window.URL.createObjectURL(blob);
+                        var option = $('<option value="' + optionValue + '">' + optionText + '</option>');
+                        selectDropdown.append(option);
+                    });
 
-                    // Append the link to the document
-                    document.body.appendChild(link);
-
-                    // Trigger a click on the link to start the download
-                    link.click();
-
-                    // Remove the link from the document
-                    document.body.removeChild(link);
+                    $('.dropdown-container').append(selectDropdown);
+                    if(tpId !== 0){
+                        $('#myDropdown').val(tpId)
+                    }
 
                 },
-                error: function(error) {
-                    // Handle the error response
+                error: function(xhr, status, error) {
                     console.error("Error fetching data:", error);
                 }
             });
-        });
-        function addLaborer() {
-            const inputs = ['first-name', 'last-name', 'email', 'mobile-number'];
-            let isValid = true;
-
-            inputs.forEach(inputId => {
-                const input = document.getElementById(inputId);
-                isValid = validateInput(input) && isValid;
-            });
-
-            if (isValid) {
-                let id =   $('#user-id').val();
-
-                if(id){
-                    editLabourApi()
-                }else{
-                    addApiCall();
-                }
-            }
         }
 
-        function validateInput(input) {
-            const value = input.value.trim();
-            const errorId = input.id + 'Error';
-            const errorMessages = {
-                'first-name': 'First Name is required and can only contain alphabets and spaces',
-                'last-name': 'Last Name is required and can only contain alphabets and spaces',
-                'email': 'Email is required and must be a valid email address',
-                'mobile-number': 'Mobile Number is required and must be a valid Indian mobile number'
-            };
-
-            if (!value) {
-                document.getElementById(errorId).innerText = errorMessages[input.id] || 'This field is required';
-                return false;
-            } else if (input.id === 'first-name' || input.id === 'last-name') {
-                const regex = /^[a-zA-Z ]+$/;
-                if (!regex.test(value)) {
-                    document.getElementById(errorId).innerText = errorMessages[input.id] || 'Invalid format';
-                    return false;
-                }
-            } else if (input.id === 'email') {
-                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-                if (!emailRegex.test(value)) {
-                    document.getElementById(errorId).innerText = errorMessages[input.id] || 'Invalid email format';
-                    return false;
-                }
-            } else if (input.id === 'mobile-number') {
-                const regex = /^(?!.*(\d).*\1)[6789]\d{9}$/;
-                if (!regex.test(value)) {
-                    document.getElementById(errorId).innerText = errorMessages[input.id] || 'Invalid format';
-                    return false;
-                }
-            }
-
-            return true;
+        function onTpSelect(data){
+            loadAllLabourers($(data).val())
         }
-
-
-
-        function addLaborers() {
-
-            const alertModal = new bootstrap.Modal(document.getElementById('addEditLaborModel'));
-            alertModal.show();
-        }
-        function closeLabourForm(){
-            $('#user-id').val(""); // Set the user ID in the hidden field
-            $('#addEditLaborsModel').text("Add Laborers")
-            $('#addBtn').text("Add")
-            clearFormData();
-        }
-        function addApiCall() {
-            const formData = {
-                firstName: document.getElementById('first-name').value.trim(),
-                lastName: document.getElementById('last-name').value.trim(),
-                email: document.getElementById('email').value.trim(),
-                mobileNumber: document.getElementById('mobile-number').value.trim()
-            };
-
-            $.ajax({
-                type: 'POST',
-                url: '/labour',
-                contentType: 'application/json',
-                data: JSON.stringify(formData),
-                success: function(response) {
-
-                    window.location.reload()
-                },
-                error: function(xhr, status, error) {
-
-
-                    // Handle error
-                }
-            });
-        }
-
-        function editLabourApi() {
-            const formData = {
-                firstName: document.getElementById('first-name').value.trim(),
-                lastName: document.getElementById('last-name').value.trim(),
-                email: document.getElementById('email').value.trim(),
-                mobileNumber: document.getElementById('mobile-number').value.trim(),
-                id: document.getElementById('user-id').value.trim()
-            };
-
-            $.ajax({
-                type: 'PUT',
-                url: '/labour',
-                contentType: 'application/json',
-                data: JSON.stringify(formData),
-                success: function(response) {
-                    $('#user-id').val(""); // Set the user ID in the hidden field
-
-                    $('#addBtn').text("Add")
-                    $('#addEditLaborsModel').text("Add Laborers")
-                    window.location.reload()
-
-                },
-                error: function(xhr, status, error) {
-
-                    // Handle error
-                }
-            });
-        }
-        function editLabour(id){
-            console.log("id: ", id)
-            fetchLabourData(id);
-        }
-        function fetchLabourData(userId) {
-            $.ajax({
-                type: 'GET',
-                url: '/labour?userId=' + userId, // Replace this with the actual endpoint to fetch labor data
-                success: function(response) {
-                    $('#user-id').val(response.id); // Set the user ID in the hidden field
-                    $('#first-name').val(response.firstName);
-                    $('#last-name').val(response.lastName);
-                    $('#email').val(response.email);
-                    $('#mobile-number').val(response.mobileNumber);
-                    $('#addBtn').text("Edit")
-                    $('#addEditLaborsModel').text("Edit Laborers")
-                    addLaborers()
-                },
-                error: function(xhr, status, error) {
-                    console.error('Failed to fetch labor data:', error);
-                    // Handle error
-                }
-            });
-        }
-     function   clearFormData(){
-            document.getElementById('first-name').value = ""
-           document.getElementById('last-name').value = ""
-           document.getElementById('email').value = ""
-            document.getElementById('mobile-number').value  = ""
-            document.getElementById('user-id').value = ""
-        }
-        function deleteLaborers(id) {
-            $("#deleteId").val(id)
-            const alertModal = new bootstrap.Modal(document.getElementById('deleteModel'));
-            alertModal.show();
-        }
-        function deleteLabor(){
-            let userId = $("#deleteId").val()
-            console.log(userId);
-                $.ajax({
-                    type: 'DELETE',
-                    url: '/labour?userId=' + userId, // Replace this with the actual endpoint to fetch labor data
-                    success: function(response) {
-                        window.location.reload();
-                    },
-                    error: function(xhr, status, error) {
-                        console.error('Failed to fetch labor data:', error);
-                        // Handle error
-                    }
-                });
-        }
-
-       /!* function deleteLabor(userId){
-            console.log(userId);
-            $.ajax({
-                type: 'DELETE',
-                url: '/deleteLabour?userId=' + userId, // Replace this with the actual endpoint to fetch labor data
-                success: function(response) {
-
-                    window.location.reload();
-                },
-                error: function(xhr, status, error) {
-                    console.error('Failed to fetch labor data:', error);
-                    // Handle error
-                }
-            });
-        }*!/*/
     </script>
 </body>
 

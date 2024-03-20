@@ -63,58 +63,58 @@ public class BookingRestApiController {
         return this.bookingService.getBookingById(Long.parseLong(id));
     }
 
-    @GetMapping("/export")
-    public void loadBookingPage(Model model,
-                                @RequestParam(name = "startDate", required = false) String startDate,
-                                @RequestParam(name = "endDate", required = false) String endDate,
-                                HttpServletResponse response) throws IOException, DocumentException {
-        // Get data from the service based on startDate and endDate
-        List<BookingModel> bookings;
-        if (startDate != null && !startDate.isEmpty() && endDate != null && !endDate.isEmpty()) {
-            bookings = bookingService.getAllBookings(startDate, endDate);
-        } else {
-            bookings = bookingService.getAllBookings();
-        }
-
-        // Context context = new Context();
-        var context = new org.thymeleaf.context.Context();
-        context.setVariable("bookings", bookings);
-        System.out.println("Bookings: " + bookings);
-
-
-        // Create the HTML string with Thymeleaf template for table rendering
-        String htmlContent = renderThymeleafTemplate("booking_template", context);
-
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        ITextRenderer renderer = new ITextRenderer();
-        renderer.setDocumentFromString(htmlContent);
-        renderer.layout();
-        renderer.createPDF(outputStream);
-
-        // Set the response headers
-        response.setContentType("application/pdf");
-        response.setHeader("Content-Disposition", "inline; filename=booking_report.pdf");
-
-        // Write the PDF content to the response
-        OutputStream out = response.getOutputStream();
-        outputStream.writeTo(out);
-        out.flush();
-
-        // Generate PDF content
-        //  byte[] pdfContent = generatePdfContent(htmlContent);
-
-        // Set the response headers
+//    @GetMapping("/export")
+//    public void loadBookingPage(Model model,
+//                                @RequestParam(name = "startDate", required = false) String startDate,
+//                                @RequestParam(name = "endDate", required = false) String endDate,
+//                                HttpServletResponse response) throws IOException, DocumentException {
+//        // Get data from the service based on startDate and endDate
+//        List<BookingModel> bookings;
+//        if (startDate != null && !startDate.isEmpty() && endDate != null && !endDate.isEmpty()) {
+//            bookings = bookingService.getAllBookings(startDate, endDate);
+//        } else {
+//            bookings = bookingService.getAllBookings();
+//        }
+//
+//        // Context context = new Context();
+//        var context = new org.thymeleaf.context.Context();
+//        context.setVariable("bookings", bookings);
+//        System.out.println("Bookings: " + bookings);
+//
+//
+//        // Create the HTML string with Thymeleaf template for table rendering
+//        String htmlContent = renderThymeleafTemplate("booking_template", context);
+//
+//        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+//        ITextRenderer renderer = new ITextRenderer();
+//        renderer.setDocumentFromString(htmlContent);
+//        renderer.layout();
+//        renderer.createPDF(outputStream);
+//
+//        // Set the response headers
 //        response.setContentType("application/pdf");
 //        response.setHeader("Content-Disposition", "inline; filename=booking_report.pdf");
 //
-//        try (ServletOutputStream outputStream = response.getOutputStream()) {
-//            // Write the PDF content to the response output stream
-//            outputStream.write(pdfContent);
-//        } catch (IOException e) {
-//            e.printStackTrace(); // Handle the exception appropriately
-//        }
-
-    }
+//        // Write the PDF content to the response
+//        OutputStream out = response.getOutputStream();
+//        outputStream.writeTo(out);
+//        out.flush();
+//
+//        // Generate PDF content
+//        //  byte[] pdfContent = generatePdfContent(htmlContent);
+//
+//        // Set the response headers
+////        response.setContentType("application/pdf");
+////        response.setHeader("Content-Disposition", "inline; filename=booking_report.pdf");
+////
+////        try (ServletOutputStream outputStream = response.getOutputStream()) {
+////            // Write the PDF content to the response output stream
+////            outputStream.write(pdfContent);
+////        } catch (IOException e) {
+////            e.printStackTrace(); // Handle the exception appropriately
+////        }
+//
+//    }
 
     private String renderThymeleafTemplate(String templateName, org.thymeleaf.context.Context context) {
         // Render the Thymeleaf template to HTML
@@ -156,12 +156,8 @@ public class BookingRestApiController {
     }
 
     @GetMapping("/history/booking")
-    public List<BookingModel> getAllBookings(@RequestParam(name="startDate",required = false)String startDate,@RequestParam(name = "endDate",required = false)String endDate){
-        if(startDate !=null && !startDate.isEmpty() && endDate !=null && !endDate.isEmpty()){
-            return this.bookingService.getAllBookings(startDate,endDate);
-        }else {
-            return this.bookingService.getAllBookings();
-        }
+    public List<BookingModel> getAllBookings(@RequestParam(value = "truck_provider_id",required = false) String truckProviderId){
+            return this.bookingService.getAllBookings(truckProviderId);
     }
 
     @PutMapping("/confirmBookingByTp/{bookingId}")

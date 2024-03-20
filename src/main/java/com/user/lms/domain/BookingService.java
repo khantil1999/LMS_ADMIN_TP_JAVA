@@ -168,16 +168,13 @@ public class BookingService {
         return detailsModels;
     }
 
-    public List<BookingModel> getAllBookings(String startDate, String endDate) {
-
-        List<Booking> booking = this.bookingRepository.getBookingsByDate(startDate, endDate);
-        List<BookingModel> detailsModels = new ArrayList<>();
-        booking.forEach(bookings -> {
-            BookingModel bookingModel = this.mapVehicle(bookings);
-            detailsModels.add(bookingModel);
-        });
-        return detailsModels;
+    public List<BookingModel> getAllBookings(String truckProviderId){
+        if(truckProviderId != null && !truckProviderId.isEmpty() && !truckProviderId.equals("0")){
+            return this.bookingRepository.getAllByTruckProvider(Long.parseLong(truckProviderId)).stream().map(BookingModel::fromEntity).collect(Collectors.toList());
+        }
+        return this.bookingRepository.findAll().stream().map(BookingModel::fromEntity).collect(Collectors.toList());
     }
+
 
     public List<BookingModel> getAllBookingsByTp(Principal principal, String startDate, String endDate,BookingStatus status) throws ParseException {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");

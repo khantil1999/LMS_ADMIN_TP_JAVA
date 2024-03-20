@@ -822,7 +822,7 @@
                         '<td data-toggle="tooltip" title="' + startAddress + '" class="fixed-size-cell">' + truncateDestination(startAddress)+ '</td>' +
                         '<td data-toggle="tooltip" title="' + endAddress + '" class="fixed-size-cell">' +truncateDestination(endAddress) + '</td>' +
                         '<td>' + booking.user.firstName + ' ' + booking.user.lastName + '</td>' +
-                        '<td>' + booking.status +'</td>' +
+                        '<td>' + booking.km +'</td>' +
                         '<td>' + booking.goodsType+ '</td>' +
                         '<td>' + booking.noOfLabourers+ '</td>' +
                         '<td>' + status + '</td>' +
@@ -843,7 +843,14 @@
                         className: 'btn pdf-button',
                         titleAttr: 'Export to PDF',
                         title: 'Booking List'
-                    }]
+                    }],
+                    "language": {
+                        "search": "",
+                        "searchPlaceholder": "Search...",
+                        "lengthMenu": "_MENU_",
+                        "info": "Showing _START_ to _END_ of _TOTAL_ entries"
+
+                    }
                 });
                 // Customize PDF export
                 table.on('buttons-callback', function(buttons, pdfHtml, buttonCommon) {
