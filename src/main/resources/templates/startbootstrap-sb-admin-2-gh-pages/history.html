@@ -104,8 +104,8 @@
             color: white !important;
         }
         .fixed-size-cell {
-            width: 150px;
-            white-space: nowrap;
+            width: 100px;
+            white-space: pre-wrap;
             overflow: hidden; /* Hide overflowing content */
             text-overflow: ellipsis; /* Display ellipsis (...) for truncated content */
         }
@@ -250,9 +250,14 @@
                               <th>Booking Date</th>
                               <th class="fixed-size-cell">Start Destination</th>
                               <th class="fixed-size-cell">End Destination</th>
+                              <th >Total Charges</th>
                               <th>Customer Name</th>
+                              <th class="fixed-size-cell">Customer Email</th>
+                              <th>Customer Mobile</th>
                               <th>Status</th>
                               <th>Truck Provider</th>
+                              <th class="fixed-size-cell">Truck Provider Email</th>
+                              <th>Truck Provider Number</th>
                               <!--<th scope="col">Actions</th>-->
                           </tr>
                           </thead>
@@ -328,7 +333,8 @@
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
 
     <script th:inline="javascript">
-
+        let  tpList = [];
+        let selectedTp = {}
         $(document).ready(function (){
             loadMyBookings();
         })
@@ -337,66 +343,92 @@
                 url: "/history/booking?truck_provider_id="+tpId,
                 method: "GET",
                 success: function (response) {
-
-                    $.each(response, function(index, booking) {
-                        let startAddress =  JSON.parse(booking.startDestination).label;
-                        let endAddress = JSON.parse(booking.endDestination).label;
-                        let status = booking.isTPApproved ? "Approved by Truck Provider" : "Pending";
-
-                        let bookingDate = new Date(booking.bookingDate);
-                        let formattedDate = bookingDate.toLocaleDateString('en-US', {
-                            day: '2-digit',
-                            month: '2-digit',
-                            year: 'numeric'
-                        });
-                        let formattedTime = bookingDate.toLocaleTimeString('en-US', {
-                            hour: '2-digit',
-                            minute: '2-digit',
-                            timeZone: 'Asia/Kolkata'
-                        });
-                        let formattedDateTime = formattedDate + ' ' + formattedTime;
-
-                        $('#bookingTable tbody').append(
-                            '<tr>' +
-                                '<td>' + (index + 1) + '</td>' +
-                                '<td>' + formattedDateTime + '</td>' +
-                                '<td data-toggle="tooltip" title="' + startAddress + '" class="fixed-size-cell">' + truncateDestination(startAddress)+ '</td>' +
-                                '<td data-toggle="tooltip" title="' + endAddress + '" class="fixed-size-cell">' +truncateDestination(endAddress) + '</td>' +
-                                '<td>' + booking.user.firstName + ' ' + booking.user.lastName + '</td>' +
-                                '<td>' + booking.status +'</td>' +
-                                '<td>' + booking.truckProvider.firstName +" " + booking.truckProvider.lastName + '</td>'+
-                            '</tr>'
-                        );
-                    });
-                    let table = $('#bookingTable').DataTable({
+                    if ($.fn.DataTable.isDataTable('#bookingTable')) {
+                        $('#bookingTable').DataTable().clear().destroy();
+                    }
+                    let tableOptions = {
                         "dom": '<"top align-items-start d-flex justify-content-between"<"buttons-container"fl<"dropdown-container">>B>rt<"bottom align-items-start d-flex justify-content-between"ip><"clear">',
                         "paging": true,
                         "searching": true,
+                        "autoWidth": true,
+                        "scrollX": true,
                         "buttons": [{
                             extend: 'pdf',
                             text: '<i class="fas fa-file-pdf"></i>',
                             className: 'btn pdf-button',
                             titleAttr: 'Export to PDF',
-                            title: 'Booking List'
+                            title: 'Booking List',
+                            customize: function (doc) {
+
+                                doc.content[1].table.body.forEach(function(row) {
+                                    row.splice(7, 1);
+                                    row.splice(10, 1);
+                                });
+
+                                if(tpId !=0){
+                                    let title = selectedTp && selectedTp.firstName && selectedTp.lastName ?
+                                        'Booking List of '+selectedTp.firstName +" "+ selectedTp.lastName +' Provider' :'Booking List'
+
+
+                                    doc.content.unshift({
+                                        text: title,
+                                        style: 'header'
+                                    })
+                                }
+
+                                doc.pageOrientation = 'landscape';
+                                doc.styles.tableHeader.alignment = 'left';
+
+                            }
                         }],
                         "language": {
                             "search": "",
                             "searchPlaceholder": "Search...",
                             "lengthMenu": "_MENU_",
                             "info": "Showing _START_ to _END_ of _TOTAL_ entries"
-
                         }
-                    });
+                    };
                     loadAllTPs(tpId)
-                    // Customize PDF export
-                    table.on('buttons-callback', function(buttons, pdfHtml, buttonCommon) {
-                        if (buttons[0].textStr === 'pdf') {
-                            pdfHtml = pdfHtml.replace(/<input.*?approval-cell.*?>/g, function(match) {
-                                return $(match).is(':checked') ? 'true' : 'false';
+                    if(response && response.length == 0){
+                        tableOptions.data = []
+                        let table = $('#bookingTable').DataTable(tableOptions);
+                    }else{
+                        $.each(response, function(index, booking) {
+                            let startAddress =  JSON.parse(booking.startDestination).label;
+                            let endAddress = JSON.parse(booking.endDestination).label;
+                            let bookingDate = new Date(booking.bookingDate);
+                            let formattedDate = bookingDate.toLocaleDateString('en-US', {
+                                day: '2-digit',
+                                month: '2-digit',
+                                year: 'numeric'
                             });
-                            return pdfHtml;
-                        }
-                    });
+                            let formattedTime = bookingDate.toLocaleTimeString('en-US', {
+                                hour: '2-digit',
+                                minute: '2-digit',
+                                timeZone: 'Asia/Kolkata'
+                            });
+                            let formattedDateTime = formattedDate + ' ' + formattedTime;
+
+                            $('#bookingTable tbody').append(
+                                '<tr>' +
+                                '<td>' + (index + 1) + '</td>' +
+                                '<td>' + formattedDateTime + '</td>' +
+                                '<td data-toggle="tooltip" title="' + startAddress + '" class="fixed-size-cell">' + startAddress+ '</td>' +
+                                '<td data-toggle="tooltip" title="' + endAddress + '" class="fixed-size-cell">' +endAddress + '</td>' +
+                                '<td>' + booking.totalAmount +  '</td>' +
+                                '<td>' + booking.user.firstName + ' ' + booking.user.lastName + '</td>' +
+                                '<td data-toggle="tooltip" title="' + booking.user.email + '" class="fixed-size-cell">' + booking.user.email + '</td>' +
+                                '<td>' + booking.user.mobileNo + '</td>' +
+                                '<td>' + booking.status +'</td>' +
+                                '<td>' + booking.truckProvider.firstName +" " + booking.truckProvider.lastName + '</td>'+
+                                '<td data-toggle="tooltip" title="' + booking.truckProvider.email + '" class="fixed-size-cell">' + booking.truckProvider.email +'</td>'+
+                                '<td>' + booking.truckProvider.mobileNo +'</td>'+
+                                '</tr>'
+                            );
+                        });
+                        let table = $('#bookingTable').DataTable(tableOptions);
+                    }
+
                 },
                 error: function (xhr, status, error) {
                     console.error("Error:", error);
@@ -409,6 +441,7 @@
                 url: '/truckProvider/admin',
                 method: 'GET',
                 success: function(response) {
+                    tpList = response;
                     var selectDropdown = $('<select onchange="onTpSelect(this)" class="form-control form-select" id="myDropdown"></select>');
 
 
@@ -434,6 +467,8 @@
         }
 
         function onTpSelect(data){
+            selectedTp = tpList.find((tp) => tp.id == $(data).val());
+
             loadMyBookings($(data).val())
         }
         function truncateDestination(destination) {

@@ -38,11 +38,11 @@
     <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
 
         <!-- Sidebar - Brand -->
-        <a class="sidebar-brand d-flex align-items-center justify-content-center" th:href="@{/home}">
+        <a class="sidebar-brand d-flex align-items-center justify-content-center" th:href="@{/dashboardTP}">
             <!--                <div class="sidebar-brand-icon rotate-n-15">-->
             <!--                    <i class="fas fa-laugh-wink"></i>-->
             <!--                </div>-->
-            <div class="sidebar-brand-text mx-3"> Admin </div>
+            <div class="sidebar-brand-text mx-3"> Provider </div>
         </a>
 
         <!-- Divider -->
@@ -50,42 +50,35 @@
 
         <!-- Nav Item - Dashboard -->
         <li class="nav-item active">
-            <a class="nav-link" th:href="@{/home}">
+            <a class="nav-link" th:href="@{/dashboardTP}">
                 <i class="fas fa-fw fa-tachometer-alt"></i>
                 <span>Dashboard</span></a>
         </li>
         <!-- Divider -->
         <hr class="sidebar-divider">
-        <li class="nav-item">
-            <a class="nav-link collapsed" th:href="@{/users}">
-                <span>User List</span>
-            </a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link collapsed" th:href="@{/truckproviderlist}" >
-                <span>Truck Providers List</span>
-            </a>
-        </li>
-        <hr class="sidebar-divider">
         <!-- Nav Item - Pages Collapse Menu -->
         <li class="nav-item">
-            <a class="nav-link collapsed" th:href="@{/vehiclelist}" >
+            <a class="nav-link collapsed" th:href="@{/vehiclelistTP}" >
                 <span>Vehicle Lists</span>
             </a>
         </li>
 
         <!-- Nav Item - Charts -->
         <li class="nav-item">
-            <a class="nav-link" th:href="@{/laborerslist}">
+            <a class="nav-link" th:href="@{/laborerslistTP}">
                 <span>Laborers List</span></a>
         </li>
 
         <!-- Nav Item - Tables -->
         <li class="nav-item">
-            <a class="nav-link" th:href="@{/history}">
-                <span>History</span></a>
+            <a class="nav-link" th:href="@{/bookingTP}">
+                <span>Booking</span></a>
         </li>
-
+        <li class="nav-item">
+            <a class="nav-link" th:href="@{/pastbooking}">
+                <!-- <i class="fas fa-fw fa-table"></i>-->
+                <span>Past Booking</span></a>
+        </li>
 
         <!-- Divider -->
         <hr class="sidebar-divider d-none d-md-block">
@@ -115,14 +108,18 @@
                     <li class="nav-item dropdown no-arrow">
                         <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <span class="mr-2 d-none d-lg-inline text-gray-600 small">Admin</span>
+                            <span class="mr-2 d-none d-lg-inline text-gray-600 small">Provider</span>
                             <img class="img-profile rounded-circle"
                                  src="img/undraw_profile.svg">
                         </a>
                         <!-- Dropdown - User Information -->
                         <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
                              aria-labelledby="userDropdown">
-                            <a class="dropdown-item" th:href="@{/changePassword}">
+                            <a class="dropdown-item" th:href="@{/profileTP}">
+                                <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
+                                Profile
+                            </a>
+                            <a class="dropdown-item" th:href="@{/changePasswordTP}">
                                 <i class="fas fa-list fa-sm fa-fw mr-2 text-gray-400"></i>
                                 Change Password
                             </a>
@@ -155,53 +152,26 @@
                                                 <div class="text-center">
                                                     <h1 class="h4 text-gray-900 mb-4">Change Password</h1>
                                                 </div>
-                                                <div th:if="${passwordError}" class="error-message">
-                                                    <div class="alert alert-danger" th:text="${passwordError}"></div>
-                                                </div>
 
-                                                <div th:if="${successMessage}" class="success-message">
-                                                    <div class="alert alert-danger" th:text="${successMessage}"></div>
-                                                </div>
-                                                <form
-                                                        class="user"
-                                                        method="post"
-                                                        role="form"
-                                                        th:action="@{/changePassword}"
-                                                        th:object="${changePassword}">
-
-
+                                                <form id="changePasswordForm">
                                                     <div class="form-group">
-                                                        <input type="password" class="form-control form-control-user"
-                                                               id="oldPassword"
-                                                               name="oldPassword"
-                                                               th:field="*{oldPassword}"
-                                                               placeholder="Old Password">
-                                                        <p th:errors="*{oldPassword}" class="text-danger"
-                                                           th:if="${#fields.hasErrors('oldPassword')}">
-                                                        </p>
+                                                        <input type="password" class="form-control form-control-user" id="currentPassword" placeholder="Enter current password" >
+                                                        <span class="text-danger invalid-feedback" id="currentPasswordError"></span>
+
                                                     </div>
                                                     <div class="form-group">
-                                                        <input type="password" class="form-control form-control-user"
-                                                               id="newPassword"
-                                                               name="newPassword"
-                                                               th:field="*{newPassword}"
-                                                               placeholder="New Password">
-                                                        <p th:errors="*{newPassword}" class="text-danger"
-                                                           th:if="${#fields.hasErrors('newPassword')}"></p>
+                                                        <input type="password" class="form-control form-control-user" id="newPassword" placeholder="Enter new password" >
+                                                        <span class="text-danger invalid-feedback" id="newPasswordError"></span>
                                                     </div>
                                                     <div class="form-group">
-                                                        <input type="password" class="form-control form-control-user"
-                                                               id="confirmPassword"
-                                                               name="confirmPassword"
-                                                               th:field="*{confirmPassword}"
-                                                               placeholder="Confirm Password">
-                                                        <p th:errors="*{confirmPassword}" class="text-danger"
-                                                           th:if="${#fields.hasErrors('confirmPassword')}"></p>
+                                                        <input type="password" class="form-control form-control-user" id="confirmPassword" placeholder="Confirm new password" >
+                                                        <span class="text-danger invalid-feedback" id="confirmPasswordError"></span>
                                                     </div>
-                                                    <button type="submit" class="btn btn-primary btn-user btn-block">
+                                                    <button type="button" onclick="updatePassword()" class="btn btn-primary btn-user btn-block">
                                                         Change Password
                                                     </button>
                                                 </form>
+
                                             </div>
                                         </div>
                                     </div>
@@ -262,7 +232,100 @@
 
 <!-- Custom scripts for all pages-->
 <script src="js/sb-admin-2.min.js"></script>
+<script th:inline="javascript">
+    $(document).ready(function (){
+        $('#confirmPassword, #currentPassword, #newPassword').on('input', function() {
+            validateChangePasswordForm();
+        });
+    })
+    function displayAlert(message, alertType) {
+        var alertElement = document.createElement('div');
+        alertElement.classList.add('alert', 'alert-' + alertType);
+        alertElement.setAttribute('role', 'alert');
+        alertElement.innerHTML = message;
 
+        document.getElementById("mainContainer").before(alertElement);
+        setTimeout(function() {
+            alertElement.remove();
+        }, 3000);
+    }
+
+    function validateChangePasswordForm() {
+        var currentPassword = $("#currentPassword").val().trim();
+        var newPassword = $("#newPassword").val().trim();
+        var confirmPassword = $("#confirmPassword").val().trim();
+
+        $(".invalid-feedback").text(""); // Clear previous error messages
+
+        var hasError = false;
+
+        if (currentPassword === "") {
+            $("#currentPasswordError").text("Please enter current password.");
+            $("#currentPasswordError").css("display", "block");
+            hasError = true;
+        }
+        if (!/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/.test(newPassword)) {
+            $("#newPasswordError").text("Password must be a minimum of eight characters long and include at least one uppercase letter, one lowercase letter, one number, and one special character. Special characters allowed are @$!%*?&");
+            $("#newPasswordError").css("display", "block");
+            hasError = true;
+        }
+        if (newPassword === "") {
+            $("#newPasswordError").text("Please enter new password.");
+            $("#newPasswordError").css("display", "block");
+            hasError = true;
+        }
+        if (confirmPassword === "") {
+            $("#confirmPasswordError").text("Please confirm new password.");
+            $("#confirmPasswordError").css("display", "block");
+            hasError = true;
+        }
+        if (newPassword !== confirmPassword) {
+            $("#confirmPasswordError").text("Passwords do not match.");
+            $("#confirmPasswordError").css("display", "block");
+            hasError = true;
+        }
+        return hasError;
+    }
+
+    function updatePassword(){
+        if(!validateChangePasswordForm()){
+            let currentPassword = $("#currentPassword").val().trim();
+            let newPassword = $("#newPassword").val().trim();
+            let confirmPassword = $("#confirmPassword").val().trim();
+            $.ajax({
+                type: 'PUT',
+                url: '/updatePassword',
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    confirmPassword: confirmPassword ,
+                    newPassword:newPassword,
+                    oldPassword:currentPassword
+                }),
+                success: function(response) {
+                    if(response && response.isError){
+                        if(response.isOldError){
+                            $("#currentPasswordError").text(response.errorMessage);
+                            $("#currentPasswordError").css("display", "block");
+                        }else{
+                            $("#newPasswordError").text(response.errorMessage);
+                            $("#newPasswordError").css("display", "block");
+                        }
+
+                    }else{
+                        $("#currentPassword").val("");
+                        $("#newPassword").val("")
+                        $("#confirmPassword").val("")
+                        displayAlert("Password Changed Successfully!","success")
+                    }
+                },
+                error: function(xhr, status, error) {
+                    // Handle error response
+                    console.error('Error updating profile:', error);
+                }
+            });
+        }
+    }
+</script>
 </body>
 
 </html>

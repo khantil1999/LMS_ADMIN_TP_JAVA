@@ -39,35 +39,6 @@ public class EmailService {
         javaMailSender.send(message);
     }
 
-    /*  *//*public void sendBookingConfirmationEmailWithPdfAttachment(String to, String subject, Booking bookingData) {
-        MimeMessage message = javaMailSender.createMimeMessage();
-        MimeMessageHelper helper = new MimeMessageHelper(message, "utf-8");
-
-        try {
-            // Set the attributes for the Thymeleaf template
-            Context context = new Context();
-            context.setVariable("booking", bookingData);
-
-            // Process the HTML template (assuming 'booking-confirmation.html' is in src/main/resources/templates)
-            String htmlContent = templateEngine.process("booking-confirmation", context);
-
-            // Generate PDF from the HTML content
-            byte[] pdfContent = generatePdfFromHtml(htmlContent);
-
-            // Attach PDF to the email
-            helper.setTo(to);
-            helper.setSubject(subject);
-            helper.setText("Booking confirmation details are attached.");
-            helper.addAttachment("booking-confirmation.pdf", "application/pdf");
-
-            // Send email
-            javaMailSender.send(message);
-        } catch (MessagingException e) {
-            // Handle the exception
-            e.printStackTrace();
-        }
-    }
-*/
     public byte[] generatePdfFromHtml(String htmlContent) {
         try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
             ITextRenderer renderer = new ITextRenderer();
@@ -268,6 +239,28 @@ public class EmailService {
 
             helper.setTo(booking.getUser().getEmail());
             helper.setSubject("Booking Cancel");
+            helper.setText(htmlContent, true);
+
+            javaMailSender.send(mimeMessage);
+
+        } catch (MessagingException e) {
+        }
+    }
+
+    public void sendResetPasswordEmail(String email,String token){
+        MimeMessage mimeMessage = javaMailSender.createMimeMessage();
+
+        try {
+            MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true);
+
+            Context context = new Context();
+            context.setVariable("token", token);
+
+
+            String htmlContent = templateEngine.process("reset-password-template", context);
+
+            helper.setTo(email);
+            helper.setSubject("Reset Password");
             helper.setText(htmlContent, true);
 
             javaMailSender.send(mimeMessage);

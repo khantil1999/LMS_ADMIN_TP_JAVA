@@ -70,8 +70,7 @@ public class AuthService {
             passwordResetToken.setExpiryDate(LocalDateTime.now().plusMinutes(30));
 
             PasswordResetToken savedData = this.passwordResetTokenRepository.saveAndFlush(passwordResetToken);
-            String message = "To reset your password, please click the link: http://localhost:8091/resetPassword?token=" + savedData.getToken();
-            this.emailService.sendEmail(forgotPasswordModel.getEmail(), "Reset Password", message);
+            this.emailService.sendResetPasswordEmail(forgotPasswordModel.getEmail(),savedData.getToken());
         }
         model.addAttribute("successMessage", "Please check you email to reset the password!");
         return "/forgot-password";

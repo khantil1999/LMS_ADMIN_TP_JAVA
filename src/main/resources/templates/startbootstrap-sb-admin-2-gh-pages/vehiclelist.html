@@ -159,6 +159,7 @@
                         <thead class="table-dark" style="background-color: #7784d6;">
                         <tr>
                             <th></th>
+                            <th>Sr. No</th>
                             <th>Model</th>
                             <th>License Plate</th>
                             <th>Capacity</th>
@@ -228,27 +229,22 @@
     const storage = firebase.storage();
     let table;
     let vehicles = [];
+    let  tpList = [];
+    let selectedTp = {}
     $(document).ready(function () {
 
         loadAllVehicles()
     });
     function loadAllVehicles(tpId = '0') {
-
         $.ajax({
             type: 'GET',
             url: '/vehicles/admin?truck_provider_id=' + tpId,
             success: function (response) {
-                vehicles = response;
-                console.log(response);
                 if ($.fn.DataTable.isDataTable('#vehicleTable')) {
-                    // If DataTable exists, destroy it before reinitializing
-                    $('#vehicleTable').DataTable().destroy();
+                    $('#vehicleTable').DataTable().clear().destroy();
                 }
-                // Clear table before adding new data
-                $('#vehicleTableBody').empty();
 
-                // Define DataTable
-                let table = $('#vehicleTable').DataTable({
+                let tableOptions = {
                     "dom": '<"top align-items-start d-flex justify-content-between"<"buttons-container"fl<"dropdown-container">>B>rt<"bottom align-items-start d-flex justify-content-between"ip><"clear">',
                     "paging": true,
                     "searching": true,
@@ -257,26 +253,54 @@
                         text: '<i class="fas fa-file-pdf"></i>',
                         className: 'btn pdf-button',
                         titleAttr: 'Export to PDF',
-                        title: 'Vehicle List'
+                        title: 'Vehicle List',
+                        customize: function (doc) {
+                            if(tpId !=0){
+                                let title = selectedTp && selectedTp.firstName && selectedTp.lastName ?
+                                    'Vehicle List of '+selectedTp.firstName +" "+ selectedTp.lastName +' Provider' :'Vehicle List'
+                                doc.content.unshift({
+                                    text: title,
+                                    style: 'header'
+                                })
+                            }
+                            doc.pageOrientation = 'landscape';
+                            doc.styles.tableHeader.alignment = 'left';
+
+                        }
                     }],
                     "language": {
                         "search": "",
                         "searchPlaceholder": "Search...",
                         "lengthMenu": "_MENU_",
                         "info": "Showing _START_ to _END_ of _TOTAL_ entries"
-                    }
-                });
+                    },
 
-                // Check if response is empty
+                };
+                loadAllTPs(tpId)
                 if (response.length === 0) {
-                    // console.log("sss");
-                    // $('#vehicleTableBody').append('<tr><td colspan="9">No vehicles found</td></tr>');
+                    tableOptions.data = [];
+                    tableOptions.columns = [
+                        { "data": null, "defaultContent": "" },
+                        { "data": null, "defaultContent": "" },
+                        { "data": "model" },
+                        { "data": "licensePlate" },
+                        { "data": "capacity" },
+                        { "data": "manufacturer" },
+                        { "data": "fuelType" },
+                        { "data": "currentMileage" },
+                        { "data": "wheel" },
+                        { "data": "truckProvider.firstName", "render": function(data, type, row, meta) {
+                                return data + ' ' + row.truckProvider.lastName;
+                            }}
+                    ];
+
+                    let table = $('#vehicleTable').DataTable(tableOptions);
                 } else {
-                    // Add data to table
-                    $.each(response, function (index, vehicle) {
-                        $('#vehicleTable tbody').append(
-                            '<tr>' +
+                    let rowsHTML = '';
+                    response.forEach(function(vehicle,index) {
+                        rowsHTML += '<tr>' +
                             '<td id="' + vehicle.id + '" class="dt-control"></td>' +
+                            '<td>' + (index + 1) + '</td>' +
                             '<td>' + vehicle.model + '</td>' +
                             '<td>' + vehicle.licensePlate + '</td>' +
                             '<td>' + vehicle.capacity + '</td>' +
@@ -284,26 +308,20 @@
                             '<td>' + vehicle.fuelType + '</td>' +
                             '<td>' + vehicle.currentMileage + '</td>' +
                             '<td>' + vehicle.wheel + '</td>' +
-                            '<td>' + vehicle.truckProvider.firstName + " " + vehicle.truckProvider.lastName + '</td>' +
-                            '</tr>'
-                        );
+                            '<td>' + vehicle.truckProvider.firstName + ' ' + vehicle.truckProvider.lastName + '</td>' +
+                            '</tr>';
                     });
 
-                    // Add columnDefs only when there's data available
-                    table.columnDefs.push({
-                        "targets": 0,
-                        orderable: false,
-                        "searchable": false,
-                    });
+                    $('#vehicleTableBody').html(rowsHTML);
 
-                    loadAllTPs(tpId);
+                    let table = $('#vehicleTable').DataTable(tableOptions);
 
                     $('#vehicleTable').on('click', 'td.dt-control', async function (e) {
                         let id = e.target.id || null
 
                         let photos = [];
                         if (id) {
-                            let vehicle = vehicles.find((ve) => ve.id == id);
+                            let vehicle = response.find((ve) => ve.id == id);
                             if (vehicle && vehicle.photo) {
                                 photos = vehicle.photo
                             }
@@ -313,7 +331,6 @@
 
                         if (row.child.isShown()) {
                             row.child.remove();
-
                         } else {
                             row.child(await getPhotoRow(photos, row.data())).show();
                         }
@@ -325,6 +342,8 @@
             }
         });
     }
+
+
 
 
     async function getPhotoRow(photos, d) {
@@ -377,6 +396,7 @@
             url: '/truckProvider/admin',
             method: 'GET',
             success: function(response) {
+                tpList= response
                 var selectDropdown = $('<select onchange="onTpSelect(this)" class="form-control form-select" id="myDropdown"></select>');
 
 
@@ -402,6 +422,7 @@
     }
 
     function onTpSelect(data){
+        selectedTp = tpList.find((tp) => tp.id == $(data).val());
         loadAllVehicles($(data).val())
     }
 </script>

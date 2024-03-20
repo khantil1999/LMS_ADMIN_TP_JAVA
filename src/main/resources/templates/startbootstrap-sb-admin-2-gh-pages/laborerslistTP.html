@@ -161,6 +161,7 @@
           <table  id="labourTable" class="table table-bordered table-hover">
             <thead class="table-dark" style="background-color: #7784d6;">
             <tr>
+              <th>Sr. No</th>
               <th>First Name</th>
               <th>Last Name</th>
               <th>Mobile No</th>
@@ -225,7 +226,7 @@
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="addEditLaborsModel">Add Laborers</h5>
-        <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+        <button onclick="closeModel('addEditLaborModel')" class="close" type="button" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">×</span>
         </button>
       </div>
@@ -390,7 +391,11 @@
     const alertModal = new bootstrap.Modal(document.getElementById('addEditLaborModel'));
     alertModal.show();
   }
+  function closeModel(id){
+    $('#'+id).modal('hide');
+  }
   function closeLabourForm(){
+    closeModel("addEditLaborModel");
     $('#user-id').val(""); // Set the user ID in the hidden field
     $('#addEditLaborsModel').text("Add Laborers")
     $('#addBtn').text("Add")
@@ -529,6 +534,7 @@
         // Iterate through the fetched data and append rows to the table
         $.each(data, function(index, labourer) {
           var row = '<tr>';
+          row += '<td>' + (index+1) + '</td>';
           row += '<td>' + labourer.firstName + '</td>';
           row += '<td>' + labourer.lastName + '</td>';
           row += '<td>' + labourer.mobile + '</td>';

@@ -179,6 +179,7 @@
                         <table id="LabourerTable" class="table table-bordered table-hover">
                             <thead class="table-dark" style="background-color: #7784d6;">
                                 <tr>
+                                    <th>Sr. No</th>
                                     <th>First Name</th>
                                     <th>Last Name</th>
                                     <th>Mobile No</th>
@@ -261,6 +262,8 @@
 
 
     <script th:inline="javascript">
+        let  tpList = [];
+        let selectedTp = {}
         $(document).ready(function (){
             loadAllLabourers();
         })
@@ -269,25 +272,10 @@
                 url: '/labours/admin?truck_provider_id='+tpId,
                 method: 'GET',
                 success: function(response) {
-                    console.log(response)
-                    // Populate the table with data
-                    $.each(response, function(index, labourer) {
-                        $('#LabourerTable tbody').append(
-                            '<tr>' +
-                            '<td>' + labourer.firstName + '</td>' +
-                            '<td>' + labourer.lastName + '</td>' +
-                            '<td>' + labourer.mobile + '</td>' +
-                            '<td>' + labourer.email + '</td>' +
-                            '<td>' + labourer.user.firstName +" " + labourer.user.lastName + '</td>'+
-                            '</tr>'
-                        );
-                    });
-
                     if ($.fn.DataTable.isDataTable('#LabourerTable')) {
-                        // If DataTable exists, destroy it before reinitializing
-                        $('#LabourerTable').DataTable().destroy();
+                        $('#LabourerTable').DataTable().clear().destroy();
                     }
-                    let table = $('#LabourerTable').DataTable({
+                    let tableOptions = {
                         "dom": '<"top align-items-start d-flex justify-content-between"<"buttons-container"fl<"dropdown-container">>B>rt<"bottom align-items-start d-flex justify-content-between"ip><"clear">',
                         "paging": true,
                         "searching": true,
@@ -296,7 +284,20 @@
                             text: '<i class="fas fa-file-pdf"></i>',
                             className: 'btn pdf-button',
                             titleAttr: 'Export to PDF',
-                            title: 'Labourer List'
+                            title: 'Labourer List',
+                            customize: function (doc) {
+                                if(tpId !=0){
+                                    let title = selectedTp && selectedTp.firstName && selectedTp.lastName ?
+                                        'Labourers List of '+selectedTp.firstName +" "+ selectedTp.lastName +' Provider' :'Labourers List'
+                                    doc.content.unshift({
+                                        text: title,
+                                        style: 'header'
+                                    })
+                                }
+                                doc.pageOrientation = 'landscape';
+                                doc.styles.tableHeader.alignment = 'left';
+
+                            }
                         }],
                         "language": {
                             "search": "",
@@ -304,19 +305,31 @@
                             "lengthMenu": "_MENU_",
                             "info": "Showing _START_ to _END_ of _TOTAL_ entries"
 
-                        }
-                    });
-                    loadAllTPs(tpId)
+                        },
 
-                    // Customize PDF export
-                    table.on('buttons-callback', function(buttons, pdfHtml, buttonCommon) {
-                        if (buttons[0].textStr === 'pdf') {
-                            pdfHtml = pdfHtml.replace(/<input.*?approval-cell.*?>/g, function(match) {
-                                return $(match).is(':checked') ? 'true' : 'false';
-                            });
-                            return pdfHtml;
-                        }
-                    });
+                    }
+                    loadAllTPs(tpId)
+                    if(response && response.length ==0){
+                        tableOptions.data = [];
+                        let table = $('#LabourerTable').DataTable(tableOptions);
+                    }else{
+                        $.each(response, function(index, labourer) {
+                            $('#LabourerTable tbody').append(
+                                '<tr>' +
+                                '<td>' + (index + 1) + '</td>' +
+                                '<td>' + labourer.firstName + '</td>' +
+                                '<td>' + labourer.lastName + '</td>' +
+                                '<td>' + labourer.mobile + '</td>' +
+                                '<td>' + labourer.email + '</td>' +
+                                '<td>' + labourer.user.firstName +" " + labourer.user.lastName + '</td>'+
+                                '</tr>'
+                            );
+                        });
+
+                        let table = $('#LabourerTable').DataTable(tableOptions);
+                    }
+
+
                 },
                 error: function(xhr, status, error) {
                     console.error("Error fetching data:", error);
@@ -328,6 +341,7 @@
                 url: '/truckProvider/admin',
                 method: 'GET',
                 success: function(response) {
+                    tpList= response
                     var selectDropdown = $('<select onchange="onTpSelect(this)" class="form-control form-select" id="myDropdown"></select>');
 
 
@@ -353,6 +367,7 @@
         }
 
         function onTpSelect(data){
+            selectedTp = tpList.find((tp) => tp.id == $(data).val());
             loadAllLabourers($(data).val())
         }
     </script>

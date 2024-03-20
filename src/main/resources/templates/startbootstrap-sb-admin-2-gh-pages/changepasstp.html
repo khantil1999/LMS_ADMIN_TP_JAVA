@@ -152,53 +152,26 @@
                                     <div class="text-center">
                                         <h1 class="h4 text-gray-900 mb-4">Change Password</h1>
                                     </div>
-                                    <div th:if="${passwordError}" class="error-message">
-                                        <div class="alert alert-danger" th:text="${passwordError}"></div>
-                                    </div>
 
-                                    <div th:if="${successMessage}" class="success-message">
-                                        <div class="alert alert-danger" th:text="${successMessage}"></div>
-                                    </div>
-                                    <form
-                                            class="user"
-                                            method="post"
-                                            role="form"
-                                            th:action="@{/changePassword}"
-                                            th:object="${changePassword}">
+                                    <form id="changePasswordForm">
+                                        <div class="form-group">
+                                            <input type="password" class="form-control form-control-user" id="currentPassword" placeholder="Enter current password" >
+                                            <span class="text-danger invalid-feedback" id="currentPasswordError"></span>
 
-
-                                            <div class="form-group">
-                                                <input type="password" class="form-control form-control-user"
-                                                        id="oldPassword"
-                                                        name="oldPassword"
-                                                        th:field="*{oldPassword}"
-                                                        placeholder="Old Password">
-                                                        <p th:errors="*{oldPassword}" class="text-danger"
-                                                                th:if="${#fields.hasErrors('oldPassword')}">
-                                                        </p>
-                                            </div>
-                                            <div class="form-group">
-                                                <input type="password" class="form-control form-control-user"
-                                                       id="newPassword"
-                                                        name="newPassword"
-                                                        th:field="*{newPassword}"
-                                                        placeholder="New Password">
-                                                <p th:errors="*{newPassword}" class="text-danger"
-                                                    th:if="${#fields.hasErrors('newPassword')}"></p>
-                                            </div>
-                                            <div class="form-group">
-                                                <input type="password" class="form-control form-control-user"
-                                                        id="confirmPassword"
-                                                        name="confirmPassword"
-                                                        th:field="*{confirmPassword}"
-                                                        placeholder="Confirm Password">
-                                                        <p th:errors="*{confirmPassword}" class="text-danger"
-                                                            th:if="${#fields.hasErrors('confirmPassword')}"></p>
-                                            </div>
-                                            <button type="submit" class="btn btn-primary btn-user btn-block">
-                                                    Change Password
-                                            </button>
+                                        </div>
+                                        <div class="form-group">
+                                            <input type="password" class="form-control form-control-user" id="newPassword" placeholder="Enter new password" >
+                                            <span class="text-danger invalid-feedback" id="newPasswordError"></span>
+                                        </div>
+                                        <div class="form-group">
+                                            <input type="password" class="form-control form-control-user" id="confirmPassword" placeholder="Confirm new password" >
+                                            <span class="text-danger invalid-feedback" id="confirmPasswordError"></span>
+                                        </div>
+                                        <button type="button" onclick="updatePassword()" class="btn btn-primary btn-user btn-block">
+                                            Change Password
+                                        </button>
                                     </form>
+
                                 </div>
                             </div>
                         </div>
@@ -259,7 +232,100 @@
 
     <!-- Custom scripts for all pages-->
     <script src="js/sb-admin-2.min.js"></script>
+    <script th:inline="javascript">
+        $(document).ready(function (){
+            $('#confirmPassword, #currentPassword, #newPassword').on('input', function() {
+                validateChangePasswordForm();
+            });
+        })
+        function displayAlert(message, alertType) {
+            var alertElement = document.createElement('div');
+            alertElement.classList.add('alert', 'alert-' + alertType);
+            alertElement.setAttribute('role', 'alert');
+            alertElement.innerHTML = message;
 
+            document.getElementById("mainContainer").before(alertElement);
+            setTimeout(function() {
+                alertElement.remove();
+            }, 3000);
+        }
+
+        function validateChangePasswordForm() {
+            var currentPassword = $("#currentPassword").val().trim();
+            var newPassword = $("#newPassword").val().trim();
+            var confirmPassword = $("#confirmPassword").val().trim();
+
+            $(".invalid-feedback").text(""); // Clear previous error messages
+
+            var hasError = false;
+
+            if (currentPassword === "") {
+                $("#currentPasswordError").text("Please enter current password.");
+                $("#currentPasswordError").css("display", "block");
+                hasError = true;
+            }
+            if (!/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/.test(newPassword)) {
+                $("#newPasswordError").text("Password must be a minimum of eight characters long and include at least one uppercase letter, one lowercase letter, one number, and one special character. Special characters allowed are @$!%*?&");
+                $("#newPasswordError").css("display", "block");
+                hasError = true;
+            }
+            if (newPassword === "") {
+                $("#newPasswordError").text("Please enter new password.");
+                $("#newPasswordError").css("display", "block");
+                hasError = true;
+            }
+            if (confirmPassword === "") {
+                $("#confirmPasswordError").text("Please confirm new password.");
+                $("#confirmPasswordError").css("display", "block");
+                hasError = true;
+            }
+            if (newPassword !== confirmPassword) {
+                $("#confirmPasswordError").text("Passwords do not match.");
+                $("#confirmPasswordError").css("display", "block");
+                hasError = true;
+            }
+            return hasError;
+        }
+
+        function updatePassword(){
+            if(!validateChangePasswordForm()){
+                let currentPassword = $("#currentPassword").val().trim();
+                let newPassword = $("#newPassword").val().trim();
+                let confirmPassword = $("#confirmPassword").val().trim();
+                $.ajax({
+                    type: 'PUT',
+                    url: '/updatePassword',
+                    contentType: 'application/json',
+                    data: JSON.stringify({
+                        confirmPassword: confirmPassword ,
+                        newPassword:newPassword,
+                        oldPassword:currentPassword
+                    }),
+                    success: function(response) {
+                        if(response && response.isError){
+                            if(response.isOldError){
+                                $("#currentPasswordError").text(response.errorMessage);
+                                $("#currentPasswordError").css("display", "block");
+                            }else{
+                                $("#newPasswordError").text(response.errorMessage);
+                                $("#newPasswordError").css("display", "block");
+                            }
+
+                        }else{
+                            $("#currentPassword").val("");
+                            $("#newPassword").val("")
+                            $("#confirmPassword").val("")
+                            displayAlert("Password Changed Successfully!","success")
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        // Handle error response
+                        console.error('Error updating profile:', error);
+                    }
+                });
+            }
+        }
+    </script>
 </body>
 
 </html>

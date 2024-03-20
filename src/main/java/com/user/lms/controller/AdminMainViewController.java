@@ -52,11 +52,6 @@ public class AdminMainViewController {
         return "changepass";
     }
 
-    @PostMapping("/changePassword")
-    public String changePassword(@Valid @ModelAttribute("changePassword") ChangePasswordModel changePasswordModel,
-                                 BindingResult bindingResult, Model model, Principal principal){
-        return  this.authService.changePassword(changePasswordModel,bindingResult,model,principal);
-    }
 
     @GetMapping("/truckproviderlist")
     public String truckProviderList(Model model){
