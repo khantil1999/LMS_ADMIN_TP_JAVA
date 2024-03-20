@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -59,8 +60,23 @@ public interface BookingRepository extends JpaRepository<Booking,Long> {
     @Query(value = "SELECT COUNT(booking_date) AS count, DATE(booking_date) AS bookingDate FROM booking GROUP BY DATE(booking_date)",nativeQuery = true)
     List<Object[]> getBookingCountByDateRaw();
 
+    @Query(value = "SELECT COUNT(booking_date) AS count, DATE(booking_date) AS bookingDate FROM booking where truck_provider_id=?1 GROUP BY DATE(booking_date)",nativeQuery = true)
+    List<Object[]> getBookingCountByDateRawForTP(Long providerId);
     default List<DateWiseBookingModel> getBookingCountByDate() {
         List<Object[]> results = getBookingCountByDateRaw();
+        List<DateWiseBookingModel> dateWiseBookingModels = new ArrayList<>();
+
+        for (Object[] result : results) {
+            Long count = (Long) result[0];
+            Date bookingDate = (Date) result[1];
+            dateWiseBookingModels.add(new DateWiseBookingModel(bookingDate,count));
+        }
+
+        return dateWiseBookingModels;
+    }
+
+    default List<DateWiseBookingModel> getBookingCountByDateForTP(Long providerId) {
+        List<Object[]> results = getBookingCountByDateRawForTP(providerId);
         List<DateWiseBookingModel> dateWiseBookingModels = new ArrayList<>();
 
         for (Object[] result : results) {

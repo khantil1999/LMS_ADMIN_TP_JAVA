@@ -13,6 +13,5 @@ public interface LabourRepository extends JpaRepository<Labour,Long> {
     @Query("SELECT l from Labour l where l.user.id= ?1")
     List<Labour> getAllByTruckProvider(Long id);
 
-    @Query("SELECT veh from Labour veh where veh.user.id = ?1")
-    List<VehicleList> getLabourersByTP(Long id);
+
 }

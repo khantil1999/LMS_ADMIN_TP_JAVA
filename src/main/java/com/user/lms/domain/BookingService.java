@@ -275,5 +275,10 @@ public class BookingService {
     public List<DateWiseBookingModel> getDateWiseBooking(){
         return  this.bookingRepository.getBookingCountByDate();
     }
+
+    public List<DateWiseBookingModel> getDateWiseBookingForTP(Principal principal) {
+        User user = this.userRepository.findExistingUser(principal.getName());
+        return  this.bookingRepository.getBookingCountByDateForTP(user.getId());
+    }
 }
 

@@ -39,10 +39,10 @@ public class AdminMainViewController {
 
     @GetMapping("/home")
     public String loadHomePage(Model model) {
-        model.addAttribute("countUsers", authService.count((long) 1));
-        model.addAttribute("countTP", authService.count((long) 3));
-        model.addAttribute("countLaborers", authService.count((long) 4));
-        model.addAttribute("countBookings",bookingService.countBooking());
+//        model.addAttribute("countUsers", authService.count((long) 1));
+//        model.addAttribute("countTP", authService.count((long) 3));
+//        model.addAttribute("countLaborers", authService.count((long) 4));
+//        model.addAttribute("countBookings",bookingService.countBooking());
         return "home";
     }
 

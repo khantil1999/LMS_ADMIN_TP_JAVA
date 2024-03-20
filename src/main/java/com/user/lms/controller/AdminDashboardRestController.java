@@ -1,9 +1,6 @@
 package com.user.lms.controller;
 
-import com.user.lms.domain.BookingService;
-import com.user.lms.domain.TruckProviderService;
-import com.user.lms.domain.UserService;
-import com.user.lms.domain.UsersService;
+import com.user.lms.domain.*;
 import com.user.lms.models.BookingModel;
 import com.user.lms.models.DateWiseBookingModel;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +18,8 @@ public class AdminDashboardRestController {
     @Autowired
     private TruckProviderService truckProviderService;
 
-
+    @Autowired
+    private LaborersService laborersService;
     @Autowired
     private BookingService bookingService;
 
@@ -40,7 +38,7 @@ public class AdminDashboardRestController {
     @GetMapping("/getLaborerCount")
     @ResponseBody
     public int getLaborerCount() {
-        return this.usersService.getLabourCountForAdmin();
+        return this.laborersService.getLabourerCountForAdmin();
     }
 
     @GetMapping("/getBookingCount")

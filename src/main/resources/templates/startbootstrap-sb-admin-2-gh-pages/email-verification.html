@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Email Verification</title>
+    <style>
+        /* Custom styles for the email template */
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f0f0f0;
+            padding: 20px;
+            margin: 0;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            color: #333;
+        }
+
+        p {
+            color: #666;
+            line-height: 1.5;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn:hover {
+            background-color: #0056b3;
+        }
+
+        .footer {
+            margin-top: 20px;
+            font-size: 12px;
+            color: #999;
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+    <h2>Email Verification</h2>
+    <p>Thank you for signing up! To complete your registration, please click the link below to verify your email address:</p>
+    <a href="http://localhost:8091/verify?email=${user.email}" class="btn">Verify Now</a>
+    <p>If you have not registered with us, please ignore this email.</p>
+    <p>Thank you.</p>
+</div>
+
+<div class="footer">
+    This email was sent to you as part of your registration process with Logistic Management System. If you did not sign up for an account, please disregard this message.
+</div>
+
+</body>
+
+</html>

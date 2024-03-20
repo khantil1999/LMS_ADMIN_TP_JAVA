@@ -25,6 +25,14 @@ public class LaborersService {
     private UserRepository userRepository;
 
 
+    public int getLabourerCountForAdmin(){
+        return (int) this.labourRepository.count();
+    }
+
+    public int getLabourCountForTP(Principal principal){
+        User user = this.userRepository.findExistingUser(principal.getName());
+        return this.labourRepository.getAllByTruckProvider(user.getId()).size();
+    }
     @Transactional
     public void deleteUser(Long id) {
         this.labourRepository.deleteById(id);

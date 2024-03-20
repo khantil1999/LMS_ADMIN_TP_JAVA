@@ -32,9 +32,9 @@ public class TruckProviderMainViewController {
     @GetMapping("/dashboardTP")
     public String loadDashboardPage(Model model){
 
-        model.addAttribute("countVehicles", vehicleListService.countVehicle());
-        model.addAttribute("countLaborers", authService.count((long) 4));
-        model.addAttribute("countBookings",bookingService.countBooking());
+//        model.addAttribute("countVehicles", vehicleListService.countVehicle());
+//        model.addAttribute("countLaborers", authService.count((long) 4));
+//        model.addAttribute("countBookings",bookingService.countBooking());
         return "dashboardTP";
     }
 
