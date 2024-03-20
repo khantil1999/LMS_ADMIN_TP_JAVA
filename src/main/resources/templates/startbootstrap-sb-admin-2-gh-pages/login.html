@@ -45,6 +45,10 @@
                         <div class="alert alert-danger"
                              th:text="${session.SPRING_SECURITY_LAST_EXCEPTION.message}"></div>
                     </div>
+                    <div th:if="${session.loginErrorMessage}">
+                        <div class="alert alert-danger" th:text="${session.loginErrorMessage}"></div>
+                        <!-- Clear the login error message from session -->
+                    </div>
                     <div th:if="${verificationErrorMessage}">
                         <div class="alert alert-danger" th:text="${verificationErrorMessage}"></div>
                     </div>

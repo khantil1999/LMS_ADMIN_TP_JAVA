@@ -4,7 +4,9 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lowagie.text.DocumentException;
 import com.user.lms.entity.Booking;
+import com.user.lms.entity.User;
 import com.user.lms.models.BookingModel;
+import com.user.lms.models.UserDetailsModel;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -205,6 +207,28 @@ public class EmailService {
         }
     }
 
+    public void sendRegistrationEmail(User user){
+        MimeMessage mimeMessage = javaMailSender.createMimeMessage();
+
+        try {
+            MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true);
+
+            Context context = new Context();
+            UserDetailsModel userDetailsModel = UserDetailsModel.fromEntity(user);
+            context.setVariable("user", userDetailsModel);
+
+
+            String htmlContent = templateEngine.process("email-verification", context);
+
+            helper.setTo(userDetailsModel.getEmail());
+            helper.setSubject("Email Verification");
+            helper.setText(htmlContent, true);
+
+            javaMailSender.send(mimeMessage);
+
+        } catch (MessagingException e) {
+        }
+    }
 
     public void marekBookingAsCompletedMail(Booking booking){
         MimeMessage mimeMessage = javaMailSender.createMimeMessage();

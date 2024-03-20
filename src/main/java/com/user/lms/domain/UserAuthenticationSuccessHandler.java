@@ -16,14 +16,15 @@ public class UserAuthenticationSuccessHandler extends SavedRequestAwareAuthentic
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
                                         Authentication authentication) throws IOException, ServletException {
         authentication.getAuthorities().forEach(grantedAuthority -> {
-            System.out.println(grantedAuthority.getAuthority());
         });
         if (authentication.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ADMIN"))) {
             response.sendRedirect("/home");
         } else if (authentication.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("TRUCK_PROVIDER"))) {
             response.sendRedirect("/dashboardTP");
         } else {
-            response.sendRedirect("/default-home");
+            request.getSession().setAttribute("loginErrorMessage", "You don't have sufficient privileges to access this page.");
+            response.sendRedirect("/login");
+
         }
     }
 

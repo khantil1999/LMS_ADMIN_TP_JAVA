@@ -35,7 +35,7 @@
             display: inline-block;
             padding: 10px 20px;
             background-color: #007bff;
-            color: #fff;
+            color: #fff !important;
             text-decoration: none;
             border-radius: 5px;
             transition: background-color 0.3s ease;
@@ -51,6 +51,7 @@
             color: #999;
             text-align: center;
         }
+
     </style>
 </head>
 
@@ -58,8 +59,9 @@
 
 <div class="container">
     <h2>Email Verification</h2>
+    <p>Dear <span th:text="${user.firstName + ' ' + user.lastName}"></span>,</p>
     <p>Thank you for signing up! To complete your registration, please click the link below to verify your email address:</p>
-    <a href="http://localhost:8091/verify?email=${user.email}" class="btn">Verify Now</a>
+    <a th:href="@{'http://localhost:8091/verify?email=' + ${user.email}}" class="btn">Verify Now</a>
     <p>If you have not registered with us, please ignore this email.</p>
     <p>Thank you.</p>
 </div>
