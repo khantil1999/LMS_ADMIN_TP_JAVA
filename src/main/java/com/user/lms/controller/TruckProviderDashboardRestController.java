@@ -30,8 +30,8 @@ public class TruckProviderDashboardRestController {
 
     @GetMapping("/getVehicleCount")
     @ResponseBody
-    public int getTruckProviderCount() {
-        return this.vehicleListService.getVehicleCountForTP();
+    public int getTruckProviderCount(Principal principal) {
+        return this.vehicleListService.getVehicleCountForTP(principal);
     }
 
     @GetMapping("/getLaborerCountForTP")

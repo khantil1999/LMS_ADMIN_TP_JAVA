@@ -842,7 +842,14 @@
                         text: '<i class="fas fa-file-pdf"></i>',
                         className: 'btn pdf-button',
                         titleAttr: 'Export to PDF',
-                        title: 'Booking List'
+                        title: 'Booking List',
+                        customize: function (doc) {
+
+                            doc.content[1].table.body.forEach(row => {
+                                row.splice(8); // Keep only the first 7 columns
+                            });
+
+                        }
                     }],
                     "language": {
                         "search": "",

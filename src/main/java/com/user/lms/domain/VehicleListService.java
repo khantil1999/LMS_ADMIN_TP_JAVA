@@ -272,7 +272,8 @@ public class VehicleListService {
 
     }
 
-    public int getVehicleCountForTP() {
-        return (int) this.vehicleListRepository.countVehicles();
+    public int getVehicleCountForTP(Principal principal) {
+        User user = this.userRepository.findExistingUser(principal.getName());
+        return  this.vehicleListRepository.getVehicleListByTP(user.getId()).size();
     }
 }

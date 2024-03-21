@@ -226,7 +226,7 @@
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="addEditLaborsModel">Add Laborers</h5>
-        <button onclick="closeModel('addEditLaborModel')" class="close" type="button" data-dismiss="modal" aria-label="Close">
+        <button onclick="closeLabourForm()" class="close" type="button" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">×</span>
         </button>
       </div>
@@ -263,24 +263,23 @@
   </div>
 </div>
 <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel"
-     aria-hidden="true"  th:each="user:${users}">
+     aria-hidden="true"  >
   <div class="modal-dialog" role="document">
     <div class="modal-content" >
       <div class="modal-header" >
-        <input type="hidden" value="" id="deleteId">
+        <input type="hidden" value="" id="deleteLabourId">
         <h5 class="modal-title" id="deleteModalLabel">Are you sure to delete the labourer?</h5>
-        <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+        <button onclick="closeModel('deleteLabourId')" class="close" type="button" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">×</span>
         </button>
       </div>
       <div class="modal-footer">
 
-        <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-        <a
-
+        <button onclick="closeModel('deleteLabourId')" class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+        <button
+                type="button"
                 class="btn btn-primary"
-                th:attr="data-user-id=${user.id}"
-                onclick="deleteLabor(this.getAttribute('data-user-id'))">Delete</a>
+                onclick="deleteLabor()">Delete</button>
       </div>
     </div>
   </div>
@@ -485,20 +484,17 @@
     document.getElementById('mobile-number').value  = ""
     document.getElementById('user-id').value = ""
   }
-  function deleteRecord(){
 
-  }
-  function deleteLaborers(id) {
-    $("#deleteId").val(id)
-    const alertModal = new bootstrap.Modal(document.getElementById('deleteModel'));
-    alertModal.show();
+  function openDeleteModal(id) {
+    $("#deleteLabourId").val(id)
+    $('#deleteModal').modal('show');
   }
   function deleteLabor(){
-    let userId = $("#deleteId").val()
+    let userId = $("#deleteLabourId").val()
     console.log(userId);
     $.ajax({
       type: 'DELETE',
-      url: '/labour' + userId, // Replace this with the actual endpoint to fetch labor data
+      url: '/labour/' + userId,
       success: function(response) {
         window.location.reload();
       },
@@ -543,7 +539,7 @@
                   '<button class="btn btn-primary btn-sm edit-btn" data-id="' + labourer.id + '" onclick="editLabour($(this).data(\'id\'))">' +
                   '<i class="fas fa-edit"></i>' +
                   '</button> ' +
-                  '<button class="btn btn-danger btn-sm delete-btn" data-id="' + labourer.id + '" onclick="deleteLabour($(this).data(\'id\'))">' +
+                  '<button class="btn btn-danger btn-sm delete-btn" data-id="' + labourer.id + '" onclick="openDeleteModal($(this).data(\'id\'))">' +
                   '<i class="fas fa-trash-alt"></i>' +
                   '</button>' +
                   '</td>';

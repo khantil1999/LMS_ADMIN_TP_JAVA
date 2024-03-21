@@ -161,6 +161,7 @@ public class AuthService {
         newUser.setMobileNo(userModel.getMobileNo());
         newUser.setPassword(this.passwordEncoder.encode(userModel.getPassword()));
         newUser.setIsVerified(false);
+        newUser.setIsApproved(false);
         newUser.setStatus("Active");
 
         newUser = this.userRepository.saveAndFlush(newUser);

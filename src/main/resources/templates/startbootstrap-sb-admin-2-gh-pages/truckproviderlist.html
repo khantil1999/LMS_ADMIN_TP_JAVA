@@ -246,7 +246,14 @@
                         text: '<i class="fas fa-file-pdf"></i>',
                         className: 'btn pdf-button',
                         titleAttr: 'Export to PDF',
-                        title: 'Tp List'
+                        title: 'Tp List',
+                        customize: function (doc) {
+
+                            doc.content[1].table.body.forEach(row => {
+                                row.splice(6); // Keep only the first 7 columns
+                            });
+
+                        }
                     }],
                     "language": {
                         "search": "",

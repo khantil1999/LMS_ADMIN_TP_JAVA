@@ -55,6 +55,9 @@ public class UserService implements UserDetailsService {
             if (!user.getIsVerified()) {
                 throw new UsernameNotFoundException("Please Verify your email first!");
             }
+            if (!user.getIsApproved()) {
+                throw new UsernameNotFoundException("You are not authorized by the admin to proceed further!");
+            }
 
             // Retrieve user roles from the database
             List<String> userRoles = user.getUserRoles().stream().map(userRoles1 -> userRoles1.getRole().getName()).collect(Collectors.toList());
